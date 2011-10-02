@@ -1,20 +1,28 @@
 from fabric.api import *
 
-application_dir = '/home/node/woa/'
+application_dir        = '/home/moa/'
+code_fetched_from_repo = False
 
 env.hosts = ['root@91.121.223.149']
 
+
 def deploy():
-	before_deploy()
 	deploy_config()
+	deploy_tools()
 	deploy_appli()
 
-def before_deploy():
-	run('rm -rf /tmp/moa')
-	run('mkdir /tmp/moa');
-	run('git clone https://github.com/pouyajoon/woanode /tmp/moa/');
+def get_code_from_repo():
+	global code_fetched_from_repo
+	if (code_fetched_from_repo == False):
+		run('rm -rf /tmp/moa')
+		run('mkdir /tmp/moa');
+		run('git clone https://github.com/pouyajoon/moa /tmp/moa/');
+		code_fetched_from_repo = True
+
+# APPLI
 
 def deploy_appli():
+	get_code_from_repo()
 	run('rm -rf ' + application_dir + '/server')
 	run('rm -rf ' + application_dir + '/client')
 	run('mkdir -p ' + application_dir)
@@ -22,14 +30,22 @@ def deploy_appli():
 	run('cp -R ' + '/tmp/moa/client ' + application_dir + 'client');
 	after_deploy_appli()
 
-def deploy_config():
-	local('')
-
 def after_deploy_appli():
 	restart_node_appli()
 
 def restart_node_appli():
-	pouet = run('`ps x | grep \'node web-server.js\' | grep -v grep | cut -d\' \' -f 1`');
-	if (pouet != ''):
-		run('kill -9 ' + pouet)
-	run('cd ' + application_dir + 'server/ && node web-server.js & ', False, False)
+	run(application_dir + 'tools/webserver_service/webserver_service.sh');
+
+# TOOLS
+
+def deploy_tools():
+	get_code_from_repo()
+	run('rm -rf ' + application_dir + '/tools')
+	run('mkdir -p ' + application_dir)
+	run('cp -R ' + '/tmp/moa/tools ' + application_dir + 'tools');
+
+# CONFIG
+
+def deploy_config():
+	get_code_from_repo()
+
