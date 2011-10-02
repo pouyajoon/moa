@@ -34,7 +34,7 @@ def after_deploy_appli():
 	restart_node_appli()
 
 def restart_node_appli():
-	run(application_dir + 'tools/webserver_service/webserver_service.sh');
+	run('nohup ' + application_dir + 'tools/webserver_service/webserver_service.sh >& /dev/null < /dev/null &')
 
 # TOOLS
 
