@@ -1,0 +1,94 @@
+<html>
+
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<title>test</title>
+	<script type='text/javascript' src='/media/js/external_libs/jquery.min.js'></script>
+	<style type="text/css" media="screen">
+
+		#mycanvas
+		{
+			width:1000px;
+			height:1000px;
+			border:1px solid blue;
+			margin:30px;
+		}
+		
+		body {
+			margin:0px;
+			padding:0px;
+		
+		}
+
+	</style>	
+	<script type="text/javascript" language="javascript" charset="utf-8">
+		var d = 0;
+	
+		var image = new Image();
+		image.src = "/media/img/ant.gif";
+		//
+		var pos = [{'x' : 0, 'y' : 0, 'w' : 309, 'h' : 250}, {'x' : 600, 'y' : 600, 'w' : 309, 'h' : 250}];
+
+		function show(){
+			var r = toRad(d);
+			console.log(d);
+					
+			var c = $("#mycanvas")[0];
+			var ctx = c.getContext('2d');
+			ctx.clearRect(0, 0, 10000, 10000);
+
+			for (var i = 0; i < pos.length; ++i){
+				var p = pos[i];
+				ctx.save();			
+				ctx.translate(p.x + (p.w / 2), p.y + (p.h / 2));
+				ctx.rotate(r);
+				ctx.drawImage(image, -(p.w / 2) ,- (p.h / 2), p.w, p.h);
+//				ctx.rotate(-r);
+//				ctx.translate(- (p.x + (p.w / 2)), -(p.y + (p.h / 2)));			
+				ctx.restore();	
+			}
+		
+			
+		}
+		
+		$(function(){
+		
+
+			$('#mycanvas').click(function() {
+//				alert("click");
+					d += 1;
+					show();
+			});
+
+
+		
+			var c = $("#mycanvas")[0];
+			var ctx = c.getContext('2d');
+			ctx.canvas.width = 10000;
+			ctx.canvas.height = 10000;
+			show();
+//			ctx.restore();
+
+	
+		});
+		
+
+
+
+	
+
+	function toRad(deg){
+		return deg * (Math.PI / 180);
+	}
+	</script>
+
+	
+	</head>
+<body>
+<canvas id='mycanvas'></canvas>
+
+</body>
+</html>
+
+
+

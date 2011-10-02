@@ -1,0 +1,39 @@
+
+/*#translateX{*/
+/*	position:absolute;*/
+/*	top:150px;*/
+/*	left:1000px;*/
+/*}*/
+/*#translateY{*/
+/*	position:absolute;*/
+/*	top:170px;*/
+/*	left:1000px;*/
+/*}*/
+
+.zooming {
+	position:absolute;
+	width:20px;
+	height:20px;
+	border: 1px solid green;
+}
+
+/*#ScreenSizeY {*/
+/*	position:absolute;*/
+/*	top:210px;*/
+/*	left:1000px;	*/
+
+/*}*/
+
+/*#ScreenSizeX{*/
+/*	position:absolute;*/
+/*	top:190px;*/
+/*	left:1000px;	*/
+
+/*}*/
+
+/*#worldZoomLevel{*/
+/*	position:absolute;*/
+/*	top:230px;*/
+/*	left:1000px;	*/
+
+/*}*/

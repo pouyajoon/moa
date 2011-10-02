@@ -1,0 +1,91 @@
+<html>
+
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<title>test</title>
+	<script type="text/javascript" src='js/external_libs/jquery.min.js'></script>
+	
+	<script type="text/javascript" language="javascript" charset="utf-8">
+	// <![CDATA[
+	
+		function drawElementUsingRotation(ctx, x, y, w, h, d)
+		{
+		
+			var cw2 = ctx.canvas.width / 2;
+			var ch2 = ctx.canvas.height / 2;
+			var r = d * Math.PI / 180;
+		
+			console.log('canvas size :' + ctx.canvas.width + ", " + ctx.canvas.height);
+				//ctx.clearRect(0, 0, c.width, c.height);		
+			ctx.translate(cw2, ch2);
+			ctx.rotate(r);
+			ctx.translate(-cw2, -ch2);
+
+			ctx.fillStyle = "rgb(200,0,0)";
+			ctx.fillRect (h + y, ctx.canvas.width - h * 2 - x, w, h);
+//			ctx.fillRect ( 0, 0, w, h);					
+			ctx.translate(cw2, ch2);
+			ctx.rotate(-r);
+			ctx.translate(-cw2, -ch2);		
+		
+		}
+		
+		$(function(){
+			var c = $("#canV")[0];
+			var ctx = c.getContext('2d');
+			ctx.canvas.width  = $("#canV").width();
+			ctx.canvas.height = $("#canV").height();						
+			
+//			
+//				ctx.setSize(400, 400);	
+				//ctx.scale(1, 1);
+	
+			//ctx.rotate(r);
+			
+			var last = 10;
+			 $("#canV").click(function(){
+			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);		
+			drawElementUsingRotation(ctx, last, last, 80, 50, 45);
+
+				
+
+//			ctx.rotate(a);
+			
+	
+				console.log('click');
+				last += 10;
+
+
+			});
+			
+			
+		});
+	// ]]>
+	</script>
+	<style type="text/css" media="screen">
+	/* <![CDATA[ */
+		#canV
+		{
+			width:300px;
+			height:200px;
+			border:1px solid blue;
+			margin:30px;
+		}
+		
+		body {
+			margin:0px;
+			padding:0px;
+		
+		}
+	/* ]]> */
+	</style>
+	
+	</head>
+<body>
+<canvas id='canV'></canvas>
+
+</body>
+</html>
+
+
+

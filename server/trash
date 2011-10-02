@@ -1,0 +1,106 @@
+//				var len = worldZones.allZones[zone_id].ants.length;
+//				var zonesAnts = Array();
+//				for (var i = 0;i < len; ++i) {
+//					var a = worldZones.allZones[zone_id].ants[i];
+//					zonesAnts.push(a.getDrawArray());
+//				}		
+
+
+--- HOME PAGE ----
+
+
+
+
+//subscribe your queen
+app.post('/data', function(req, res){
+	res.contentType('json');
+
+	
+	var floatCamera = camera.createFloatCamera(req.body.camera);
+	var localAnts = Array();
+	var localActionNodes = Array();	
+	var miniMapAnts = Array();
+	var localStatics = Array();
+	
+//	var exportData = {'miniMap' : miniMapAnts, 'localAnts' : localAnts, 'actionNodes' : localActionNodes};		
+//	
+//	res.end(JSON.stringify (exportData));
+//	return;
+//	console.log("world limits : " + floatCamera.traX + ':' + floatCamera.maxX + ', ' + floatCamera.traY + ':' + floatCamera.maxY);
+
+
+	for (var i = 0; i < global.ants.length; ++i)
+	{
+		var ant = global.ants[i];		
+
+//		console.log(ant.uniqueID + " is in ? " + isInDrawScreen(ant.position, floatCamera) + ' @' + ant.position + ", drawPosition : " + drawPosition.dX + ', ' + drawPosition.dY);
+		//isInDrawScreen(ant.position, floatCamera)
+		if (isInDrawScreen(ant.data.position, floatCamera)) {			
+			var drawPosition = transformToScreenPosition(ant.data.position, floatCamera);
+			localAnts.push(ant.getDrawArray(drawPosition));
+		}		
+	}
+	
+	for (var i = 0; i < global.staticElements.length; ++i)
+	{
+		var staticElement = global.staticElements[i];		
+
+		if (isInDrawScreen(staticElement.data.position, floatCamera)) {			
+			var drawPosition = transformToScreenPosition(staticElement.data.position, floatCamera);
+			localStatics.push(staticElement.getDrawArray(drawPosition));
+		}		
+	}	
+	
+//	res.end("{}");
+//	return;
+	for (var i = 0; i < global.ants.length; ++i)
+	{
+		var ant = global.ants[i];
+		miniMapAnts.push({'uID' : ant.data.uniqueID, 'x' : ant.data.position.x, 'y' : ant.data.position.y});		
+	}
+
+
+//	console.log("number of Node : " + global.actionNodes.length);
+	for (var i = 0; i < global.actionNodes.length; ++i)
+	{		
+		var actionNode = global.actionNodes[i];
+		if (isInDrawScreen(actionNode.data.position, floatCamera)) {
+			var drawPosition = transformToScreenPosition(actionNode.data.position, floatCamera);		
+			localActionNodes.push(actionNode.getDrawArray(drawPosition));		
+		}
+		
+	}	
+	var exportData = {'miniMap' : miniMapAnts, 'localAnts' : localAnts, 'actionNodes' : localActionNodes, 'localStatics' : localStatics};	
+	res.end(JSON.stringify (exportData));
+});
+
+
+//subscribe your queen
+
+
+//app.post('/setaction', function(req, res){
+//	res.contentType('html');
+//	
+//	var floatCamera = camera.createFloatCamera(req.body.camera);	
+////	console.log(floatCamera);
+//	var p = {'x' : parseFloat(req.body.x), 'y' : parseFloat(req.body.y)}; 
+//	var newPos = transformToRealPosition(p, floatCamera);
+////	console.log("for " + p.x + ", " + p.y);
+//	global.actionNodes.push(new lib_actionNode.ActionNode(req.body.action, newPos));
+//	//new lib_position.Position(, req.body.y)
+//	res.end('follow node @ ' + newPos + "\n");			
+//});
+
+
+app.get('/create/:myName', function(req, res){
+	var _name = req.params.myName;
+	var q = new lib_queen.Queen(_name, new lib_position.Position(500, 500));
+	global.ants.push(q);
+	res.write("<html>here is your queen : " + q + "\n");
+	res.end('your name is ' + req.params.myName + '\n</html>');
+});
+
+
+
+
+
