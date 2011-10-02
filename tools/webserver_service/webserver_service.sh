@@ -1,7 +1,10 @@
 #!/bin/sh
 
-APPLI_DIR=/home/node/moa
+APPLI_DIR=/home/moa
 
-current_pid=`ps x | grep \'node web-server.js\' | grep -v grep | cut -d\' \' -f 1`
-[ $current_pid != "" ] && kill -9 $current_pid
+current_process=`ps x | grep 'node web-server.js' | grep -v grep`
+if [ "$current_process" != '' ]; then
+	current_pid=`echo $current_process | cut -d' ' -f 1`
+	kill -9 $current_pid
+fi
 cd $APPLI_DIR && node web-server.js 2>&1 > /var/log/moa.log
