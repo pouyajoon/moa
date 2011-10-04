@@ -1,7 +1,7 @@
-var woa_server = "http://pouya:8080/";
+//var woa_server = "http://pouya:8080/";
 // var woa_server = "http://woa.happyfunkyfoundation.com:8080/";
 
-//var woa_server = "http://masterofants.com:8080/";
+var woa_server = "http://masterofants.com:8080/";
 
 
 var synchroTime = 1000;
