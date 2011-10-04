@@ -1,24 +1,5 @@
-
-//var p = require ('prototype');
 var libPE = require ('./physicElement');
 var libWorldTools = require('./worldTools');
-//// Constructor
-//exports.Ant = function(_position) {
-//  this.position = _position;
-//}
-//// properties and methods
-//exports.Ant.prototype = {
-//  position: [0, 0],
-//  greet: function(){
-//  	return "Hi, I am at {" + this.position + "}";
-//  }
-//};
-
-/** new, preferred syntax **/
-
-// properties are directly passed to `create` method
-
-
 
 require('prototype');
 
@@ -180,79 +161,4 @@ exports.Ant = Class.create(libPE.PhysicElement, {
 	
 	}	
 });
-
-
-
-
-//exports.Ant = function(_position, _size){
-//	  var pe = new lib_PE.PhysicElement(_position, _size);
-//	  this.data = pe.data;
-//    this.data.direction = 0;
-//    this.data.smellDistance = 100;
-//    this.data.action = 'move';
-//    this.data.colony = null;
-//}
-
-//exports.Ant.prototype = {
-//  greet: function(message) {
-//    return "Hello, I am at " + this.data.position;
-//  },
-//  toString : function () {
-//  	return "Ant @ " + this.data.position;
-//  },  
-//	getDrawArray : function(drawPosition){
-//		return {
-//			'action' : this.data.action,
-//			'uID' : this.data.uniqueID, 
-//			'w' : this.data.size.w,
-//			'h' : this.data.size.h,			
-//			'dX' : drawPosition.dX, 
-//			'dY' : drawPosition.dY
-////			'smellBox' : get
-//		};
-//	},
-//	getSmellBox : function () {
-//		var position = {'x' : this.data.position.x - this.data.size.w, 'y' : this.data.position.y - this.data.size.h};
-//		var size = {'w' : this.data.size.w * 3, 'h' : this.data.size.h * 3};
-//		return this.getBox(position, size);	
-//	},
-//	roam : function(_power){
-//		var _moveToDirection = Math.round(Math.random() * 5);
-////		console.log("direction move : " + _moveToDirection)
-//		switch (_moveToDirection) {
-//			case 0 :
-//				this.data.direction -= 1;
-//			break;
-////			case 1 :
-////			break;
-//			case 2 :
-//				this.data.direction += 1;
-//			break;			
-//		}
-//		if (this.data.direction < 0) this.data.direction = 7;
-//		if (this.data.direction > 7) this.data.direction = 0;
-//		this.moveAccordingDirection(_power);
-//	}  
-//}
-
-
-
-
-
-
-//module.exports = Ant;
-
-//exports.Ant = Class.create(lib_PE.PhysicElement, {
-//  initialize: function(_position, _size) {
-
-//  },
-
-
-//});
-
-////var john = new Pirate('Long John');
-////john.say('ahoy matey');
-//// -> "Long John: ahoy matey, yarr!"
-
-
 

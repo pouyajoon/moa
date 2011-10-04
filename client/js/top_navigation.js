@@ -30,9 +30,7 @@ function zoomInZonePrepare(tileCoordinate, latLngMiddle){
 // zoom in to a zone
 function zoomInZone(){
 //		drawMap = false;
-//		$('#mainScreen').css('zIndex', 5000);
-//		$('#bigMap').css('zIndex', 5001);
-//		$('#map_canvas').css('zIndex', 0);						
+					
 		$('#map_canvas').fadeOut(250);
 		$('#mainScreen').fadeIn(250);	
 		$('#navigationRight').fadeIn(500);

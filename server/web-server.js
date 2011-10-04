@@ -6,7 +6,7 @@ var lib_queen = require ('./classes/queen');
 
 var lib_position = require ('./classes/position');
 var lib_actionNode = require ('./classes/actionNode');
-var camera = require ('./classes/camera');
+//var camera = require ('./classes/camera');
 var libAuth = require ('./classes/autentication');
 var libZones = require ('./maps/zones');
 
@@ -95,30 +95,9 @@ io.sockets.on('connection', function (socket) {
 });
 
 
-app.get('/socket', function(req, res){
-	res.render("socket.jade", {layout:'layout', 'title' : 'Socket Test'});
-});
-
-
 app.get('/', libAuth.requireLogin, function(req, res){
 	//res.writeHead(200, {'Content-Type': 'text/text'});
 	var index = fs.readFileSync('../client/index.htm');
-  res.end(index);
-});
-
-app.get('/maps', function(req, res){
-	var index = fs.readFileSync('../client/maps.htm');
-  res.end(index);
-});
-
-app.get('/canvas', function(req, res){
-	var index = fs.readFileSync('../client/canvas.html');
-  res.end(index);
-});
-
-app.get('/:id', function(req, res){
-	var _id = req.params.id;
-	var index = fs.readFileSync('../client/testzone.htm');
   res.end(index);
 });
 

@@ -226,7 +226,3 @@
 		miniMapDOM.css('top', miniMapTop  + 1);				 	 
 	}
 };
-
-
-
-

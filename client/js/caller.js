@@ -1,7 +1,7 @@
-//var woa_server = "http://pouya:8080/";
-//var woa_server = "http://woa.happyfunkyfoundation.com:8080/";
+var woa_server = "http://pouya:8080/";
+// var woa_server = "http://woa.happyfunkyfoundation.com:8080/";
 
-var woa_server = "http://masterofants.com:8080/";
+//var woa_server = "http://masterofants.com:8080/";
 
 
 var synchroTime = 1000;
@@ -39,7 +39,7 @@ function intiSockets(){
 		// draw the red border of the zone
 		ctx.lineWidth = 4;
 		ctx.strokeStyle = '#f00'; // red
-	  ctx.strokeRect(1, 1, camera.worldMaxSize.x - 1, camera.worldMaxSize.y - 1)
+	  	ctx.strokeRect(1, 1, camera.worldMaxSize.x - 1, camera.worldMaxSize.y - 1)
 
 		// draw the server elements
 	  //drawStaticElements(ctx, data);
@@ -119,27 +119,12 @@ $(function(){
 	mainScreen.click(function(event){
 //		alert(game.setAction);
 		if (game.setAction != 'none'){
-			nodeserver.emit('ssetaction', {'zoneid' : game.currentZone,'camera' : camera, 'action' : game.setAction, 'x' : event.pageX, 'y' : event.pageY});			
-//			$.ajax({		
-//					url: woa_server + "setaction",
-//					context: mainScreen,
-//					type:'POST',
-//					data : ,
-//					success: function(data){
-//					}
-//			});
+			nodeserver.emit('ssetaction', {'zoneid' : game.currentZone,'camera' : camera, 'action' : game.setAction, 'x' : event.pageX, 'y' : event.pageY});
 		}
 	});
 
 	var pageX = 0;
 	var pageY = 0;
-
-//	$('.apple').data('exists', true);
-//	$('.apple').mouseover(function(){
-//		//console.log($(this).css('left'));
-//		$(this).attr('title', '[' + $(this).position().left +','+ $(this).position().top + ']');	
-//	});														
-
 
 
 

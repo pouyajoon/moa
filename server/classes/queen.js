@@ -2,13 +2,9 @@ var libAnt = require ('./ant');
 
 exports.Queen = Class.create(libAnt.Ant, {
 	initialize: function(_name, _position) {
-	var a = new libAnt.Ant(_position, {"w" : 20, "h" : 20});
-	this.data = a.data;
-	//this.data.position = _position;
-	//this.data.size.w = 50;
-	//this.data.size.h = 50;
-	this.data.name = _name;
-//	console.log(this.greet());
+    var a = new libAnt.Ant(_position, {"w" : 20, "h" : 20});
+  	this.data = a.data;
+  	this.data.name = _name;
 	},
 	geet: function() {
     return "Hi, I am the queen " + this.data.name + " @ " + this.data.position + ", my direction is " + this.data.direction;

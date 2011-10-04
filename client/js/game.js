@@ -15,65 +15,13 @@ imgTree.src='/media/img/tree.gif';
 var imgHome = new Image();
 imgHome.src='/media/img/home.gif';
 
-//var imgBGZone = new Image();
-//imgBGZone.src='http://maps.googleapis.com/maps/api/staticmap?center=48.837890444364774,2.392113855719572&zoom=21&size=256x256&sensor=false';	
 
 var game = {
 	'currentZone' : null,
 	'numberOfAnts' : 0,
 	'setAction' : 'none', 
-//	'pullData' : function (){
-//		$.ajax({
-//				url: woa_server + "data",
-//				context: $('#mainScreen'),
-//				type:'POST',
-//				data : {
-//					'camera': camera
-//				},
-//				success: function(data){						
-//					var mainScreen = $('#mainScreen');					
-//					var startTime = Date.now();
-//					
-//					var ctx = mainScreen[0].getContext('2d');
-//					ctx.canvas.width  = mainScreen.width();
-//					ctx.canvas.height = mainScreen.height();					
-//					ctx.clearRect(0, 0, mainScreen.width(), mainScreen.height());						
-
-//					var bigMap = $("#bigMap");
-//					var ctxBigMap = bigMap[0].getContext('2d');					
-//					
-//					drawStaticElements(ctx, data);
-//					drawActionNodes(ctx, data);
-//					drawAnts(ctx, data);
-//					drawBigMap(ctxBigMap, data);
-//					
-//					var processingTimeDrawing = Date.now() - startTime;
-//					startTime = Date.now();
-////					console.log('time processing drawing map: ' + processingTimeDrawing + 'ms');
-////					camera.processingTime = processingTime;
-//			
-//					processingTimeDrawing = Date.now() - startTime;
-//					//startTime = Date.now();
-////					console.log('time processing drawing miniMap: ' + processingTimeDrawing + 'ms');					
-//				}
-//		});	
-//	
-//	}
 };
 
-
-//function setDirection(ant, antTag)
-//{
-//	switch(ant.direction){
-//		case 'SE' :
-//			antTag.rotate(45);
-//			return 45;
-//		break;
-//		default:
-//			antTag.rotate(0);							
-//			return 0;
-//	}	
-//}
 
 
 function getAntInfo(ant){
@@ -162,28 +110,13 @@ function drawAnts(ctx, data) {
 		if (ant.action == "move") { image = imgAMove; }
 		if (ant.action == "digg") { image = imgADigg; }	
 		if (isInDrawScreen(ant.position)){
-//			var dX = ((ant.position.x - camera.translateX) / camera.ScreenSize.w) * camera.worldInitX; 
-//			var dY = ((ant.position.y - camera.translateY) / camera.ScreenSize.h) * camera.worldInitY; 					
-//			if (camera.ScreenSize.w >= camera.worldMaxSize.x) {
-//				var ratioScSizeW_MaxSize = camera.ScreenSize.w / (camera.worldInitX * camera.worldZoomLevel);
-//				var ratioPosAnt_ScX = ant.position.x / camera.worldMaxSize.x;
-//				dX = ratioPosAnt_ScX * (ratioScSizeW_MaxSize * camera.worldInitX);// + camera.tX;
-//			}
-//			if (camera.ScreenSize.h >= camera.worldMaxSize.y) {
-//				var ratioScSizeH_MaxSize = camera.ScreenSize.h / (camera.worldInitY * camera.worldZoomLevel);
-//				var ratioPosAnt_ScY = ant.position.y / camera.worldMaxSize.y;
-//				dY = ratioPosAnt_ScY * (ratioScSizeH_MaxSize * camera.worldInitY);// + camera.tY;
-//			}
 			ctx.save();			
 			ctx.translate(ant.position.x + (ant.size.w / 2), ant.position.y + (ant.size.h / 2));
 			ctx.rotate(ant.angle * Math.PI / 180);			
 			ctx.drawImage(image, - ant.size.w / 2, - ant.size.h / 2, ant.size.w, ant.size.h);	
 			ctx.restore();		
 		}
-//		console.log("ant action : " + ant.action);
 //		if (ant.action == "idle") { image = imgAMove; }
-																	
-		
 
 	});
 }

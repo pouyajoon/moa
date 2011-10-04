@@ -31,43 +31,28 @@ body
 
 	border:none;
 	background-repeat:no-repeat;
-/*	background-size: 2560px;*/
 	background-position:0px 0px;
-/*	background-image:url('http://maps.googleapis.com/maps/api/staticmap?center=48.837890444364774,2.392113855719572&zoom=21&size=256x256&sensor=false&scale=2');*/
-/*	background:url('/media/img/bg_grass.gif');*/
+
 
 }
 
 
 #navigationTop
 {
-/*	display:none;*/
-/*	position:absolute;*/
-/*	top:0px;*/
-/*	left:0px;*/
+
 	background-color:green;
 	width:100%;
 	height:40px;
-/*	border:1px solid blue;*/
+
 }
 
 #navigationRight
 {
-/*		display:none;*/
 	position:absolute;
 	top:40px;
 	right:0px;
-/*	float:right;*/
-/*	left:0px;*/
+
 	background-color:white;
 	width:258px;
-/*	width:100%;*/
-/*	height:40px;*/
-/*	border:1px solid blue;*/
 }
 
-/*#Legends*/
-/*{*/
-
-
-/*}*/

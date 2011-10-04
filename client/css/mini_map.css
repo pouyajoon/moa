@@ -2,9 +2,7 @@
 {
 	 background-color:green;
 	 opacity:0.15;
-/*	border:1px solid green;*/
-/*	border-bottom:none;*/
-/*	position:absolute;*/
+
 }
 
 #bigMap
@@ -12,12 +10,10 @@
 	width:256px;
 	height:256px;
 	right:0px;
-/*	position:absolute;*/
-/*	top:250px;*/
-/*	left:1000px;	*/
+
 	border:1px solid green;
 	background-color:white;
-/*	background-image:url('http://maps.googleapis.com/maps/api/staticmap?center=48.837890444364774,2.392113855719572&zoom=21&size=256x256&sensor=false');*/
+
 }
 
 

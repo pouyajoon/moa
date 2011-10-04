@@ -23,10 +23,3 @@ getDrawArray : function(drawPosition){
 
 
 module.exports = Colony;
-
-//exports.Colony = Class.create(lib_PE.PhysicElement, {
-//  initialize: function() {
-
-//  },
-//  
-//});
