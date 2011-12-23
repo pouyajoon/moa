@@ -1,19 +1,19 @@
 
 // ANTS
 var imgAMove = new Image();
-imgAMove.src='/media/img/ant.gif';	
+imgAMove.src='/images/ant.gif';	
 var imgADigg = new Image();
-imgADigg.src='/media/img/aDigg.gif';	
+imgADigg.src='/images/aDigg.gif';	
 var imgAIdle = new Image();
-imgAIdle.src='/media/img/aIdle.gif';	
+imgAIdle.src='/images/aIdle.gif';	
 
 // TREE
 var imgTree = new Image();
-imgTree.src='/media/img/tree.gif';	
+imgTree.src='/images/tree.gif';	
 
 // HOME
 var imgHome = new Image();
-imgHome.src='/media/img/home.gif';
+imgHome.src='/images/home.gif';
 
 
 var game = {

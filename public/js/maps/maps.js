@@ -41,9 +41,14 @@ function zoomIn(ENDZOOM, center) {
 // prepare the map
 function initializeMap() {
 
-	var mapStyle = [ { featureType: "poi", stylers: [ { visibility: "off" } ] },{ featureType: "road", stylers: [ { visibility: "on" }, { hue: "#4cff00" } ] },{ featureType: "water", stylers: [ { lightness: -25 }, { hue: "#003bff" } ] },{ featureType: "poi.school", stylers: [ { visibility: "on" } ] },{ featureType: "poi.park", stylers: [ { visibility: "on" } ] },{ featureType: "road.highway", elementType: "labels", stylers: [ { visibility: "off" } ] } , { featureType: "poi.park", stylers: [ { visibility: "on" }, { hue: "#2bff00" }, { gamma: 0.31 } ] }];
+	
 
 	//{ featureType: "landscape.natural", stylers: [ { visibility: "on" }, { gamma: 0.6 }, { hue: "#00ff19" }, { lightness: -60 }, { saturation: 37 } ] }
+
+
+var mapStyle = [ { featureType: "poi", stylers: [ { visibility: "off" } ] },{ featureType: "road", stylers: [ { visibility: "on" }, { hue: "#4cff00" } ] },{ featureType: "water", stylers: [ { lightness: -25 }, { hue: "#003bff" } ] },{ featureType: "poi.school", stylers: [ { visibility: "on" } ] },{ featureType: "poi.park", stylers: [ { visibility: "on" } ] },{ featureType: "road.highway", elementType: "labels", stylers: [ { visibility: "off" } ] } , { featureType: "poi.park", stylers: [ { visibility: "on" }, { hue: "#2bff00" }, { gamma: 0.31 } ] }];
+
+//{ featureType: "landscape.natural", stylers: [ { visibility: "on" }, { gamma: 0.6 }, { hue: "#00ff19" }, { lightness: -60 }, { saturation: 37 } ] }
 
 
 
@@ -57,9 +62,12 @@ function initializeMap() {
   
   // create the map
   map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+  //console.log(map);
+
+    
   // create the moa MAP
-	myMoaMap = new moaMap(map);
-	myMoaMap.loadMapOptionsURL(map.styles);
+	//myMoaMap = new moaMap(map);
+	//myMoaMap.loadMapOptionsURL(map.styles);
 	// add zones overlay
 	map.overlayMapTypes.insertAt(0, ZonesMap);
 
@@ -94,5 +102,6 @@ function initializeMap() {
 		});
 		
 	});
-
+var p = map.getProjection();
+console.log(p);
 }

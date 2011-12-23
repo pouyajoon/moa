@@ -2,14 +2,14 @@
 // Queen Marker Options 
 // START
 var imageQueen = new google.maps.MarkerImage(
-  '/media/img/marker-colony.png',
+  '/images/marker-colony.png',
   new google.maps.Size(35,50),
   new google.maps.Point(0,0),
   new google.maps.Point(18,50)
 );
 
 var imageQueenShadow = new google.maps.MarkerImage(
-  '/media/img/marker-colony-shadow.png',
+  '/images/marker-colony-shadow.png',
   new google.maps.Size(63,50),
   new google.maps.Point(0,0),
   new google.maps.Point(18,50)

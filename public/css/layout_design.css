@@ -6,6 +6,7 @@ body
 }
 
 
+
 #setActions {
 	margin:0px;
 	padding:0px;
@@ -19,7 +20,7 @@ body
 
 .mapSize{
 	width:100%;
-	height:100%;
+	height:600px;
 }
 
 #mainScreen
@@ -27,13 +28,15 @@ body
 	position:absolute;
 	top:40px;
 	left:0px;
-	background-color:rgb(244, 243, 240);
+	/*background-color:rgb(244, 243, 240);*/
+	background-color:rgb(244, 243, 00);
+	opacity: 0.5;
+	-moz-opacity: 0.5;
+	filter:alpha(opacity=5);
 
 	border:none;
 	background-repeat:no-repeat;
 	background-position:0px 0px;
-
-
 }
 
 
@@ -50,9 +53,6 @@ body
 {
 	position:absolute;
 	top:40px;
-	right:0px;
-
-	background-color:white;
-	width:258px;
+	left:0px;
 }
 

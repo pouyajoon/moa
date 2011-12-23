@@ -23,11 +23,11 @@ ZonesMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
   div.style.width = this.tileSize.width + 'px';
   div.style.height = this.tileSize.height + 'px';
 	div.id = id;
-//	if (zoom == 21){
-//		div.style.borderStyle = 'dotted';
-//		div.style.borderWidth = '1px';
-//		div.style.borderColor = '#CCC';	
-//	}
+	if (zoom == 21){
+		div.style.borderStyle = 'dotted';
+		div.style.borderWidth = '1px';
+		div.style.borderColor = '#CCC';	
+	}
   
 
   // add real zones

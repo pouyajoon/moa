@@ -1,22 +1,19 @@
-#miniMap
+#gameMiniMapZoom
 {
 	 background-color:green;
 	 opacity:0.15;
 
 }
 
-#bigMap
+#gameMiniMap
 {
 	width:256px;
 	height:256px;
 	right:0px;
-
 	border:1px solid green;
 	background-color:white;
 
 }
-
-
 
 .miniAnt
 {

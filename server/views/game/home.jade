@@ -1,0 +1,53 @@
+!!! 5
+html
+  head
+    script(type='text/javascript')
+      var moa_server = '#{server}';
+      var drawMode = '#{drawMode}';
+    script(type='text/javascript', src='http://maps.googleapis.com/maps/api/js?v=3&sensor=false')
+    script(type='text/javascript', src='/socket.io/socket.io.js')
+    script(type='text/javascript', src='/js/libs/jquery.min.js')
+    script(type='text/javascript', src='/js/libs/mousewheel.js')
+    script(type='text/javascript', src='/js/libs/underscore.js')
+    script(type='text/javascript', src='/js/libs/jquery-ui-1.8.14.custom.min.js')
+    script(type='text/javascript', src='/js/camera.js')
+    script(type='text/javascript', src='/js/caller.js')
+    script(type='text/javascript', src='/js/game.js')
+    script(type='text/javascript', src='/js/WorldMap/WorldMap.js')
+    script(type='text/javascript', src='/js/WorldMap/WorldMapOptions.js')
+    script(type='text/javascript', src='/js/maps/markers.js')
+    script(type='text/javascript', src='/js/maps/zones_maptype.js')
+    script(type='text/javascript', src='/js/maps/maps.js')
+    script(type='text/javascript', src='/js/top_navigation.js')
+    script(type='text/javascript', src='/js/action_nodes.js')
+    script(type='text/javascript', src='/js/GameCanvas/MiniMap.js');
+    script(type='text/javascript', src='/js/startup.js');
+    script(type='text/javascript', src='/js/SocketManager.js');
+    script(type='text/javascript', src='/js/GameCanvas/GameCanvas.js');
+    script(type='text/javascript', src='/js/CanvasCamera/CanvasCamera.js');
+    script(type='text/javascript', src='/js/CanvasCamera/CanvasCameraPoint.js');
+                  
+    link(rel='stylesheet', href='/css/main.css')
+    link(rel='stylesheet', href='/css/elements.css')
+    link(rel='stylesheet', href='/css/layout_design.css')
+    link(rel='stylesheet', href='/css/camera.css')
+    link(rel='stylesheet', href='/css/MiniMap.css')    
+    title= title
+body
+  div(id='tiles')
+    div(id='navigationTop')
+      text Write your name here : 
+      input(type='text', id='inputName', value='value')
+      button(id='buttonSubscibe') Subscibe !
+      button(id='buttonGo') Go !
+      button(id='buttonResetNavigation') Reset Navigation !
+      button(id='buttonToogleMap') Toggle Map
+      a(href='/users/logout', id='buttonLogout') Logout
+    div(id='woaAll')
+      div(id='map_canvas', class='mapSize')
+      canvas(id='mainScreen', class='mapSize') &nbsp;
+    div(id='navigationRight')
+      ul(id='setActions')
+      div(id='fps')
+      div(id='debugger')
+
