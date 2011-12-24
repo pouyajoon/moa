@@ -6,14 +6,14 @@ window.requestAnimFrame = (function() {
     window.oRequestAnimationFrame ||
     window.msRequestAnimationFrame ||
     function(callback, element) {
-      window.setTimeout(callback, 1000/60);
+      window.setTimeout(callback, 1000 / 60);
     }
   );
 })();
 
 
 
-var CanvasCamera = function(canvas){
+var CanvasCamera = function(canvas, _drawZoneSize){
 
 	this.canvas = canvas;
 	this.canvasMousePosition = {"x" : 0, "y" : 0};
@@ -22,11 +22,16 @@ var CanvasCamera = function(canvas){
 	this.canvasScaledSize = new Point();
 	this.focusMouseTranslate = new Point();
 	this.mousePosition = new Point();
+	this.drawZoneSize = new Point();
+	this.drawZoneSize.set(_drawZoneSize.w, _drawZoneSize.h);
+
+	this.mouseInDrawZone = new Point();
+	this.mousePourcentageInDrawZone = new Point();
 
 	this.scaleFactor = 0.3;
 
 	this.scaledCanvasMousePosition = {"x" : 0, "y" : 0};
-	this.mousePourcentagePosition = {"x" : 0, "y" : 0};
+	this.mousePourcentagePosition = new Point();
 
 	this.newMousePosition = {"x" : 0, "y" : 0};
 
@@ -59,6 +64,7 @@ CanvasCamera.prototype.clearContext = function(ctx) {
 };
 
 CanvasCamera.prototype.debug = function() {
+	return;
 	var output = [];
 	output.push("canvassize:", this.canvas.width, ",", this.canvas.height, '<br/>'); 
 	
@@ -70,74 +76,68 @@ CanvasCamera.prototype.debug = function() {
 	output.push("scale:", this.scale, ', ' + 1 / this.scale +'<br/>');
 	output.push("canvasScaledSize:", this.canvasScaledSize.toString(), ', <br/>');
 	output.push("focusMouseTranslate:", this.focusMouseTranslate.toString(), ', <br/>');
+	output.push("mouseInDrawZone:", this.mouseInDrawZone.toString(), ', <br/>');
+	output.push("mouse%InDrawZone:", this.mousePourcentageInDrawZone.toString(), ', <br/>');
 	$("#debugger").html(output.join(''));
 };
 
 
-CanvasCamera.prototype.focusOnMouseAfterMouseWheel = function() {
+CanvasCamera.prototype.focusOnMouseAfterMouseWheel = function(event) {
 
-
-	//this.mousePosition.multiply(this.scale);
-
-	// console.log("mousepos", this.mousePosition);
-	// console.log("scale", this.scale);
-	/*
 	var newScaledCanvasSize = new Point();
 	newScaledCanvasSize.set(this.scale * this.canvas.width, this.scale * this.canvas.height);
+	//console.log("newScaledCanvasSize", newScaledCanvasSize);
 
-	console.log("newScaledCanvasSize", newScaledCanvasSize);
-	console.log("mouse%pos", this.mousePourcentagePosition);
+	var newMousePourcentageShouldBe = this.mouseInDrawZone.getDivPoint(newScaledCanvasSize);
+	// console.log("newMousePourcentageShouldBe", newMousePourcentageShouldBe.toString());
+	// console.log("mousePourcentagePosition", this.mousePourcentagePosition.toString());
 
-	this.newMousePosition = {
-		"x" : newScaledCanvasSize.x * this.mousePourcentagePosition.x,
-		"y" : newScaledCanvasSize.y * this.mousePourcentagePosition.y
-	};
-	console.log("scaled canvas size", this.canvasScaledSize);
-	console.log("new mouse pos", this.newMousePosition);
-	
-	
-	this.focusMouseTranslate.set(
-		this.newMousePosition.x - (this.canvasScaledSize.x * this.mousePourcentagePosition.x),
-		this.newMousePosition.y - (this.canvasScaledSize.y * this.mousePourcentagePosition.y)
-	);
-	*/
+	var newCanvasPositionShouldBe = new Point();
+	newCanvasPositionShouldBe.copy(newMousePourcentageShouldBe);
+	newCanvasPositionShouldBe.x *= this.canvas.width;
+	newCanvasPositionShouldBe.y *= this.canvas.height;
 
-	//this.focusMouseTranslate.set(1 / this.scale * this.mousePosition.x - this.mousePosition.x, 1 / this.scale * this.mousePosition.x - this.mousePosition.y);
-	//console.log("focus", this.focusMouseTranslate);
-	//this.translate.add(this.focusMouseTranslate);
-	//this.focusMouseTranslate.inverse();
-	//this.translate = this.focusMouseTranslate;
-	//console.log(this.newMousePosition, this.mousePourcentagePosition, this.focusMouseTranslate);
-	// calcul the new size and prepare translation in order to focus on the mouse pointer
-	//this.translate.x += focusMouseTranslate.x;
-	//this.translate.y += focusMouseTranslate.y;
+	var oldCanvasPositionShouldBe = new Point();
+	oldCanvasPositionShouldBe.copy(this.mousePourcentagePosition);
+	oldCanvasPositionShouldBe.x *= this.canvas.width;
+	oldCanvasPositionShouldBe.y *= this.canvas.height;
+	// console.log("newCanvasPositionShouldBe", newCanvasPositionShouldBe.toString());
+	// console.log("oldCanvasPositionShouldBe", oldCanvasPositionShouldBe.toString());
+	this.focusMouseTranslate.copy(newCanvasPositionShouldBe);
+	this.focusMouseTranslate.sub(oldCanvasPositionShouldBe);
+
+	this.translate.copy(this.focusMouseTranslate);
+	this.translate.inverse();
+	this.updateMousePositions(event);
+
+	// console.log("focusMouseTranslate", this.focusMouseTranslate);
 };
 
 CanvasCamera.prototype.mouseWheel = function(e, delta) {
-	var scaleNum = 5;
+	var scaleNum = 1;
 	if (delta > 0) {
 		setIntervalX(function(){
-			this.scaleUsingFactor(-1);
+			this.scaleUsingFactor(e, -1);
 		}.bind(this), 50, scaleNum);
 	} 
 	else {
 		setIntervalX(function(){
-			this.scaleUsingFactor(1);
+			this.scaleUsingFactor(e, 1);
 		}.bind(this), 50, scaleNum);						
 	}
 };
 
-CanvasCamera.prototype.scaleUsingFactor = function(factor) {
+CanvasCamera.prototype.scaleUsingFactor = function(event, factor) {
 	this.scale *= (this.scaleFactor * factor) + 1;
-	this.focusOnMouseAfterMouseWheel();
+	this.focusOnMouseAfterMouseWheel(event);
 };
 
 CanvasCamera.prototype.transform = function(ctx) {
 	ctx.translate(this.translate.x, this.translate.y);
 	ctx.scale(1 / this.scale, 1 / this.scale);
 	//ctx.translate(this.translate.x, this.translate.y);
-	//ctx.translate(this.focusMouseTranslate.x, this.focusMouseTranslate.y);
-	//this.focusMouseTranslate.reset();
+	// ctx.translate(this.focusMouseTranslate.x, this.focusMouseTranslate.y);
+	// this.focusMouseTranslate.reset();
 
 };
 
@@ -146,10 +146,8 @@ CanvasCamera.prototype.updateMousePositions = function(e) {
 	this.canvasMousePosition = this.mousePosition.getSub(this.translate);
 
 
-	this.mousePourcentagePosition = {
-		'x' : (this.canvasMousePosition.x + this.translate.x) / this.canvas.width,
-	 	'y' : (this.canvasMousePosition.y + this.translate.y) / this.canvas.height
-	};  
+	this.mousePourcentagePosition.set((this.canvasMousePosition.x + this.translate.x) / this.canvas.width, (this.canvasMousePosition.y + this.translate.y) / this.canvas.height);
+
 };
 
 
@@ -189,6 +187,17 @@ CanvasCamera.prototype.update = function() {
   	"x" : (this.canvasMousePosition.x) * this.scale,
   	"y" : (this.canvasMousePosition.y) * this.scale
   };
+
+	this.mouseInDrawZone.copy(this.scaledCanvasMousePosition);
+	if (this.mouseInDrawZone.x < 0) this.mouseInDrawZone.x = 0;
+	if (this.mouseInDrawZone.y < 0) this.mouseInDrawZone.y = 0;
+	if (this.mouseInDrawZone.x > this.drawZoneSize.x) this.mouseInDrawZone.x = this.drawZoneSize.x;
+	if (this.mouseInDrawZone.y > this.drawZoneSize.y) this.mouseInDrawZone.y = this.drawZoneSize.y;
+
+
+	this.mousePourcentageInDrawZone = this.mouseInDrawZone.getDivPoint(this.drawZoneSize);
+	
+
 };
 
 function setIntervalX(callback, delay, repetitions) {

@@ -33,7 +33,7 @@ exports.Ant = Class.create(libPE.PhysicElement, {
 		}	
 		// roam if required
 		if (ant.data.action == "move") {
-			var move = 1;				
+			var move = 4;				
 			ant.roam(move);
 		}	
 	},

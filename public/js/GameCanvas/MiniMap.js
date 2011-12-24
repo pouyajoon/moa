@@ -11,7 +11,7 @@ MiniMap.prototype.create = function() {
 
 
 MiniMap.prototype.hide = function() {
-  this.tag.fadeOut(500);
+  $("#gameMiniMap").fadeOut(500);
 };
 
 MiniMap.prototype.setBackgroundImage = function(backgroundImageSource) {

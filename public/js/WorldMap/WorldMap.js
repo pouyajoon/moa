@@ -24,6 +24,40 @@ function WorldMap(callback) {
     }    
   }.bind(this));
 
+
+
+  // when map is clicked on zoom 21
+  google.maps.event.addListener(map, 'click', function(event){
+    // zoom click can only be done on zoom 21
+    if (map.getZoom() != 21) return;
+    // get the tile & the middle
+    var tileCoordinate = myMoaMap.mouseClickToTileCoordinate(event.point);
+    var latLngMiddle = myMoaMap.tileCoordinateToMiddleLatLng(tileCoordinate);
+    // move to the middle of the tile
+    map.panTo(latLngMiddle);
+    // prepare the moving
+
+
+
+//    zoomInZonePrepare(tileCoordinate, latLngMiddle);
+    // set active Pan
+    var panToActive = true;
+    // zoom when moves end  
+    google.maps.event.addListener(map, 'idle', function(event){
+      if (!panToActive) return;
+      setTimeout(function(){
+        var _currentZone = {"x" : 1062511, "y" : 721645};      
+        var gameCanvas = new GameCanvas(worldMap, _socketManager, _currentZone, function(){});
+        gameCanvas.show();
+        _worldMap.hide();
+
+
+        panToActive = false;
+      }, 250);    
+    });    
+  }.bind(this));
+
+
 	this.TILE_SIZE = 256;
 
   

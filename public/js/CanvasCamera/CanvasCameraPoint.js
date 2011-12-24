@@ -19,6 +19,11 @@ Point.prototype.inverse = function() {
 };
 
 
+Point.prototype.getDivPoint = function(p) {
+	var newP = new Point();
+	newP.set(this.x / p.x, this.y / p.y);
+	return newP;
+};
 
 Point.prototype.multiply = function(p) {
 	this.x *= p;

@@ -61,8 +61,11 @@ require('./classes/game').launchGame(global.worldZones);
 
 
 var z = global.worldZones.loadZone("1062511_721645");
-var q = new lib_queen.Queen("first-Queen", new lib_position.Position(2000, 2000));
-z.ants.push(q);
+
+for (var i = 0; i < 20; ++i){
+  var q = new lib_queen.Queen("first-Queen", new lib_position.Position(2000, 2000));
+  z.ants.push(q);
+}
 
 //var sendingZones = null;
 
@@ -116,6 +119,16 @@ app.get('/zoom', function(req, res){
   });
 });
 
+app.get('/map', function(req, res){
+  
+  res.render("game/home.jade", {
+    layout:false, 
+    'title' : 'Master Of Ants',
+    server: 'http://' + webServer + '/',
+    drawMode : 'map'
+  });
+});
+
 
 app.get('/', libAuth.requireLogin, function(req, res){
   
@@ -123,7 +136,7 @@ app.get('/', libAuth.requireLogin, function(req, res){
     layout:false, 
     'title' : 'Master Of Ants',
     server: 'http://' + webServer + '/',
-    drawMode : 'zoom'
+    drawMode : 'map'
   });
 });
 

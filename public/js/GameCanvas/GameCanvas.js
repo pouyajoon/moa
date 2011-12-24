@@ -9,11 +9,13 @@ var GameCanvas = function(_worldMap, _socketManager, _tileCoordinate, callback){
   this.backgroundImage = new Image();
   this.backgroundImage.src = _mainImgUrl;
 
-  this.miniMap = new MiniMap('navigationRight');
+  //this.miniMap = new MiniMap('navigationRight');
+  //this.miniMap.hide();
 
-  this.miniMap.setBackgroundImage(_mainImgUrl);
+  
+  //this.miniMap.setBackgroundImage(_mainImgUrl);
 
-  console.log(_mainImgUrl);
+  //console.log(_mainImgUrl);
 
 
   this.ants = [];
@@ -31,34 +33,60 @@ var GameCanvas = function(_worldMap, _socketManager, _tileCoordinate, callback){
   this.ctx.canvas.width = $(this.canvas).width();
   this.ctx.canvas.height = $(this.canvas).height();  
 
-  this.camera = new CanvasCamera(this.canvas);
+  this.drawZoneSize = {"w" : 4096, "h" : 4096};
+
+  this.camera = new CanvasCamera(this.canvas, this.drawZoneSize);
   this.camera.scale = 6;
+  this.camera.scaleFactor = 0.25;
   callback(this);
 
-  this.tick();
+
+  setInterval(function(){
+    this.tick();  
+  }.bind(this), 1000 / 12);
+  
 }
 
 
-GameCanvas.prototype.tick = function() {
+GameCanvas.prototype.show = function() {
+  $("#mainScreen").fadeIn(250);
+};
 
-    requestAnimFrame(this.tick.bind(this));
+GameCanvas.prototype.tick = function() {
+    //requestAnimFrame(this.tick.bind(this));    
     this.camera.update();
     this.camera.debug();
     this.camera.clearContext(this.ctx);
 
-
     this.ctx.save();  
     this.camera.transform(this.ctx);
-
     this.ctx.strokeStyle = "#000";
-    this.ctx.strokeRect(0, 0, 4096, 4096);
+    this.ctx.strokeRect(0, 0, this.drawZoneSize.w, this.drawZoneSize.h);
 
-    this.ctx.drawImage(this.backgroundImage, 0, 0, 4096, 4096);
-    _.each(this.ants, function(ant){
-      //console.log(ant);
-      this.ctx.fillRect(ant.data.position.x, ant.data.position.y, ant.data.size.w, ant.data.size.h);
-    }.bind(this));
+    this.ctx.drawImage(this.backgroundImage, 0, 0, this.drawZoneSize.w, this.drawZoneSize.h);
 
+    this.drawAnts();
     
     this.ctx.restore();
+
+};
+
+GameCanvas.prototype.drawAnts = function() {
+    this.ctx.fillStyle = "rgb(60,60,60)";
+  _.each(this.ants, function(antD){
+    var ant = antD.data;
+    
+    var image = imgAIdle;
+    if (ant.action == "move") { image = imgAMove; }
+    //if (ant.action == "digg") { image = imgADigg; } 
+    // this.ctx.strokeRect(ant.position.x, ant.position.y, ant.size.w, ant.size.h); 
+    //this.ctx.drawImage(image, ant.position.x, ant.position.y, ant.size.w, ant.size.h); 
+    //if (isInDrawScreen(ant.position, this.camera)){
+      this.ctx.save();     
+      this.ctx.translate(ant.position.x + (ant.size.w / 2), ant.position.y + (ant.size.h / 2));
+      this.ctx.rotate(ant.angle * Math.PI / 180);      
+      this.ctx.drawImage(image, - ant.size.w / 2, - ant.size.h / 2, ant.size.w, ant.size.h); 
+      this.ctx.restore();    
+    //}
+  }.bind(this));
 };

@@ -1,5 +1,8 @@
 var WorldMapOptions = function(){
-  this.mapStyle = [ { featureType: "poi", stylers: [ { visibility: "off" } ] },{ featureType: "road", stylers: [ { visibility: "on" }, { hue: "#4cff00" } ] },{ featureType: "water", stylers: [ { lightness: -25 }, { hue: "#003bff" } ] },{ featureType: "poi.school", stylers: [ { visibility: "on" } ] },{ featureType: "poi.park", stylers: [ { visibility: "on" } ] },{ featureType: "road.highway", elementType: "labels", stylers: [ { visibility: "off" } ] } , { featureType: "poi.park", stylers: [ { visibility: "on" }, { hue: "#2bff00" }, { gamma: 0.31 } ] }];
+  //this.mapStyle = [ { featureType: "poi", stylers: [ { visibility: "off" } ] },{ featureType: "road", stylers: [ { visibility: "on" }, { hue: "#4cff00" } ] },{ featureType: "water", stylers: [ { lightness: -25 }, { hue: "#003bff" } ] },{ featureType: "poi.school", stylers: [ { visibility: "on" } ] },{ featureType: "poi.park", stylers: [ { visibility: "on" } ] },{ featureType: "road.highway", elementType: "labels", stylers: [ { visibility: "off" } ] } , { featureType: "poi.park", stylers: [ { visibility: "on" }, { hue: "#2bff00" }, { gamma: 0.31 } ] }];
+  
+  this.mapStyle = [ { featureType: "landscape.man_made", stylers: [ { visibility: "off" } ] },{ featureType: "water", stylers: [ { hue: "#0044ff" } ] },{ featureType: "landscape.natural", stylers: [ { gamma: 0.5 }, { hue: "#00ff3c" }, { saturation: 53 }, { lightness: -33 } ] },{ featureType: "poi.park", stylers: [ { hue: "#00ff44" }, { lightness: -40 } ] },{ featureType: "road", stylers: [ { gamma: 2.04 }, { saturation: 28 }, { hue: "#00b2ff" }, { lightness: -42 } ] },{ } ];
+
   this.options = {
     zoom: 15,
     maxZoom : 21,

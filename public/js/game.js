@@ -93,7 +93,7 @@ function drawBigMap(ctxBigMap, data) {
 	});
 }
 
-function isInDrawScreen(position){
+function isInDrawScreen(position, camera){
 	var antIsInX = (position.x >= camera.translateX) && (position.x <= camera.ScreenSize.w + camera.translateX);
 	var antIsInY = (position.y >= camera.translateY) && (position.y <= camera.ScreenSize.h + camera.translateY);
 	return antIsInX && antIsInY;

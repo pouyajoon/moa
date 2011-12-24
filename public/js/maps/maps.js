@@ -7,21 +7,14 @@ var worldSizeLng = 50;
 var worldSW = new google.maps.LatLng(48.835, 2.390);
 var worldNE = new google.maps.LatLng(worldSW.lat() + zoneSize * worldSizeLat, worldSW.lng() + zoneSize * worldSizeLng);	
 
-
-		
 var mapCanvasStub = {};
 var map = {};
 var myMoaMap = null;
 var chicago = new google.maps.LatLng(41.850033,-87.6500523);
 var ruetaine = new google.maps.LatLng(48.837890444364774, 2.392113855719572);
 
-
 var zones = Array();
-
-
 var allTiles = {};
-
-
 
 // create the zone Map overlay
 var ZonesMap = new ZonesMapType(new google.maps.Size(256, 256));

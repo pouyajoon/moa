@@ -37,10 +37,16 @@ function zoomInZonePrepare(tileCoordinate, latLngMiddle){
 // zoom in to a zone
 function zoomInZone(){
 //		drawMap = false;
+
+
+    _worldMap.hide();
+    var _currentZone = {"x" : 1062511, "y" : 721645};      
+    var gameCanvas = new GameCanvas(worldMap, _socketManager, _currentZone, function(){});
+
 					
-		$('#map_canvas').fadeOut(250);
-		$('#mainScreen').fadeIn(250);	
-		$('#navigationRight').fadeIn(500);
+		// $('#map_canvas').fadeOut(250);
+		// $('#mainScreen').fadeIn(250);	
+		// $('#navigationRight').fadeIn(500);
 }
 
 
