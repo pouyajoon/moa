@@ -3,3 +3,4 @@ node_modules
 .monitor
 .DS_Store
 *.sublime-project
+npm-debug.log
