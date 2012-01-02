@@ -6,7 +6,10 @@ body
 }
 
 
-
+#woaAll{
+	width:100%;
+	height:100%;
+}
 #setActions {
 	margin:0px;
 	padding:0px;
@@ -18,24 +21,16 @@ body
 	float:left;
 }
 
-#map_canvas{
-	height:800px;
-}
-
-.mapSize{
-	width:100%;
-	height:100%;
-}
-
 #mainScreen
 {
 	position:absolute;
 	top:40px;
 	left:0px;
 	/*background-color:rgb(244, 243, 240);*/
-	background-color:#5dd67a;
+	background-color:#999;
+	/*background-color:#5dd67a;*/
 	/*//rgb(244, 243, 00);*/
-
+	width:100%;
 	height:100%;
 	border:none;
 	background-repeat:no-repeat;

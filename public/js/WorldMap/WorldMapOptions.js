@@ -4,7 +4,7 @@ var WorldMapOptions = function(){
   this.mapStyle = [ { featureType: "landscape.man_made", stylers: [ { visibility: "off" } ] },{ featureType: "water", stylers: [ { hue: "#0044ff" } ] },{ featureType: "landscape.natural", stylers: [ { gamma: 0.5 }, { hue: "#00ff3c" }, { saturation: 53 }, { lightness: -33 } ] },{ featureType: "poi.park", stylers: [ { hue: "#00ff44" }, { lightness: -40 } ] },{ featureType: "road", stylers: [ { gamma: 2.04 }, { saturation: 28 }, { hue: "#00b2ff" }, { lightness: -42 } ] },{ } ];
 
   this.options = {
-    zoom: 15,
+    zoom: 21,
     maxZoom : 21,
     center: ruetaine,
     mapTypeId: google.maps.MapTypeId.ROADMAP,

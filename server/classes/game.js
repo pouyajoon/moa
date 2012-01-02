@@ -1,5 +1,6 @@
 var libWorldTools = require('./worldTools');
-
+var WorldZones = require ('./../maps/zones');
+var _ = require('underscore');
 
 //when it's action nodes time
 function playActionNodes(currentZone){
@@ -38,31 +39,52 @@ function playAnts(currentZone) {
 	}
 }
 
-
-exports.launchGame = function (){
-
-	setInterval(function(){
-		var shouldDelete = Array();
-		var shouldDeleteNode = Array();
-	
-		var startTime = (new Date()).getTime();//new Date(milliseconds);
-
-		for (var zID in global.worldZones.allZones){
-			var z = worldZones.allZones[zID];
-			playActionNodes(z);
-			playAnts(z);
+var moaSchema = require('../mongo/moaSchema.js');
 
 
-		}		
-		// delete the useless nodes
 
-	
-	
-		var now = (new Date()).getTime();
-		var processDuration = now - startTime;
-	//	console.log("Game processing time : " + processDuration.toString() + 'ms for ' +  global.ants.length + " ants");
-	
-	
-	}, global.gameTime);
+
+var Game = function(_server){
+	this.server = _server;
+	this.mongoose = require("mongoose");
+	this.mongoose.connect('mongodb://localhost/moa');   
+
+	this.worldZones = new WorldZones(this.mongoose);
+
+  this.server.io.sockets.on('connection', function (socket) {
+    console.log('client connected');
+    _.each(require('./game-sockets.js').ioActions, function(io_action){
+      socket.on(io_action.name, io_action.doAction.bind(socket));
+    });
+  });
 }
 
+Game.prototype.launch = function() {
+	this.gameInterval = setInterval(function(){
+		this.tick();
+	}.bind(this), global.gameTime);			
+};
+
+Game.prototype.tick = function() {
+	//console.log('tick');
+	var shouldDelete = Array();
+	var shouldDeleteNode = Array();
+
+	var startTime = (new Date()).getTime();//new Date(milliseconds);
+
+	for (var zID in this.worldZones.allZones){
+		var z = this.worldZones.allZones[zID];
+		playActionNodes(z);
+		playAnts(z);
+	}		
+	// delete the useless nodes
+	var now = (new Date()).getTime();
+	var processDuration = now - startTime;
+	//	console.log("Game processing time : " + processDuration.toString() + 'ms for ' +  global.ants.length + " ants");	
+};
+
+Game.prototype.saveToDB = function() {
+	this.worldZones.saveToDB();
+};
+
+module.exports = Game;

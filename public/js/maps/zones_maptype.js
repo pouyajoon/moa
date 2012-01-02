@@ -19,7 +19,7 @@ ZonesMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
 
 	// create box div
   var div = ownerDocument.createElement('DIV');
-//  div.innerHTML = coord.toString();
+  // div.innerHTML = coord.toString();
   div.style.width = this.tileSize.width + 'px';
   div.style.height = this.tileSize.height + 'px';
 	div.id = id;

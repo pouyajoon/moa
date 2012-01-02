@@ -1,7 +1,6 @@
-var SocketManager = function(_serverURL, callback){
+var SocketManager = function(_serverURL){
   this.serverURL = _serverURL;
   this.server = io.connect(this.serverURL);
-  callback(this.server);
 }
 
 SocketManager.prototype.emit = function(name, data) {
@@ -9,5 +8,5 @@ SocketManager.prototype.emit = function(name, data) {
 };
 
 SocketManager.prototype.on = function(name, callback) {
-  thie.server.on(name, callback);
+  this.server.on(name, callback);
 };

@@ -1,12 +1,12 @@
-var p = require ('prototype');
 
-exports.Position = Class.create({
-	initialize: function(_x, _y){
-		this.x = _x;
-		this.y = _y;
-	},
-	toString : function	()
-	{
-		return '{x:' + this.x + ', y:' + this.y + '}';
-	}
-});
+var Position = function(_x, _y){
+  this.x = _x;
+  this.y = _y;
+}
+
+Position.prototype.toString = function() {
+  return '{x:' + this.x + ', y:' + this.y + '}';
+}
+
+
+module.exports = Position;

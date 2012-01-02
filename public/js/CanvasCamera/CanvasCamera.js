@@ -25,10 +25,15 @@ var CanvasCamera = function(canvas, _drawZoneSize){
 	this.drawZoneSize = new Point();
 	this.drawZoneSize.set(_drawZoneSize.w, _drawZoneSize.h);
 
+  this.initialTranslate = new Point();
+
+  this.scaleNum = 5;
+
 	this.mouseInDrawZone = new Point();
 	this.mousePourcentageInDrawZone = new Point();
 
-	this.scaleFactor = 0.3;
+	this.scaleFactor = 0.05;
+  this.scaleMax = 5;
 
 	this.scaledCanvasMousePosition = {"x" : 0, "y" : 0};
 	this.mousePourcentagePosition = new Point();
@@ -64,7 +69,7 @@ CanvasCamera.prototype.clearContext = function(ctx) {
 };
 
 CanvasCamera.prototype.debug = function() {
-	return;
+  // return;
 	var output = [];
 	output.push("canvassize:", this.canvas.width, ",", this.canvas.height, '<br/>'); 
 	
@@ -81,6 +86,10 @@ CanvasCamera.prototype.debug = function() {
 	$("#debugger").html(output.join(''));
 };
 
+
+CanvasCamera.prototype.close = function() {
+  $(this.canvas).unbind('mousewheel');
+};
 
 CanvasCamera.prototype.focusOnMouseAfterMouseWheel = function(event) {
 
@@ -114,40 +123,43 @@ CanvasCamera.prototype.focusOnMouseAfterMouseWheel = function(event) {
 };
 
 CanvasCamera.prototype.mouseWheel = function(e, delta) {
-	var scaleNum = 1;
+  this.mouseMove(e);
 	if (delta > 0) {
 		setIntervalX(function(){
 			this.scaleUsingFactor(e, -1);
-		}.bind(this), 50, scaleNum);
+		}.bind(this), 50, this.scaleNum);
 	} 
 	else {
 		setIntervalX(function(){
 			this.scaleUsingFactor(e, 1);
-		}.bind(this), 50, scaleNum);						
+		}.bind(this), 50, this.scaleNum);						
 	}
+
 };
 
 CanvasCamera.prototype.scaleUsingFactor = function(event, factor) {
-	this.scale *= (this.scaleFactor * factor) + 1;
-	this.focusOnMouseAfterMouseWheel(event);
+  var newScale = ((this.scaleFactor * factor) + 1) * this.scale; 
+
+  if (newScale > this.scaleMax){
+    this.scale = this.scaleMax;
+    return this.scaleIsMoreThanScaleMax(this);
+  } else {
+    this.scale = newScale;  
+    this.focusOnMouseAfterMouseWheel(event);
+    return true;
+  }
 };
+
 
 CanvasCamera.prototype.transform = function(ctx) {
 	ctx.translate(this.translate.x, this.translate.y);
 	ctx.scale(1 / this.scale, 1 / this.scale);
-	//ctx.translate(this.translate.x, this.translate.y);
-	// ctx.translate(this.focusMouseTranslate.x, this.focusMouseTranslate.y);
-	// this.focusMouseTranslate.reset();
-
 };
 
 CanvasCamera.prototype.updateMousePositions = function(e) {
   this.mousePosition.set(e.pageX - this.canvas.offsetLeft, e.pageY - this.canvas.offsetTop);
-	this.canvasMousePosition = this.mousePosition.getSub(this.translate);
-
-
+	this.canvasMousePosition = this.mousePosition.getSubPoint(this.translate);
 	this.mousePourcentagePosition.set((this.canvasMousePosition.x + this.translate.x) / this.canvas.width, (this.canvasMousePosition.y + this.translate.y) / this.canvas.height);
-
 };
 
 
@@ -180,8 +192,6 @@ CanvasCamera.prototype.update = function() {
     this.tickStart = now.getTime();
   }
 
-
-
 	this.updateScaledSize();
   this.scaledCanvasMousePosition = {
   	"x" : (this.canvasMousePosition.x) * this.scale,
@@ -194,9 +204,7 @@ CanvasCamera.prototype.update = function() {
 	if (this.mouseInDrawZone.x > this.drawZoneSize.x) this.mouseInDrawZone.x = this.drawZoneSize.x;
 	if (this.mouseInDrawZone.y > this.drawZoneSize.y) this.mouseInDrawZone.y = this.drawZoneSize.y;
 
-
 	this.mousePourcentageInDrawZone = this.mouseInDrawZone.getDivPoint(this.drawZoneSize);
-	
 
 };
 

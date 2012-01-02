@@ -1,53 +1,42 @@
 var drawMap = true;
 
 
-// prepare the zone before zooming In
-function zoomInZonePrepare(tileCoordinate, latLngMiddle){
-	//if (myMoaMap == null) return;
+// // prepare the zone before zooming In
+// function zoomInZonePrepare(tileCoordinate, latLngMiddle){
+// 	//if (myMoaMap == null) return;
 
-	console.log(tileCoordinate, latLngMiddle);
-	var tileID = tileCoordinate.x + '_' + tileCoordinate.y;
-	// get the zone Img
-	var imgUrl = myMoaMap.getMapImageURL(latLngMiddle);
+// 	// console.log(tileCoordinate, latLngMiddle);
+// 	// var tileID = tileCoordinate.x + '_' + tileCoordinate.y;
+// 	// // get the zone Img
+// 	// var imgUrl = myMoaMap.getMapImageURL(latLngMiddle);
 	
-	// load the background Image of the Zone
-	var mainImgUrl = imgUrl + '&size=512x512&scale=2';
+// 	// // load the background Image of the Zone
+// 	// var mainImgUrl = imgUrl + '&size=512x512&scale=2';
 
-
-	
-
- 	//var camera = new Camera('#mai')
-	camera.bgImage = new Image();
-	camera.bgImage.src = mainImgUrl;
-	// load the bigMap image
-	var bigMapURL = imgUrl + '&size=256x256';
-	// set the bg image of bigMap
-	$('#bigMap').css('background-image', 'url("' + bigMapURL + '")');
-	$('#bigMap').css('background-size', '256px');		
-	//camera.initialize('#mainScreen');
+//  // 	//var camera = new Camera('#mai')
+// 	// camera.bgImage = new Image();
+// 	// camera.bgImage.src = mainImgUrl;
+// 	// // load the bigMap image
+// 	// var bigMapURL = imgUrl + '&size=256x256';
+// 	// // set the bg image of bigMap
+// 	// $('#bigMap').css('background-image', 'url("' + bigMapURL + '")');
+// 	// $('#bigMap').css('background-size', '256px');		
+// 	// //camera.initialize('#mainScreen');
 		
-	// set the tile coordinate
-	game.currentZone = tileID;
+// 	// set the tile coordinate
+// 	game.currentZone = tileID;
 	
-	// start reading the sockets
-	nodeserver.emit("getzone", tileID);		
+// 	// start reading the sockets
+// 	nodeserver.emit("getzone", tileID);		
 
-}
+// // }
 
-// zoom in to a zone
-function zoomInZone(){
-//		drawMap = false;
-
-
-    _worldMap.hide();
-    var _currentZone = {"x" : 1062511, "y" : 721645};      
-    var gameCanvas = new GameCanvas(worldMap, _socketManager, _currentZone, function(){});
-
-					
-		// $('#map_canvas').fadeOut(250);
-		// $('#mainScreen').fadeIn(250);	
-		// $('#navigationRight').fadeIn(500);
-}
+// // zoom in to a zone
+// function zoomInZone(){
+//   _worldMap.hide();
+//   var _currentZone = {"x" : 1062511, "y" : 721645};      
+//   var gameCanvas = new GameCanvas(worldMap, _socketManager, _currentZone, function(){});
+// }
 
 
 // zoom out from a zone

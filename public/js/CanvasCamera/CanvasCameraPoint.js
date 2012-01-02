@@ -19,6 +19,11 @@ Point.prototype.inverse = function() {
 };
 
 
+Point.prototype.div = function(divider) {
+	this.x /= divider;
+	this.y /= divider;
+};
+
 Point.prototype.getDivPoint = function(p) {
 	var newP = new Point();
 	newP.set(this.x / p.x, this.y / p.y);
@@ -50,6 +55,15 @@ Point.prototype.reset = function() {
 	this.y = 0;
 };
 
-Point.prototype.getSub = function(p) {
-	return {"x" : this.x - p.x, "y" : this.y - p.y};
+Point.prototype.getSubPoint = function(p) {
+	var newP = new Point();
+	newP.set(this.x, this.y);
+	newP.sub(p)
+	return newP;
+};
+
+Point.prototype.equals = function(p, distance) {
+	if (Math.abs(p.x - this.x) > distance) return false;
+	if (Math.abs(p.y - this.y) > distance) return false;
+	return true;
 };
