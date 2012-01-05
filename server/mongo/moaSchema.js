@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var ObjectId = Schema.ObjectId;
 
 exports.ZoneSchema = new Schema({
   "id" : {"type": String, "index": true},
@@ -9,9 +8,6 @@ exports.ZoneSchema = new Schema({
   "y" : String
 });
 
-exports.UserSchema = new Schema({
-  "email" : {"type": String, "index": true}
-});
 
 
 // function doMongoStuff(){

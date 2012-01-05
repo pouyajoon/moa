@@ -37,44 +37,39 @@ function WorldMap(callback) {
 
   // when map is clicked on zoom 21
   google.maps.event.addListener(this.map, 'click', function(event){
-    
     // zoom click can only be done on zoom 21
     if (this.map.getZoom() != 21) return;
     // get the tile & the middle
     var tileCoordinate = this.mouseClickToTileCoordinate(event.point);
     var tileCoordinatePos = this.mouseClickToCoordinateInTile(event.point);
     var latLngMiddle = this.tileCoordinateToMiddleLatLng(tileCoordinate);
-
     //console.log(event);
     //console.log(event.pixel.x % 256, event.pixel.y % 256);
     // move to the middle of the tile
     //this.map.panTo(latLngMiddle);
     //prepare the moving
-
-
     var zoneID = tileCoordinate.x + "_" + tileCoordinate.y;
     this.gameCanvas[zoneID] = new GameCanvas(this, tileCoordinate, function(){});
     this.gameCanvas[zoneID].camera.initialTranslate.set(event.pixel.x - tileCoordinatePos.x, event.pixel.y - tileCoordinatePos.y);
     this.gameCanvas[zoneID].camera.translate.copy(this.gameCanvas[zoneID].camera.initialTranslate);
     this.gameCanvas[zoneID].show(500);
-
     // setTimeout(function(){
     //   this.hide(0);  
     // }.bind(this), 250);        
   }.bind(this));
-
-
 	this.TILE_SIZE = 256;
-
-  
 }
+
+
 
 WorldMap.prototype.hide = function(_time) {
   $('#' + this.ID).fadeOut(_time);
 };
 
 
-WorldMap.prototype.show = function(_time) {
+WorldMap.prototype.show = function(_time, _tileCoordiante) {
+  //var _latLng = this.tileCoordinateToMiddleLatLng(_tileCoordiante);
+  //this.map.panTo(_latLng);
   $('#' + this.ID).fadeIn(_time);
 };
 
@@ -100,8 +95,6 @@ WorldMap.prototype.tileCoordinateToLatLng = function(tileCoordinate){
 	return latlng0;
 } 
 
-
-
 WorldMap.prototype.mouseClickToCoordinateInTile = function(point){
 
   var numTiles = 1 << this.map.getZoom();
@@ -112,8 +105,7 @@ WorldMap.prototype.mouseClickToCoordinateInTile = function(point){
 
   var tileCoordinatePos = new google.maps.Point(
       Math.floor(pixelCoordinate.x % this.TILE_SIZE),
-      Math.floor(pixelCoordinate.y % this.TILE_SIZE));      
-
+      Math.floor(pixelCoordinate.y % this.TILE_SIZE));
   return tileCoordinatePos;
 }
 

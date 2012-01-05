@@ -46,4 +46,30 @@ var io_disconnect = {"name" : "disconnect", "doAction" : function () {
   }
 };
 
-exports.ioActions = [io_ssetaction, io_createQueen, io_getzone, io_stopzone, io_disconnect];
+
+var User = require('./user');
+var io_subscribeUser = {"name" : "subscribe-user", "doAction" : function (_user, callback) {
+    try {
+      console.log('subscribe user', _user);
+      var u = new User(_user.email);
+      u.dbItem.password = _user.password;
+      u.saveToDB(function(err){
+        callback(err);
+      });
+    } catch (e){
+      console.log(e);
+    }
+  }
+};
+
+var io_userExists = {"name" : "user-exists", "doAction" : function (_email, callback) {
+    console.log('get user exists ', _email);    
+    var u = new User(_email);
+    u.exists(function(err, e){
+      if (err) {throw err;}
+      callback(null, e)
+    });
+  }
+};
+
+exports.ioActions = [io_ssetaction, io_createQueen, io_getzone, io_stopzone, io_disconnect, io_subscribeUser, io_userExists];

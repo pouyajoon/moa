@@ -20,7 +20,6 @@ var Zone = function(zID, _model, _dbItem) {
 Zone.prototype.saveToDB = function(){
   this.dbItem.save(function(err){
     if (err) {throw err;} 
-    //console.log("save after creating ", this.dbItem.id)
   }.bind(this));
 }
 

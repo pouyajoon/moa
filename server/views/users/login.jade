@@ -1,27 +1,36 @@
-h1 Hi, login or subscribe.
-h2 Login
-form(action='/users/authenticate', method='POST')
-	p
-		label(for='username') Username : 
-		input(type='text', name='username', id='username')
-	p
-		label(for='password') Password : 
-		input(type='password', name='password', id='password')		
-	p 
-		input(type='submit', value='Login')	
-//h2 Subscribe
-//form(action='/users/subscribe', method='POST')
-//	p
-//		label(for='nusername') User :
-//		input(type='text', name='nusername', id='nusername')
-//	p
-//		label(for='nemail') Email :
-//		input(type='text', name='nemail', id='nemail')	
-//	p
-//		label(for='npassword') Password :
-//		input(type='password', name='npassword', id='npassword')	
-//	p
-//		label(for='ncpassword') Confirm Password :
-//		input(type='password', name='ncpassword', id='ncpassword')			
-//	p 
-//		input(type='submit', value='Subscirbe')		
+!!! 5
+html
+  head
+    link(rel='stylesheet', href='/css/main.css')
+    script(type='text/javascript')
+      var MOA_SERVER = '#{server}';
+    script(type='text/javascript', src='/js/libs/jquery.min.js')
+    script(type='text/javascript', src='/socket.io/socket.io.js')    
+    script(type='text/javascript', src='/js/user/user.js')
+    script(type='text/javascript', src='/js/user/md5.js')
+    title= title
+  body
+    div#main
+      h1 Hi, Login or Subscribe.
+      h2 Login
+      form(action='/users/authenticate', method='POST')
+        p
+          label(for='email') Email : 
+          input(type='email', name='email', id='email')
+        p
+          label(for='password') Password : 
+          input(type='password', name='password', id='password')    
+        p 
+          input(type='submit', value='Login') 
+      h2 Subscribe
+      p
+        label(for='nemail') Email : 
+        input(type='email', class='ninput', name='nemail', id='nemail') 
+      p
+        label(for='npassword') Password : 
+        input(type='password', name='npassword', id='npassword')  
+      p
+        label(for='ncpassword') Confirm Password : 
+        input(type='password', name='ncpassword', id='ncpassword')      
+      p 
+        button(id='subscribe-user') Subscribe

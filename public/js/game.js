@@ -22,8 +22,6 @@ var game = {
 	'setAction' : 'none', 
 };
 
-
-
 function getAntInfo(ant){
 	var antInfo = ant.data('antInfo');
 	return 'Name : ' + antInfo.name + '<br/> \

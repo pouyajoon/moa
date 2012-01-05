@@ -69,7 +69,7 @@ CanvasCamera.prototype.clearContext = function(ctx) {
 };
 
 CanvasCamera.prototype.debug = function() {
-  // return;
+   return;
 	var output = [];
 	output.push("canvassize:", this.canvas.width, ",", this.canvas.height, '<br/>'); 
 	

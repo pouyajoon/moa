@@ -45,7 +45,8 @@ var GameCanvas = function(_worldMap, _tileCoordinate, callback){
     if (_camera.translate.equals(_camera.initialTranslate, 10)){
       _camera.translate = _camera.initialTranslate;
       console.log('close');
-      this.worldMap.show(0);      
+
+      this.worldMap.show(250, this.tileCoordinate);      
       this.close(250);    
       return false;  
     } else {

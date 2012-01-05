@@ -10,3 +10,13 @@
 	height:100%;
 
 }
+
+
+.error{
+  color:red;
+}
+
+.ninput-ok{
+  background-color:green;
+  color:white;
+}

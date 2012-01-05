@@ -14,12 +14,10 @@ function playActionNodes(currentZone){
 			deleteActionNodes.push(i);
 		}
 	}
-
 	for (var i = 0; i < deleteActionNodes.length; ++i){
 		currentZone.actionNodes.splice(deleteActionNodes[i], 1);
 	}		
 }
-
 
 // when it's ants time
 function playAnts(currentZone) {
@@ -32,17 +30,13 @@ function playAnts(currentZone) {
 		if (ant.shouldBeDeleted()){
 			deleteAnts.push(i);
 		}		
-	}
-	
+	}	
 	for (var i = 0; i < deleteAnts.length; ++i){
 		currentZone.ants.splice(deleteAnts[i], 1);
 	}
 }
 
 var moaSchema = require('../mongo/moaSchema.js');
-
-
-
 
 var Game = function(_server){
 	this.server = _server;
@@ -69,9 +63,7 @@ Game.prototype.tick = function() {
 	//console.log('tick');
 	var shouldDelete = Array();
 	var shouldDeleteNode = Array();
-
 	var startTime = (new Date()).getTime();//new Date(milliseconds);
-
 	for (var zID in this.worldZones.allZones){
 		var z = this.worldZones.allZones[zID];
 		playActionNodes(z);
