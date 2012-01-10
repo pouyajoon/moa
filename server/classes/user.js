@@ -29,11 +29,11 @@ User.prototype.saveToDB = function(callback){
 
 function hasOne(_model, _filter, _name, callback){
   _model.find(_filter, function(err, u){
-    if (err) callback(err, false);
-    if (u == null) callback(null, false);
-    if (u.length > 1) callback( _name + " exists too many times", false);
-    if (u.length == 0) callback(null, false);    
-    callback(null, true)
+    if (err) return callback(err, false);
+    if (u == null) return callback(null, false);
+    if (u.length > 1) return callback( _name + " exists too many times", false);
+    if (u.length == 0) return callback(null, false);    
+    return callback(null, true)
   });  
 }
 

@@ -11,12 +11,19 @@
 
 }
 
-
-.error{
-  color:red;
+#error, #info{
+  display: none;
+  opacity: 0.5;
+  -moz-opacity: 0.5;
+  filter:alpha(opacity=5);
+  font-size:1.5em;
+  padding:10px;
 }
 
-.ninput-ok{
-  background-color:green;
-  color:white;
+#error{
+  background-color: red;
+}
+
+#info{
+  background-color: green;
 }

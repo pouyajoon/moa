@@ -40,6 +40,7 @@ var moaSchema = require('../mongo/moaSchema.js');
 
 var Game = function(_server){
 	this.server = _server;
+
 	this.mongoose = require("mongoose");
 	this.mongoose.connect('mongodb://localhost/moa');   
 
@@ -47,10 +48,11 @@ var Game = function(_server){
 
   this.server.io.sockets.on('connection', function (socket) {
     console.log('client connected');
-    _.each(require('./game-sockets.js').ioActions, function(io_action){
+    //console.log('A socket with sessionID ', socket.handshake.sessionID, ' connected!');    
+    _.each(this.server.ioActions, function(io_action){
       socket.on(io_action.name, io_action.doAction.bind(socket));
-    });
-  });
+    }.bind(this));
+  }.bind(this));
 }
 
 Game.prototype.launch = function() {
