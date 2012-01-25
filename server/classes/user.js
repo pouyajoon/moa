@@ -1,8 +1,7 @@
 var mongoose = require('mongoose');
 require('mongoose-types').loadTypes(mongoose);
-var Schema = mongoose.Schema;
 
-var UserSchema = new Schema({
+var UserSchema = new mongoose.Schema({
   "email" : {"type": mongoose.SchemaTypes.Email, "index": {"unique" : true}}
   , "password" : {"type" : String}
 });

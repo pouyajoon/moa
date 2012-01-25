@@ -35,15 +35,16 @@ server.io.set('authorization', function (data, accept) {
 });
 
 
-
-
 var io_subscribeUser = {"name" : "user-subscribe", "doAction" : function (_user, callback) {
     try {
       console.log('subscribe user', _user);
       var u = new User(_user.email);
       u.dbItem.password = _user.password;
       u.saveToDB(function(err){
-        callback(err);
+        if (err) callback(err);
+
+        callback(null);
+        
       });
     } catch (e){
       console.log(e);

@@ -18,8 +18,7 @@ $(function(){
     if ($('#npassword').val() === $('#ncpassword').val()){
       return callback(null, true, "No Error.");  
     }
-    return callback(null, false, "Password and confirmation password don't match.");
-    
+    return callback(null, false, "Password and confirmation password don't match.");   
   });
 
   formValidator.addRule(ruleCheckPassword);
