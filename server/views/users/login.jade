@@ -23,7 +23,7 @@ html
         div#main
           h1 Hi, Login or Subscribe.
           h2 Login
-          form(action='/users/authenticate', method='POST', id='user-login', novalidate="novalidate")
+          form(action='/users/authenticate', method='POST', id='user-login')
             p
               label(for='email') Email : 
               input(type='email', name='email', id='email', required="required")
@@ -44,5 +44,4 @@ html
               label(for='ncpassword') Confirm Password : 
               input(type='password', name='ncpassword', id='ncpassword', required="required", equalto='#npassword')      
             p
-              input(type='submit', value='Subscribe') 
-              //button(id='subscribe-user') Subscribe
+              input(type='submit', value='Subscribe')

@@ -17,7 +17,7 @@ var io_createQueen = {"name" : "createQueen", "doAction" : function(_creationInf
 };  
 
 var io_getzone = {"name" : "getzone", "doAction" : function(zoneID){
-    global.moaGame.worldZones.loadZone(zoneID, null, function(err, zone){          
+    global.moaGame.worldZones.getZone(zoneID, function(err, zone){          
       this.zone = zone;
       this.interval  = setInterval(function () { 
         //console.log('emit zone : ', this.zone.dbItem.id);       

@@ -3,7 +3,7 @@
 var _ = require('underscore');
 
 var Setup = function(o){
-  var sys = require("sys");
+  var sys = require("util");
   var express = require('express');
   var MemoryStore = express.session.MemoryStore;
   this.sessionStore = new MemoryStore();

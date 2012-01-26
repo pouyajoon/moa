@@ -26,7 +26,7 @@ $(function(){
 
   formValidator.setOnSubmit(function(e){
     e.preventDefault();
-    $('#error').html('').hide();
+    $('#warn').html('').hide();
     $('#info').html('').hide();
     this.isValid(function(v){
       console.log('global validity :', v);
@@ -47,9 +47,9 @@ $(function(){
 
 
 
-var User = function(email, pwd){
+var User = function(email, password){
   this.email = email;
-  this.pwd = pwd;
+  this.password = password;
 }
 
 
@@ -57,11 +57,11 @@ User.prototype.subscribe = function(socket) {
   socket.emit('user-subscribe', this, function(err){
   if (err){
     console.error(err.message);
-    $("#error").append('<label> ' + "Impossible to add the user." + '</label>');    
+    $("#warn").append("Impossible to add the user.");
     $("#error").fadeIn(250);
     return;
   }
-  $("#info").html('<span class="info"> ' + "The user has been added, you can now login, your email has been copied into login box." + '</span>');
+  $("#info").html('The user has been added, you can now login, your email has been copied into login box.');
   $("#info").fadeIn(250);
   $('#email').val(this.email);
   $('#password').val('');

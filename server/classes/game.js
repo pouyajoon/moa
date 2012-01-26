@@ -36,23 +36,20 @@ function playAnts(currentZone) {
 	}
 }
 
-var moaSchema = require('../mongo/moaSchema.js');
-
 var Game = function(_server){
 	this.server = _server;
-
 	this.mongoose = require("mongoose");
 	this.mongoose.connect('mongodb://localhost/moa');   
 
 	this.worldZones = new WorldZones(this.mongoose);
 
-  this.server.io.sockets.on('connection', function (socket) {
-    console.log('client connected');
-    //console.log('A socket with sessionID ', socket.handshake.sessionID, ' connected!');    
-    _.each(this.server.ioActions, function(io_action){
-      socket.on(io_action.name, io_action.doAction.bind(socket));
-    }.bind(this));
-  }.bind(this));
+	this.server.io.sockets.on('connection', function (socket) {
+	console.log('client connected');
+	//console.log('A socket with sessionID ', socket.handshake.sessionID, ' connected!');    
+	_.each(this.server.ioActions, function(io_action){
+	  socket.on(io_action.name, io_action.doAction.bind(socket));
+	}.bind(this));
+	}.bind(this));
 }
 
 Game.prototype.launch = function() {

@@ -11,8 +11,11 @@
 
 }
 
-#error, #info{
-  display: none;
+#info{
+    display: none;
+}
+
+#warn, #info{
   opacity: 0.5;
   -moz-opacity: 0.5;
   filter:alpha(opacity=5);
@@ -20,7 +23,7 @@
   padding:10px;
 }
 
-#error{
+#warn{
   background-color: red;
 }
 

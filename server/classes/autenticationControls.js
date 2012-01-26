@@ -17,10 +17,12 @@ server.app.get('/users/logout', libAuth.requireLogin, function(req, res) {
 var parseCookie = require('connect').utils.parseCookie;
 server.io.set('authorization', function (data, accept) {
   if (data.headers.cookie) {
+      //console.log("authorization headers : ", data.headers.cookie);
       data.cookie = parseCookie(data.headers.cookie);
       data.sessionID = data.cookie['session.id'];
       server.sessionStore.get(data.sessionID, function (err, session) {
           if (err || !session) {
+              console.log("err: %s, session: %s", err, session);
               // if we cannot grab a session, turn down the connection
               return accept('Error : ' + data , false);
           } else {
@@ -38,8 +40,7 @@ server.io.set('authorization', function (data, accept) {
 var io_subscribeUser = {"name" : "user-subscribe", "doAction" : function (_user, callback) {
     try {
       console.log('subscribe user', _user);
-      var u = new User(_user.email);
-      u.dbItem.password = _user.password;
+      var u = new User(_user.email, _user.password);
       u.saveToDB(function(err){
         if (err) callback(err);
 
@@ -66,13 +67,9 @@ server.ioActions.push(io_subscribeUser);
 server.ioActions.push(io_userExists);
 
 server.app.post('/users/authenticate', function(req, res){
-	var body = qs.parse(req.rawBody);
-	console.log(body);
-	//var pwd = crypto.createHash('md5').update(body.password);
-	//console.log('pwd', pwd.digest("hex"));
-	var u = new User(body.email, body.pwd);
+	var u = new User(req.body.email , req.body.password);
 	u.existsWithPassword(function(err, exists){
-		console.log(err, exists);
+		console.log("user authentication: err: %s, userexists : %s, body: ", err, exists, req.body);
 		if (exists) {
 			req.session.user = u;
 			res.redirect('/');
