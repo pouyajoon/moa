@@ -17,20 +17,21 @@ var io_createQueen = {"name" : "createQueen", "doAction" : function(_creationInf
 };  
 
 var io_getzone = {"name" : "getzone", "doAction" : function(zoneID){
+  //console.log('get zone : ', zoneID); 
     global.moaGame.worldZones.getZone(zoneID, function(err, zone){          
       this.zone = zone;
       this.interval  = setInterval(function () { 
-        //console.log('emit zone : ', this.zone.dbItem.id);       
+        //console.log('emit zone : ', this.zone.data.id);       
         this.emit('zone', this.zone);            
       }.bind(this), 200);
     }.bind(this));      
-    console.log("send zone : ", zoneID);
+    //console.log("send zone : ", zoneID);
   }
 };
 
 var io_stopzone = {"name" : "stopzone", "doAction" : function(zone_id){
     this.get('sendingZones', function (err, z) {
-      console.log('stop sending : ', this.interval);
+      //console.log('stop sending : ', this.interval);
       clearInterval(this.interval);
     }.bind(this));
   }

@@ -1,11 +1,6 @@
 var mongoose = require('mongoose');
-require('mongoose-types').loadTypes(mongoose);
 
-var InventorySchema = new mongoose.Schema({
-	"userEmail" :  {"type", String, "required" : "true"}
-  // "email" : {"type": mongoose.SchemaTypes.Email, "index": {"unique" : true}}
-  // , "password" : {"type" : String}
-});
+var InventorySchema = require('../db/moaSchema.js').InventorySchema;
 var InventoryModel = mongoose.model('InventoryModel', InventorySchema);
 
 var Inventory = function(user){

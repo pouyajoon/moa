@@ -1,8 +1,6 @@
 var mongoose = require('mongoose');
 
-var ZoneSchema = new mongoose.Schema({
-  "id" : {"type": String, "index": true}
-});
+var ZoneSchema = require('../db/moaSchema.js').ZoneSchema;
 
 var ZoneModel = mongoose.model('ZoneModel', ZoneSchema);
 
@@ -13,12 +11,13 @@ var Zone = function(_zoneIdOrZoneData) {
 
   if (typeof _zoneIdOrZoneData === "string"){
     this.data.id = _zoneIdOrZoneData;
+    console.log("zone created : ", this.data.id);
   }
   if (typeof _zoneIdOrZoneData === "object"){
     this.data = _zoneIdOrZoneData;
+    console.log("zone loaded from db : ", this.data.id);
   }
   
-  console.log('new zone data type ', typeof _zoneIdOrZoneData, " : data : ", this.data);
   // if (typeof zID == undefined){
   //   console.log('zID is undefined');
   //   this.saveToDB();

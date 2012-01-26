@@ -37,16 +37,23 @@ server.io.set('authorization', function (data, accept) {
 });
 
 
+
+function subscribeUser(_user, callback){
+  console.log('subscribe user', _user);
+  var u = new User(_user.email, _user.password);
+  u.saveToDB(function(err){
+    if (err){
+      console.log("error while subscribeUser :", err);
+      callback(err);      
+    }
+    callback(null);        
+  });
+  //u.setInventory();
+}
+
 var io_subscribeUser = {"name" : "user-subscribe", "doAction" : function (_user, callback) {
     try {
-      console.log('subscribe user', _user);
-      var u = new User(_user.email, _user.password);
-      u.saveToDB(function(err){
-        if (err) callback(err);
-
-        callback(null);
-        
-      });
+      subscribeUser(_user, callback);     
     } catch (e){
       console.log(e);
     }
