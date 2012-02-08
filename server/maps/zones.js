@@ -1,4 +1,5 @@
 var Zone = require("./zone.js");
+var _ = require('underscore');
 
 
 var mongoose = require('mongoose');
@@ -9,10 +10,11 @@ var ZoneSchema = new mongoose.Schema({
 });
 var ZoneModel = mongoose.model('ZoneModel', ZoneSchema);
 
-var WorldZones = function(_mongoose){
+var WorldZones = function(_mongoose, callback){
 	this.allZones = {};
-	this.loadFromDB();
-	console.log('zones initiated');	
+	this.loadFromDB(function(err){		
+		return callback(err);
+	});
 };
 
 
@@ -27,11 +29,11 @@ WorldZones.prototype.createZone = function(zoneID, callback){
 WorldZones.prototype.getZone = function(zoneID, callback) {
 	//console.log("allZones", this.allZones);
 	var z = this.allZones[zoneID];
-	if (typeof z === "undefined") {
+	if (_.isUndefined(z)) {
 		return this.createZone(zoneID, callback);
 	}
 	else{
-		console.log("addZoneAlreadyExists", z);
+		//console.log("addZoneAlreadyExists", z);
 		return callback(null, z);	
 	}
 }
@@ -43,12 +45,17 @@ WorldZones.prototype.saveToDB = function() {
 	}
 };
 
-WorldZones.prototype.loadFromDB = function() {
+WorldZones.prototype.loadFromDB = function(callback) {
 	ZoneModel.find({}, function(err, zones){
 		zones.forEach(function(z){
+			//console.log("loading zone", z);
 			this.allZones[z.id] = new Zone(z);
-		}.bind(this));	
+		}.bind(this));
+		console.log('zones loaded from db');	
+		return callback(null);
 	}.bind(this));
+	// console.log('no item');	
+	// return callback("no item");
 };
 
 

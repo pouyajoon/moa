@@ -19,29 +19,13 @@ function playActionNodes(currentZone){
 	}		
 }
 
-// when it's ants time
-function playAnts(currentZone) {
-	var deleteAnts = Array();
-	
-	for (var i = 0; i < currentZone.ants.length; ++i){
-		var ant = currentZone.ants[i];
-		if (ant == null) continue;
-		ant.play(currentZone);
-		if (ant.shouldBeDeleted()){
-			deleteAnts.push(i);
-		}		
-	}	
-	for (var i = 0; i < deleteAnts.length; ++i){
-		currentZone.ants.splice(deleteAnts[i], 1);
-	}
-}
 
-var Game = function(_server){
+
+var Game = function(_server, callback){
+	console.log('creating game');
 	this.server = _server;
 	this.mongoose = require("mongoose");
 	this.mongoose.connect('mongodb://localhost/moa');   
-
-	this.worldZones = new WorldZones(this.mongoose);
 
 	this.server.io.sockets.on('connection', function (socket) {
 	console.log('client connected');
@@ -49,6 +33,11 @@ var Game = function(_server){
 	_.each(this.server.ioActions, function(io_action){
 	  socket.on(io_action.name, io_action.doAction.bind(socket));
 	}.bind(this));
+	}.bind(this));
+
+	this.worldZones = new WorldZones(this.mongoose, function(err){
+		//if (err) throw "error:" + err;
+		return callback(null, this);
 	}.bind(this));
 }
 
@@ -65,8 +54,8 @@ Game.prototype.tick = function() {
 	var startTime = (new Date()).getTime();//new Date(milliseconds);
 	for (var zID in this.worldZones.allZones){
 		var z = this.worldZones.allZones[zID];
-		playActionNodes(z);
-		playAnts(z);
+		//playActionNodes(z);
+		z.playAnts();
 	}		
 	// delete the useless nodes
 	var now = (new Date()).getTime();

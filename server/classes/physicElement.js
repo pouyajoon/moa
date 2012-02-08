@@ -1,8 +1,14 @@
+var mongoose = require('mongoose');
+
+var PhysicElementSchema = require('../db/moaSchema.js').PhysicElementSchema;
+var PhysicElementModel = mongoose.model('PhysicElementModel', PhysicElementSchema);
 
 var PhysicElement = function(_position, _size){
-	  this.position = _position;
-	  this.uniqueID = global.uniqueID;
-		this.size = _size;    
+	  //require('./heritate').heritate(this, PhysicElement, require("../db/DataBaseItem"), new PhysicElementModel());
+	  this.data = {};
+	  this.data.position = _position;
+	  this.data.size = _size;    
+	  this.uniqueID = global.uniqueID;		
 	  global.uniqueID++;	
 }
 
@@ -18,7 +24,7 @@ PhysicElement.prototype.getBox = function(_position, _size){
 }
 
 PhysicElement.prototype.getContactBox = function() {
-	return this.getBox(this.position, this.size);
+	return this.getBox(this.data.position, this.data.size);
 }
 
 module.exports = PhysicElement;

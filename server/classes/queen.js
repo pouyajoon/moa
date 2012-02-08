@@ -2,6 +2,8 @@ var Ant = require ('./ant');
 
 var Queen = function(_name, _position) {
   require('./heritate').heritate(this, Queen, Ant, _position, {"w" : 50, "h" : 50});
+
+  
   this.name = _name;
 }
 

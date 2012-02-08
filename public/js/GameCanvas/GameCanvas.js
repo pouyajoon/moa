@@ -19,7 +19,7 @@ var GameCanvas = function(_worldMap, _tileCoordinate, callback){
   this.ants = [];
   this.worldMap.socketManager.emit("getzone", this.tileCoordinate.x + "_" + this.tileCoordinate.y);
   this.worldMap.socketManager.on('zone', function (dataZone) {
-    //console.log('ants', dataZone.ants);
+    console.log('ants', dataZone.ants);
     this.ants = dataZone.ants;
   }.bind(this));
 
@@ -108,15 +108,15 @@ GameCanvas.prototype.drawAnts = function() {
   _.each(this.ants, function(ant){
 
     var image = imgAIdle;
-    if (ant.action == "move") { image = imgAMove; }
+    if (ant.data.action == "move") { image = imgAMove; }
     //if (ant.action == "digg") { image = imgADigg; } 
     // this.ctx.strokeRect(ant.position.x, ant.position.y, ant.size.w, ant.size.h); 
     //this.ctx.drawImage(image, ant.position.x, ant.position.y, ant.size.w, ant.size.h); 
     //if (isInDrawScreen(ant.position, this.camera)){
     this.ctx.save();     
-    this.ctx.translate(ant.position.x + (ant.size.w / 2), ant.position.y + (ant.size.h / 2));
-    this.ctx.rotate(ant.angle * Math.PI / 180);      
-    this.ctx.drawImage(image, - ant.size.w / 2, - ant.size.h / 2, ant.size.w, ant.size.h); 
+    this.ctx.translate(ant.data.position.x + (ant.data.size.w / 2), ant.data.position.y + (ant.data.size.h / 2));
+    this.ctx.rotate(ant.data.angle * Math.PI / 180);      
+    this.ctx.drawImage(image, - ant.data.size.w / 2, - ant.data.size.h / 2, ant.data.size.w, ant.data.size.h); 
     this.ctx.restore();    
     //}
   }.bind(this));

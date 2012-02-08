@@ -22,7 +22,7 @@ var io_getzone = {"name" : "getzone", "doAction" : function(zoneID){
       this.zone = zone;
       this.interval  = setInterval(function () { 
         //console.log('emit zone : ', this.zone.data.id);       
-        this.emit('zone', this.zone);            
+        this.emit('zone', this.zone); 
       }.bind(this), 200);
     }.bind(this));      
     //console.log("send zone : ", zoneID);
