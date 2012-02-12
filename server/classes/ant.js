@@ -6,18 +6,21 @@ var mongoose = require('mongoose');
 var AntSchema = require('../db/moaSchema.js').AntSchema;
 var AntModel = mongoose.model('AntModel', AntSchema);
 
-var Ant = function(_position, _size){
+var Ant = function(_position, _size, callback){
   //require('./heritate').heritate(this, Ant, PhysicElement, _position, _size);
-  require('./heritate').heritate(this, Ant, require("../db/DataBaseItem"), new AntModel());
+  require('./heritate').heritate(this, Ant, require("../db/DataBaseItem"), AntModel);
   this.data.position = {"x" : _position.x, "y" : _position.y};
   this.data.size = _size;
   this.data.action = 'move';
   this.data.angle = 0;
   this.data.direction = 0;
-  //this.data.smellDistance = 100;
-  
+  //this.data.smellDistance = 100;  
   this.colony = null;
-  
+
+  this.saveToDB(function(err, _ant){
+  	if (err) throw err;
+  	return callback(null, _ant);
+  }.bind(this));
 }
 
 

@@ -1,17 +1,23 @@
-var mongoose = require('mongoose');
+var moaSchema = require('../db/moaSchema');
+var Ant = require('./ant');
 
-var InventorySchema = require('../db/moaSchema.js').InventorySchema;
-var InventoryModel = mongoose.model('InventoryModel', InventorySchema);
-
-var Inventory = function(user){
-  require('./heritate').heritate(this, Inventory, require("../db/DataBaseItem"), new InventoryModel());
-  this.user = user;
+var Inventory = function(callback){
+  require('./heritate').heritate(this, Inventory, require("../db/DataBaseItem"), moaSchema.InventoryModel);
   this.ants = [];
+  //this.saveToDB(callback);
+
+	new Ant({"x" : 0, "y" : 0}, {"w" : 50, "h" : 50}, function(err, _ant){
+    this.addAnt(_ant);
+    this.saveToDB(callback);
+  }.bind(this));
 }
 
 Inventory.prototype.addAnt = function(ant) {
-	this.ants.push(ant);
-	this.data.ants.push(ant.data);
+	this.addExternalItem("ants", ant);
+};
+
+Inventory.prototype.removeAnt = function(_antIndex){
+	this.removeExternalItem("ants", _antIndex);
 };
 
 module.exports = Inventory;

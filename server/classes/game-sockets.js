@@ -21,11 +21,11 @@ var io_getzone = {"name" : "getzone", "doAction" : function(zoneID){
     global.moaGame.worldZones.getZone(zoneID, function(err, zone){          
       this.zone = zone;
       this.interval  = setInterval(function () { 
-        //console.log('emit zone : ', this.zone.data.id);       
+        console.log('emit zone : ', this.zone.data.id);       
         this.emit('zone', this.zone); 
       }.bind(this), 200);
     }.bind(this));      
-    //console.log("send zone : ", zoneID);
+    console.log("send zone : ", zoneID);
   }
 };
 
@@ -40,7 +40,7 @@ var io_stopzone = {"name" : "stopzone", "doAction" : function(zone_id){
 var io_disconnect = {"name" : "disconnect", "doAction" : function () {
     try {
       clearInterval(this.interval);
-      console.log('client left');
+      console.log('client left, bye');
     } catch (e){
       console.log(e);
     }

@@ -1,7 +1,3 @@
-var mongoose = require('mongoose');
-
-var PhysicElementSchema = require('../db/moaSchema.js').PhysicElementSchema;
-var PhysicElementModel = mongoose.model('PhysicElementModel', PhysicElementSchema);
 
 var PhysicElement = function(_position, _size){
 	  //require('./heritate').heritate(this, PhysicElement, require("../db/DataBaseItem"), new PhysicElementModel());

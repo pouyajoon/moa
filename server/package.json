@@ -1,7 +1,8 @@
 {
-  "name" : "masterofants",
-  "version" : "0.0.1",
-  "dependencies" : {
+  "name" : "masterofants"
+  , "author": "pouya <pouyajoon@gmail.com>"
+  , "version" : "0.0.1"
+  , "dependencies" : {
     "express" : ">=2.4.6",
     "jade" : ">= 0.16.2",
     "socket.io" : ">= 0.8.7",
@@ -10,7 +11,15 @@
     "mongoose" : ">= 1.0.0",
     "mongoose-types" : ">= 1.0.0",
     "connect" : ">= 1.0.0",
-    "step" : ">= 0.0.1"
-  },
-  "private" : true
+    "step" : ">= 0.0.1",
+    "websocket-client" : ">= 0.0.1",
+    "socket.io-client" : ">= 0.0.1"
+  }
+  , "scripts": {
+    "test": "make test"
+  }  
+  , "devDependencies": {
+    "mocha": "0.3.x"
+  }
+  , "private" : true
 }

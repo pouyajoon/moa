@@ -1,13 +1,7 @@
-var mongoose = require('mongoose');
-
-var ZoneSchema = require('../db/moaSchema.js').ZoneSchema;
-
-var ZoneModel = mongoose.model('ZoneModel', ZoneSchema);
-
-
+var moaSchema = require('../db/moaSchema.js');
 
 var Zone = function(_zoneIdOrZoneData) {
-  require('./../classes/heritate').heritate(this, Zone, require("../db/DataBaseItem"), new ZoneModel());
+  require('./../classes/heritate').heritate(this, Zone, require("../db/DataBaseItem"), moaSchema.ZoneModel);
 
   if (typeof _zoneIdOrZoneData === "string"){
     this.data.id = _zoneIdOrZoneData;
@@ -41,14 +35,16 @@ Zone.prototype.playAnts = function() {
 }
 
 Zone.prototype.removeAnt = function(_antIndex) {
-  var dbID = this.ants[_antIndex].data._id;
-  this.ants.splice(_antIndex, 1);
-  this.data.ants.remove(dbID);
+  this.removeExternalItem("ants", _antIndex);
+  // var dbID = this.ants[_antIndex].data._id;
+  // this.ants.splice(_antIndex, 1);
+  // this.data.ants.remove(dbID);
 };
 
 Zone.prototype.addAnt = function(ant) {
-  this.ants.push(ant);
-  this.data.ants.push(ant.data);
+  this.addExternalItem("ants", ant);
+  // this.ants.push(ant);
+  // this.data.ants.push(ant.data);
 };
 
 module.exports = Zone;

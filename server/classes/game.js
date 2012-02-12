@@ -19,8 +19,6 @@ function playActionNodes(currentZone){
 	}		
 }
 
-
-
 var Game = function(_server, callback){
 	console.log('creating game');
 	this.server = _server;
@@ -28,7 +26,7 @@ var Game = function(_server, callback){
 	this.mongoose.connect('mongodb://localhost/moa');   
 
 	this.server.io.sockets.on('connection', function (socket) {
-	console.log('client connected');
+	console.log('client connected, hi');
 	//console.log('A socket with sessionID ', socket.handshake.sessionID, ' connected!');    
 	_.each(this.server.ioActions, function(io_action){
 	  socket.on(io_action.name, io_action.doAction.bind(socket));
