@@ -1,5 +1,10 @@
 $(function(){
   var socket = io.connect(MOA_SERVER);
+
+  socket.on('connect', function(data){
+    console.log('connected to socket io ', data);
+  });
+
   var formValidator = new FormValidation("#user-subscribe");
 
   var ruleEmailExists = new FormRule("nemail", function(value, callback){

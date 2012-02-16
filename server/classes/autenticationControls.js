@@ -15,10 +15,10 @@ module.exports = function(server){
   });
 
   var parseCookie = require('connect').utils.parseCookie;
+
+  console.log("setup authorization");
   server.io.set('authorization', function (data, accept) {
-    if (data.query.noauth == "true"){
-      return accept(null, true);
-    }
+    //return accept(null, true);
     console.log("authorization : ", data);
     if (data.headers.cookie) {
         //console.log("authorization headers : ", data.headers.cookie);

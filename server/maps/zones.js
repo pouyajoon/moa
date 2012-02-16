@@ -2,15 +2,16 @@ var Zone = require("./zone.js");
 var _ = require('underscore');
 
 
-var mongoose = require('mongoose');
-var ZoneSchema = new mongoose.Schema({
-  "id" : {"type": String, "index": true},
-  "x" : String,
-  "y" : String
-});
-var ZoneModel = mongoose.model('ZoneModel', ZoneSchema);
+// var mongoose = require('mongoose');
+// var ZoneSchema = new mongoose.Schema({
+//   "id" : {"type": String, "index": true},
+//   "x" : String,
+//   "y" : String
+// });
+// var ZoneModel = mongoose.model('ZoneModel', ZoneSchema);
+var ZoneModel = require('../db/moaSchema').ZoneModel;
 
-var WorldZones = function(_mongoose, callback){
+var WorldZones = function(callback){
 	this.allZones = {};
 	this.loadFromDB(function(err){		
 		return callback(err);
@@ -51,7 +52,7 @@ WorldZones.prototype.loadFromDB = function(callback) {
 			//console.log("loading zone", z);
 			this.allZones[z.id] = new Zone(z);
 		}.bind(this));
-		console.log('zones loaded from db');	
+		//console.log('zones loaded from db');	
 		return callback(null);
 	}.bind(this));
 	// console.log('no item');	

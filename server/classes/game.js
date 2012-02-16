@@ -20,20 +20,22 @@ function playActionNodes(currentZone){
 }
 
 var Game = function(_server, callback){
-	console.log('creating game');
+	//console.log('creating game');
 	this.server = _server;
-	this.mongoose = require("mongoose");
-	this.mongoose.connect('mongodb://localhost/moa');   
+
 
 	this.server.io.sockets.on('connection', function (socket) {
-	console.log('client connected, hi');
-	//console.log('A socket with sessionID ', socket.handshake.sessionID, ' connected!');    
-	_.each(this.server.ioActions, function(io_action){
-	  socket.on(io_action.name, io_action.doAction.bind(socket));
-	}.bind(this));
+		console.log('client connected, hi');
+		//console.log('A socket with sessionID ', socket.handshake.sessionID, ' connected!');    
+		_.each(this.server.ioActions, function(io_action){
+		  socket.on(io_action.name, io_action.doAction.bind(socket));
+		}.bind(this));
 	}.bind(this));
 
-	this.worldZones = new WorldZones(this.mongoose, function(err){
+
+
+	this.worldZones = new WorldZones(function(err){
+		//console.log("zones loaded");
 		//if (err) throw "error:" + err;
 		return callback(null, this);
 	}.bind(this));

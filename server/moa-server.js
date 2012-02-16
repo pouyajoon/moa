@@ -1,4 +1,4 @@
-var C_RED   = '\033[31m';
+  var C_RED   = '\033[31m';
 var C_BLUE  = '\033[34m';
 var C_RESET = '\033[0m';
 
@@ -35,13 +35,18 @@ new Server({
     throw err; 
   }
   //console.log("server loaded");
-  require ('./classes/autenticationControls')(_server);
+
 
   _server.setRoutes();
 
   global.uniqueID = 0;
   global.gameTime = 200;
   global.worldSize = {'x' : 4096, 'y' : 4096};
+
+
+
+  var mongoose = require("mongoose");
+  mongoose.connect('mongodb://localhost/moa');   
 
   var Game = require('./classes/game');
   setTimeout(function(){

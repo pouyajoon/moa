@@ -11,11 +11,9 @@ var Server = function(options, callback){
     //console.log('Caught exception: ', err);
     if (err.code == "EADDRINUSE"){
       return callback(err, null);    
-    }
-    
+    }    
   });
 
-  var sys = require("util");
   var express = require('express');
   var MemoryStore = express.session.MemoryStore;
   this.sessionStore = new MemoryStore();
@@ -23,8 +21,8 @@ var Server = function(options, callback){
 
   this.app = express.createServer();
   
-  this.mongoose = require('mongoose');
-  this.db = this.mongoose.connect("mongodb://localhost/moa");
+  // this.mongoose = require('mongoose');
+  // this.db = this.mongoose.connect("mongodb://localhost/moa");
   
   this.options = options;
   this.paths = this.options.paths;
@@ -53,9 +51,9 @@ var Server = function(options, callback){
       this.webServer = "pouya:" + this.options.port;
     }.bind(this));
 
-    
+    //, { log: false }
     this.io = require("socket.io").listen(this.app);
-    this.io.set('log level', 1);
+    this.io.set('log level', 3);
 
     this.app.dynamicHelpers({
       'session' : function(req, res) {
@@ -67,6 +65,9 @@ var Server = function(options, callback){
     });
 
     this.ioActions = require('./../classes/game-sockets.js').ioActions;
+
+    require ('./../classes/autenticationControls')(this);
+
     return callback(null, this);
   }.bind(this));
 
