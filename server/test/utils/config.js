@@ -21,6 +21,9 @@ exports.userInfo = {
 	"password" : "test"
 }
 
+exports.socketIO = {
+	"options" : {'force new connection': true}
+}
 
 var assert = require('assert');
 

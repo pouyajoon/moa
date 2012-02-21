@@ -25,14 +25,24 @@ var Game = function(_server, callback){
 
 	//console.log('creating game');
 	this.server = _server;
+	this.sockets = {};
 
 	this.server.io.sockets.on('connection', function (socket) {
-		//console.log('client connected, hi');
-		//console.log('A socket with sessionID ', socket.handshake.sessionID, ' connected!');    
+		var sID = socket.store.id;
+		//console.log("connected : " + sID);
+		this.sockets[sID] = socket;
 		_.each(this.server.ioActions, function(io_action){
 		  socket.on(io_action.name, io_action.doAction.bind(socket));
 		}.bind(this));
+	  socket.on('disconnect', function () {
+	  	//console.log("disconnected : " + sID);
+	    delete this.sockets[sID];
+	    //console.log(this.sockets);
+	  }.bind(this));
+
 	}.bind(this));
+
+
 
 	this.worldZones = new WorldZones(function(err){
 		//if (err) throw "error:" + err;
@@ -49,6 +59,13 @@ exports.setupGame = function(options, callback){
   });
 }
 
+Game.prototype.close = function() {
+	for(var sID in this.sockets){
+		var socket = this.sockets[sID];
+		this.server.io.sockets.emit('disconnect');
+	}
+	this.server.close();
+};
 
 Game.prototype.launch = function() {
 	this.gameInterval = setInterval(function(){

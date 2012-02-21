@@ -9,9 +9,13 @@ var CONFIG = require('./utils/config');
 
 describe('Game', function() {
 
-	beforeEach(function(){
-		require('./utils/db').loadDB();
+	beforeEach(function(){		
+		this.db = require('./utils/db').loadDB();
 		require('./utils/db').clearDB();
+	});
+
+	afterEach(function(){
+		require('./utils/db').closeDB(this.db);
 	});
 
 	it('start server', function(done){
@@ -38,32 +42,28 @@ describe('Game', function() {
 		});
 	});	
 
-
-	it('get http session id from cookie ', function(done){
+	function getSessionID(currentNumber, maxNumber, done, next){
 		exports.getHTTPPage(function(_server, httpClient, response, cookies){
 			should.exist(cookies["session.id"], "session id should be set in cookies");
 			_server.close();
-			done();
-		});
+			CONFIG.repeat(currentNumber, maxNumber, done, next);
+		});			
+	}
+
+	it('get http session id from cookie ', function(done){
+		CONFIG.repeat(0, 0, done, getSessionID);
 	});	
 
-
-	it('get http session id from cookie 200 ', function(done){
-		CONFIG.repeat(0, 200, done, function(currentNumber, maxNumber, onFinish, next){
-			exports.getHTTPPage(function(_server, httpClient, response, cookies){
-				should.exist(cookies["session.id"], "session id should be set in cookies");
-				response.destroy();
-				_server.close();
-				CONFIG.repeat(currentNumber, maxNumber, onFinish, next);
-			});			
-		});
+	it('get http session id with cookie 200 times', function(done){
+		CONFIG.repeat(0, 200, done, getSessionID);
 	});		
 
 	it('create game', function(done) {
 		exports.setupGame(CONFIG.serverConfiguration.options, function(err, _server, _game){
 			should.exist(_server, "server is null");
 			should.exist(_game, "game is null");
-			_server.close();
+
+			_game.close();
 			done();			
 		});
   });
@@ -73,6 +73,7 @@ describe('Game', function() {
 exports.getHTTPPage = function(callback){
 	new Server(CONFIG.serverConfiguration.options, function(err, _server){
 		doHTTPGetRequest(CONFIG.http.sessionUrl, CONFIG.http.options, function(httpClient, response, cookies){
+			//console.log("headers", response.headers);
 			callback(_server, httpClient, response, cookies);
 		});
 	});	
@@ -101,15 +102,17 @@ exports.setupGame = function(options, callback){
 }
 
 function doHTTPGetRequest(_url, _options, callback){
-
 	var httpClient = http.createClient(CONFIG.serverConfiguration.options.port, CONFIG.serverConfiguration.host); 
 	var request = httpClient.request('GET', _url, _options);
-	request.end();
 	request.on('response', function (response) {
+		response.on('end', function() {
+				console.log("http response end");
+		});
 		var cookies = getCookies(response.headers);
 		response.setEncoding('utf8');
 		callback(httpClient, response, cookies);
 	});
+	request.end();
 }
 
 function getCookies(_headers){

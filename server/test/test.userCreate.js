@@ -7,9 +7,12 @@ var CONFIG = require('./utils/config');
 describe('User', function() {
 
 	beforeEach(function(){
-		require('./utils/db').loadDB();
+		this.db = require('./utils/db').loadDB();
 		require('./utils/db').clearDB();
-		CONFIG.serverConfiguration.options.port++;
+	});
+
+	afterEach(function(){
+		require('./utils/db').closeDB(this.db);
 	});
 
 	describe("Creation", function(){
@@ -45,6 +48,7 @@ describe('User', function() {
 	 	  	});
 
 	 	  	_socketClient.on('disconnect', function(){
+	 	  		console.log('socket client disconnected');
 					_server.close();
 					done();	 	  		
 	 	  	});

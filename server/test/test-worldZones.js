@@ -7,9 +7,14 @@ var CONFIG = require('./utils/config');
 
 describe('WorldZones', function() {
 
+
 	beforeEach(function(){
-		require('./utils/db').loadDB();
+		this.db = require('./utils/db').loadDB();
 		require('./utils/db').clearDB();
+	});
+
+	afterEach(function(){
+		require('./utils/db').closeDB(this.db);
 	});
 
 
