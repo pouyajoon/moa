@@ -14,8 +14,8 @@ var ZoneModel = require('../db/moaSchema').ZoneModel;
 var WorldZones = function(callback){
 	this.allZones = {};
 	this.loadFromDB(function(err){		
-		return callback(err);
-	});
+		return callback(err, this);
+	}.bind(this));
 };
 
 
@@ -47,16 +47,32 @@ WorldZones.prototype.saveToDB = function() {
 };
 
 WorldZones.prototype.loadFromDB = function(callback) {
-	ZoneModel.find({}, function(err, zones){
-		zones.forEach(function(z){
-			//console.log("loading zone", z);
-			this.allZones[z.id] = new Zone(z);
-		}.bind(this));
-		//console.log('zones loaded from db');	
-		return callback(null);
-	}.bind(this));
-	// console.log('no item');	
-	// return callback("no item");
+	// var mongoose = require('mongoose');
+	// mongoose.connect("mongodb://localhost/moaTest");
+
+	// console.log("load from db ", ZoneModel);
+	// var z = new ZoneModel();
+	// z.id = "a";
+	// z.save(function(err){
+	// 	console.log("save", err);
+	// });
+
+	ZoneModel.count({}, function(err, count){
+		if (err) callback(err);		
+		if (count > 0){
+			ZoneModel.find({}, function(err, zones){		
+//				console.log('find count zones', zones, err);			
+					zones.forEach(function(z){
+						this.allZones[z.id] = new Zone(z);
+					}.bind(this));
+	//				console.log('zones loaded from db');	
+					return callback(null);
+				}.bind(this));			
+		} else {
+//			console.log('no item');
+			return callback(null);				
+		}
+	});
 };
 
 

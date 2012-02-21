@@ -5,11 +5,11 @@ var Zone = function(_zoneIdOrZoneData) {
 
   if (typeof _zoneIdOrZoneData === "string"){
     this.data.id = _zoneIdOrZoneData;
-    console.log("zone created : ", this.data.id);
+    //console.log("zone created : ", this.data.id);
   }
   if (typeof _zoneIdOrZoneData === "object"){
     this.data = _zoneIdOrZoneData;
-    console.log("zone loaded from db : ", this.data.id);
+    //console.log("zone loaded from db : ", this.data.id);
   }
   
   this.ants = new Array();

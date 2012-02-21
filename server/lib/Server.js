@@ -5,18 +5,19 @@ var _ = require('underscore');
 
 
 
-
 var Server = function(options, callback){
-  process.on('uncaughtException', function (err) {
-    //console.log('Caught exception: ', err);
-    if (err.code == "EADDRINUSE"){
-      return callback(err, null);    
-    }    
-  });
+  // process.on('uncaughtException', function (err) {
+  //   console.log('Caught exception: ', err);  
+  //   return callback(err, null); 
+  //   // if (err.code == "EADDRINUSE"){
+  //   //   return callback(err, null);    
+  //   // }    
+  // });
 
   var express = require('express');
-  var MemoryStore = express.session.MemoryStore;
-  this.sessionStore = new MemoryStore();
+  var RedisStore = require('connect-redis')(express);
+  //var MemoryStore = express.session.MemoryStore;
+  this.sessionStore = new RedisStore;
   this.ioActions = [];
 
   this.app = express.createServer();
@@ -51,8 +52,8 @@ var Server = function(options, callback){
       this.webServer = "pouya:" + this.options.port;
     }.bind(this));
 
-    //, { log: false }
-    this.io = require("socket.io").listen(this.app);
+    //this.io = require("socket.io").listen(this.app);
+    this.io = require("socket.io").listen(this.app, { log: false });
     this.io.set('log level', 3);
 
     this.app.dynamicHelpers({
@@ -74,6 +75,10 @@ var Server = function(options, callback){
   
 };
 
+
+Server.prototype.close = function() {
+  this.app.close();
+};
 
 Server.prototype.setRoutes = function (){
   _.each(this.paths, function(p){

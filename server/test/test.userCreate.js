@@ -1,6 +1,8 @@
 var assert = require('assert');
 var User = require('../classes/user');
 var moaSchema = require('../db/moaSchema');
+var should = require('should');
+var CONFIG = require('./utils/config');
 
 
 var userInfo = {
@@ -35,10 +37,25 @@ describe('User', function() {
 		  });	  
 	  });
 
-	  // it('subscribe', function(done){
-	  	
-	  	
-	  // })
+	  it('subscribe user over socket', function(done){
+	 	  require('./test-socketIO').getSecureSocketFromGame(function(_server, _game, _socketClient){		
+	 	  	should.exist(_game, "game is null");
+
+	 	  	_socketClient.emit('user-subscribe', {'email': "pouyajoon@gmail.com", "password" : "md5_password"}, function(err, u){
+	 	  		CONFIG.checkErr(err);
+	 	  		should.exist(u, "user is null");
+					_socketClient.disconnect();
+	 	  	});
+
+	 	  	_socketClient.on('disconnect', function(){
+					_server.close();
+					done();	 	  		
+	 	  	})
+			}); 
+	  });
+
+
+
 	});
 	describe("Inventory", function(){
 	  it('exists after ant creation', function(done){

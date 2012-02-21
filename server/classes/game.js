@@ -1,6 +1,7 @@
 var libWorldTools = require('./worldTools');
 var WorldZones = require ('./../maps/zones');
 var _ = require('underscore');
+var Server = require('./../lib/Server');
 
 //when it's action nodes time
 function playActionNodes(currentZone){
@@ -23,23 +24,29 @@ var Game = function(_server, callback){
 	//console.log('creating game');
 	this.server = _server;
 
-
 	this.server.io.sockets.on('connection', function (socket) {
-		console.log('client connected, hi');
+		//console.log('client connected, hi');
 		//console.log('A socket with sessionID ', socket.handshake.sessionID, ' connected!');    
 		_.each(this.server.ioActions, function(io_action){
 		  socket.on(io_action.name, io_action.doAction.bind(socket));
 		}.bind(this));
 	}.bind(this));
 
-
-
 	this.worldZones = new WorldZones(function(err){
-		//console.log("zones loaded");
 		//if (err) throw "error:" + err;
 		return callback(null, this);
 	}.bind(this));
 }
+
+
+exports.setupGame = function(options, callback){
+  new Server(options, function(err, _server){
+    new Game(_server, function(err, _game){
+      callback(err, _server, _game);
+    });
+  });
+}
+
 
 Game.prototype.launch = function() {
 	this.gameInterval = setInterval(function(){

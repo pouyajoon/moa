@@ -5,6 +5,7 @@ var Inventory = require ('./Inventory');
 //var Step = require('step');
 
 var User = function(_email, password, callback){
+
   require('./heritate').heritate(this, User, require("../db/DataBaseItem"), moaSchema.UserModel);
   this.data.email = _email;  
   if (typeof password !== "undefined"){

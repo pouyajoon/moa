@@ -40,7 +40,7 @@ var io_stopzone = {"name" : "stopzone", "doAction" : function(zone_id){
 var io_disconnect = {"name" : "disconnect", "doAction" : function () {
     try {
       clearInterval(this.interval);
-      console.log('client left, bye');
+      //console.log('client left, bye');
     } catch (e){
       console.log(e);
     }

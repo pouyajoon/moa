@@ -16,46 +16,50 @@ module.exports = function(server){
 
   var parseCookie = require('connect').utils.parseCookie;
 
-  console.log("setup authorization");
-  server.io.set('authorization', function (data, accept) {
-    //return accept(null, true);
-    console.log("authorization : ", data);
-    if (data.headers.cookie) {
-        //console.log("authorization headers : ", data.headers.cookie);
-        data.cookie = parseCookie(data.headers.cookie);
-        data.sessionID = data.cookie['session.id'];
-        server.sessionStore.get(data.sessionID, function (err, session) {
-            if (err || !session) {
-                console.log("err: %s, session: %s", err, session);
-                // if we cannot grab a session, turn down the connection
-                return accept('Error : ' + data , false);
-            } else {
-                // save the session data and accept the connection
-                data.session = session;
-                return accept(null, true);
-            }
-        });      
-    } else {
-       return accept('No cookie transmitted.', false);
-    }
-  });
 
-  function subscribeUser(_user, callback){
-    console.log('subscribe user', _user);
-    var u = new User(_user.email, _user.password);
-    u.saveToDB(function(err){
-      if (err){
-        console.log("error while subscribeUser :", err);
-        callback(err);      
+
+
+  function checkSession(data, server, sID, callback){
+    //console.log("check session", sID, typeof sID);
+    server.sessionStore.get(sID, function (err, session) {
+      if (err) throw err;
+      if (err || !session) {
+        //console.log("err:", err, "session: ", session, " : sID : ", sID);
+        // if we cannot grab a session, turn down the connection
+        return callback('Error : ' + data , false);
+      } else {
+        //console.log("session accepted");
+        // save the session data and accept the connection
+        data.session = session;
+        return callback(null, true);
       }
-      callback(null);        
     });
   }
 
+  //console.log("setup authorization");
+  server.io.set('authorization', function (data, accept) {
+    //return accept(null, true);
+    //console.log("authorization : ", data);
+    if (data.headers.cookie) {
+      //console.log("authorization headers : ", data.headers.cookie);
+      data.cookie = parseCookie(data.headers.cookie);
+      data.sessionID = data.cookie['session.id'];
+      checkSession(data, server, data.sessionID, accept);
+    } else {
+      //console.info("no cookie");
+      if (data.query["session.id"] !== "undefined"){
+        //console.error("sessions id defined");
+        return checkSession(data, server, data.query["session.id"], accept);
+      } else {
+        //console.error("no cookie, n/a");
+        return accept('No cookie transmitted.', false);   
+      }       
+    }
+  });
+
   var io_subscribeUser = {"name" : "user-subscribe", "doAction" : function (_user, callback) {
       try {
-        console.log("user subscribe socket received");
-        subscribeUser(_user, callback);     
+        new User(_user.email, _user.password, callback);
       } catch (e){
         console.log(e);
       }
@@ -63,7 +67,7 @@ module.exports = function(server){
   };
 
   var io_userExists = {"name" : "user-exists", "doAction" : function (_email, callback) {
-      console.log('get user exists ', _email);    
+      //console.log('get user exists ', _email);    
       var u = new User(_email);
       u.exists(function(err, e){
         if (err) {throw err;}

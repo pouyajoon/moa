@@ -58,17 +58,17 @@ var User = function(email, password){
 
 User.prototype.subscribe = function(socket) {
   socket.emit('user-subscribe', this, function(err){
-  if (err){
-    console.error(err.message);
-    $("#warn").append("Impossible to add the user.");
-    $("#error").fadeIn(250);
-    return;
-  }
-  $("#info").html('The user has been added, you can now login, your email has been copied into login box.');
-  $("#info").fadeIn(250);
-  $('#email').val(this.email);
-  $('#password').val('');
-}.bind(this));
+    if (err){
+      console.error(err.message);
+      $("#warn").append("Impossible to add the user.");
+      $("#error").fadeIn(250);
+      return;
+    }
+    $("#info").html('The user has been added, you can now login, your email has been copied into login box.');
+    $("#info").fadeIn(250);
+    $('#email').val(this.email);
+    $('#password').val('');
+  }.bind(this));
 };
 
 User.prototype.exists = function(socket, callback){

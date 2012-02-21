@@ -1,37 +1,89 @@
-
-
-
-
-
-
-
-
-
+var http = require('http');
+var client = http.createClient(8081, 'pouya'); // to access this url i need to put basic auth.
 var io = require("socket.io-client");
-
-
-//var sio_server = "http://" + serverTestConf.name + ":" + serverTestConf.port + "/";
 var sio_server = "http://pouya:8081/";
-console.log("try connect to io server : ", sio_server);
+var parseCookie = require('connect').utils.parseCookie;
 
 
-var client = io.connect(sio_server);
+
+var request = client.request('GET', '/users/login',
+  {'host': 'pouya'});
+request.end();
+request.on('response', function (response) {
+  //console.log('STATUS: ' + response.statusCode);
+  //var headers = JSON.stringify(response.headers);
+  
+
+  var cookies = {};
+  response.headers["set-cookie"].toString().split(';').forEach(function( cookie ) {
+    var parts = cookie.split('=');
+    cookies[ parts[ 0 ].trim() ] = ( parts[ 1 ] || '' ).trim();
+  });
+
+  //console.log('HEADERS: ', cookies, cookies["session.id"]);
+  response.setEncoding('utf8');
+  //var cookies = parseCookie(response.headers["set-cookie"]);
+  var client = io.connect(sio_server + "?session.id=" + cookies["session.id"]);
+
+  client.disconnect();
+
+	client.on('connect', function(data){
+    console.log('client connected from test : ', data);
+    client.disconnect();
+	});
+
+});
+
+// var sio = require('socket.io')
+//   , should = require('./common')
+//   , parser = sio.parser
+//   , ports = 8081;
 
 
-// client.disconnect();
 
-// client.on("hi", function(){
-//     console.log("received hi!");
+// var cl = client(ports)
+//   , io = create(cl)
+//   , ws;
+
+// io.set('transports', ['websocket']);
+// io.sockets.on('connection', function (socket) {
+//   //socket.manager.transports[socket.id].name.should.equal('websocket');
+//   //ws.finishClose();
+//   cl.end();
+//   io.server.close();
+//   //done();
 // });
 
-client.on('connect', function(data){
-    console.log('client connected from test : ', data);
-    // client.emit('user-subscribe', {"email" : "pouyajoon2@gmail.com", "password" : "crypted_password"}, function(err){
-    //   console.log("error:", err);
-    // //  done();            
-    // });
-    client.disconnect();
-});
+// cl.handshake(function (sid) {
+//   ws = websocket(cl, sid);
+// });
+
+
+// var io = require("socket.io-client");
+
+
+// //var sio_server = "http://" + serverTestConf.name + ":" + serverTestConf.port + "/";
+// var sio_server = "http://pouya:8081/";
+// console.log("try connect to io server : ", sio_server);
+
+
+// var client = io.connect(sio_server);
+
+
+// // client.disconnect();
+
+// // client.on("hi", function(){
+// //     console.log("received hi!");
+// // });
+
+// client.on('connect', function(data){
+//     console.log('client connected from test : ', data);
+//     // client.emit('user-subscribe', {"email" : "pouyajoon2@gmail.com", "password" : "crypted_password"}, function(err){
+//     //   console.log("error:", err);
+//     // //  done();            
+//     // });
+//     client.disconnect();
+// });
 
 // var test = function(callback){
 

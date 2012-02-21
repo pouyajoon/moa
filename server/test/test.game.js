@@ -2,17 +2,10 @@
 var Game = require('../classes/game');
 var Server = require('./../lib/Server.js');
 var assert = require('assert');
+var should = require('should'); 
+var http = require("http");
 
-
-var serverConfiguration = {
-	"options" : {
-	    "port" : 3000,
-	    "paths" : []
-	},
-	"name" : "pouya"
-};
-
-var serverTestConf = {"port" : 3000, "name" : "pouya"};
+var CONFIG = require('./utils/config');
 
 describe('Game', function() {
 
@@ -22,74 +15,97 @@ describe('Game', function() {
 	});
 
 	it('start server', function(done){
-		new Server(serverConfiguration.options, function(err, _server){
-			assert.notEqual(_server, null, "server has not been initialized : " + err);
-			_server.app.close();
+		new Server(CONFIG.serverConfiguration.options, function(err, _server){
+			should.exist(_server, 'server is null');
+			_server.close();
 			done();
 		});
 	});
 
-	it('create', function(done) {
-		setupGame(function(err, _server, _game){
-			assert.notEqual(_game, null, "game has not been initialized : " + err);
-			_server.app.close();
+	it('get http page', function(done){
+		exports.getHTTPPage(function(_server, httpClient, response, cookies){
+			_server.close();
+			done();
+		});
+	});	
+
+
+	it('get http page cookies mandatory', function(done){
+		exports.getHTTPPage(function(_server, httpClient, response, cookies){
+			should.exist(cookies, "cookies is null");
+			_server.close();
+			done();
+		});
+	});	
+
+
+	it('get http session id from cookie ', function(done){
+		exports.getHTTPPage(function(_server, httpClient, response, cookies){
+			should.exist(cookies["session.id"], "session id should be set in cookies");
+			_server.close();
+			done();
+		});
+	});	
+
+	it('create game', function(done) {
+		exports.setupGame(CONFIG.serverConfiguration.options, function(err, _server, _game){
+			should.exist(_server, "server is null");
+			should.exist(_game, "game is null");
+			_server.close();
 			done();			
 		});
   });
 
-	it('connect to socket io', function(done) {
-		setupSocket(function(err, _server, _game, _client){
-			assert.notEqual(_client, null, "socket client should not be null");
-			_client.disconnect();
-			_server.app.close();
-			done();
-		});
-
-
-		// setupGame(function(err, _server, _game){
-		// 	console.log('game loaded, error : ', err);
-
-		// 	var io = require("socket.io-client");
-		// 	var sio_server = "http://" + serverConfiguration.name + ":" + serverConfiguration.options.port + "/";
-		// 	console.log("connecting to socket io server : ", sio_server);
-		// 	var client = io.connect(sio_server);			
-
-		// 	client.on('connect', function(data){
-		// 		console.log('client connected from test : ', data);
-				
-
-		// 		client.disconnect();
-		// 		_server.app.close();
-		// 		done();
-		// 		// client.emit('user-subscribe', {"email" : "pouyajoon@gmail.com", "password" : "crypted_password"}, function(err){
-		// 		//   console.log("error:", err);
-		// 		//   done();			
-		// 		// });
-		// 	});
-		// });
-	});
-
-
 });
 
-
-function setupGame(callback){
-	new Server(serverConfiguration.options, function(err, _server){
-		new Game(_server, function(err, _game){
-			callback(err, _server, _game);
+exports.getHTTPPage = function(callback){
+	new Server(CONFIG.serverConfiguration.options, function(err, _server){
+		doHTTPGetRequest(CONFIG.http.sessionUrl, CONFIG.http.options, function(httpClient, response, cookies){
+			callback(_server, httpClient, response, cookies);
 		});
+	});	
+}
+
+exports.getHTTPPageFromGame = function(callback){
+	exports.setupGame(CONFIG.serverConfiguration.options, function(err, _server, _game){
+		//console.log("game setup");
+		doHTTPGetRequest(CONFIG.http.sessionUrl, CONFIG.http.options, function(httpClient, response, cookies){
+			//console.log("get request");
+			callback(_server, _game, httpClient, response, cookies);
+		});
+	});	
+}
+
+exports.setupGame = function(options, callback){
+  new Server(options, function(err, _server){
+  	CONFIG.checkErr(err);
+  	should.exist(_server, 'server is null');  	
+    new Game(_server, function(err, _game){
+    	CONFIG.checkErr(err);
+    	should.exist(_game, 'game is null');
+      callback(err, _server, _game);
+    });
+  });
+}
+
+function doHTTPGetRequest(_url, _options, callback){
+
+	var httpClient = http.createClient(CONFIG.serverConfiguration.options.port, CONFIG.serverConfiguration.host); 
+	var request = httpClient.request('GET', _url, _options);
+	request.end();
+	request.on('response', function (response) {
+		var cookies = getCookies(response.headers);
+		response.setEncoding('utf8');
+		callback(httpClient, response, cookies);
 	});
 }
 
-function setupSocket(callback){
-	setupGame(function(err, _server, _game){
-		var io = require("socket.io-client");
-		var sio_server = "http://" + serverConfiguration.name + ":" + serverConfiguration.options.port + "/";
-		var client = io.connect(sio_server);			
-
-		client.on('connect', function(data){
-				return callback(err, _server, _game, client);
-		});
-
-	});
+function getCookies(_headers){
+  var cookies = {};
+  _headers["set-cookie"].toString().split(';').forEach(function( cookie ) {
+    var parts = cookie.split('=');
+    cookies[ parts[ 0 ].trim() ] = ( parts[ 1 ] || '' ).trim();
+  });
+  return cookies;
 }
+
