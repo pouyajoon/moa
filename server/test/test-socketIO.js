@@ -17,7 +17,7 @@ describe('Socket.io', function() {
 	beforeEach(function(){
 		require('./utils/db').loadDB();
 		require('./utils/db').clearDB();
-		CONFIG.serverConfiguration.options.port++;
+		//CONFIG.serverConfiguration.options.port++;
 	});
 
 	it('get secure socket client from server', function(done){
@@ -27,12 +27,14 @@ describe('Socket.io', function() {
 			var socketClient = io.connect(sio_server);		
 			should.exist(socketClient, "socket client is null");
 			socketClient.on('connect', function(data){
-				//console.log('client connected');
+				console.log('client connected');
 				socketClient.disconnect();
 			});
 
 			socketClient.on('disconnect', function(){
-				//console.log('client disconnected');
+				console.log('client disconnected');
+				_response.destroy();
+				//_httpClient.close();
 				_server.close();
 				done();
 			});

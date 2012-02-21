@@ -3,16 +3,22 @@
 var _ = require('underscore');
 
 
-
+  process.on('uncaughtException', function (err) {
+    console.log('Caught exception: ', err);  
+    return callback(err, null); 
+    // if (err.code == "EADDRINUSE"){
+    //   return callback(err, null);    
+    // }    
+  });
 
 var Server = function(options, callback){
-  // process.on('uncaughtException', function (err) {
-  //   console.log('Caught exception: ', err);  
-  //   return callback(err, null); 
-  //   // if (err.code == "EADDRINUSE"){
-  //   //   return callback(err, null);    
-  //   // }    
-  // });
+  process.on('uncaughtException', function (err) {
+    //console.log('Caught exception: ', err);  
+    //return callback(err, null); 
+    if (err.code == "EADDRINUSE"){
+      return callback(err, null);    
+    }    
+  });
 
   var express = require('express');
   var RedisStore = require('connect-redis')(express);
@@ -44,8 +50,8 @@ var Server = function(options, callback){
   }.bind(this));
 
   //console.log('connect on port', this.options.port);
-  this.app.listen(this.options.port, function(){
-    //console.log("app listen is ok");
+  this.app.listen(this.options.port, function(err){
+    //console.log("app listen is ok", err);
 
     this.webServer = "masterofants.com:" + this.options.port;
     this.app.configure('dev', function(){
@@ -54,7 +60,8 @@ var Server = function(options, callback){
 
     //this.io = require("socket.io").listen(this.app);
     this.io = require("socket.io").listen(this.app, { log: false });
-    this.io.set('log level', 3);
+    this.io.set('log level', 0);
+    this.io.set('transports', ["websocket"]);
 
     this.app.dynamicHelpers({
       'session' : function(req, res) {

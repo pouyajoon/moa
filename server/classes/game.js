@@ -21,6 +21,8 @@ function playActionNodes(currentZone){
 }
 
 var Game = function(_server, callback){
+
+
 	//console.log('creating game');
 	this.server = _server;
 

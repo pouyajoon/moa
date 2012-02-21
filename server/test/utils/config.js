@@ -16,8 +16,34 @@ exports.http = {
 	"options" : {'host': exports.serverConfiguration.options.host}
 }
 
+exports.userInfo = {
+	"email" : "pouyajoon@gmail.com", 
+	"password" : "test"
+}
+
+
 var assert = require('assert');
 
 exports.checkErr = function(err){
 	assert.equal(err, null, "error is not equal to null :"  + err);
+}
+
+
+exports.setIntervalX = function(delay, repetitions, callback) {
+    var x = 0;
+    var intervalID = window.setInterval(function () {
+       callback();
+       if (++x === repetitions) {
+       		delay /= 2;
+          window.clearInterval(intervalID);
+       }
+    }, delay);
+}
+
+exports.repeat = function(currentNumber, maxNumber, onFinish, f){
+	if (currentNumber > maxNumber){
+		return onFinish();
+	} else {
+		return f(currentNumber + 1, maxNumber, onFinish, f);
+	}
 }

@@ -47,6 +47,18 @@ describe('Game', function() {
 		});
 	});	
 
+
+	it('get http session id from cookie 200 ', function(done){
+		CONFIG.repeat(0, 200, done, function(currentNumber, maxNumber, onFinish, next){
+			exports.getHTTPPage(function(_server, httpClient, response, cookies){
+				should.exist(cookies["session.id"], "session id should be set in cookies");
+				response.destroy();
+				_server.close();
+				CONFIG.repeat(currentNumber, maxNumber, onFinish, next);
+			});			
+		});
+	});		
+
 	it('create game', function(done) {
 		exports.setupGame(CONFIG.serverConfiguration.options, function(err, _server, _game){
 			should.exist(_server, "server is null");
