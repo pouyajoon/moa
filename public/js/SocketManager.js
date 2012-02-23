@@ -12,6 +12,7 @@ var SocketManager = function(_serverURL){
 }
 
 SocketManager.prototype.emit = function(name, data) {
+  console.log("emit ", name, data);
   this.server.emit(name, data);
 };
 

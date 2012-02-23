@@ -40,8 +40,9 @@ function WorldMap(callback) {
     // zoom click can only be done on zoom 21
     if (this.map.getZoom() != 21) return;
     // get the tile & the middle
-    var tileCoordinate = this.mouseClickToTileCoordinate(event.point);
-    var tileCoordinatePos = this.mouseClickToCoordinateInTile(event.point);
+    // console.log(event.qa, event.pixel, event.latLng);
+    var tileCoordinate = this.mouseClickToTileCoordinate(event.qa);
+    var tileCoordinatePos = this.mouseClickToCoordinateInTile(event.qa);
     var latLngMiddle = this.tileCoordinateToMiddleLatLng(tileCoordinate);
     //console.log(event);
     //console.log(event.pixel.x % 256, event.pixel.y % 256);

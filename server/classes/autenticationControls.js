@@ -3,6 +3,7 @@ var libAuth = require('./autentication');
 var qs = require('querystring');
 var crypto = require('crypto');
 var User = require('./user');
+var moaSchema = require('../db/moaSchema');
 
 module.exports = function(server){
 
@@ -15,9 +16,6 @@ module.exports = function(server){
   });
 
   var parseCookie = require('connect').utils.parseCookie;
-
-
-
 
   function checkSession(data, server, sID, callback){
     //console.log("check session", sID, typeof sID);
@@ -57,39 +55,21 @@ module.exports = function(server){
     }
   });
 
-  var io_subscribeUser = {"name" : "user-subscribe", "doAction" : function (_user, callback) {
-      try {
-        new User(_user.email, _user.password, callback);
-      } catch (e){
-        console.log(e);
-      }
-    }
-  };
 
-  var io_userExists = {"name" : "user-exists", "doAction" : function (_email, callback) {
-      //console.log('get user exists ', _email);    
-      var u = new User(_email);
-      u.exists(function(err, e){
-        if (err) {throw err;}
-        callback(null, e)
-      });
-    }
-  };
-  server.ioActions.push(io_subscribeUser);
-  server.ioActions.push(io_userExists);
+  var dbItem = require('./../db/DataBaseItem');
 
   server.app.post('/users/authenticate', function(req, res){
-  	var u = new User(req.body.email , req.body.password);
-  	u.existsWithPassword(function(err, exists){
-  		console.log("user authentication: err: %s, userexists : %s, body: ", err, exists, req.body);
-  		if (exists) {
-  			req.session.user = u;
-  			res.redirect('/');
-  		} else {
-  			req.flash('warn', 'Wrong username or password');
-  			res.redirect('/users/login');
-  		}
-  	});
+    //console.log(req.body);
+    var users = new dbItem(moaSchema.UserModel);
+    users.hasOne({"email" : req.body.email, "password" : req.body.password}, function(err, exists, user){
+      if (exists) {
+        req.session.user = user;
+        res.redirect('/');
+      } else { 
+        req.flash('warn', 'Wrong username or password');     
+        res.redirect('/users/login');
+      }    
+    })
   });
 
 };

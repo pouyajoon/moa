@@ -19,38 +19,34 @@ describe('Game', function() {
 	});
 
 	it('start server', function(done){
+		var res = {};
 		new Server(CONFIG.serverConfiguration.options, function(err, _server){
-			should.exist(_server, 'server is null');
-			_server.close();
+			res.server = _server;
+			should.exist(res.server, 'server is null');
+			res.server.close();
 			done();
 		});
 	});
 
 	it('get http page', function(done){
-		exports.getHTTPPage(function(_server, httpClient, response, cookies){
-			_server.close();
+		exports.getHTTPPage({}, function(res){
+			res.server.close();
 			done();
 		});
 	});	
 
 
 	it('get http page cookies mandatory', function(done){
-		exports.getHTTPPage(function(_server, httpClient, response, cookies){
-			should.exist(cookies, "cookies is null");
-			_server.close();
+		exports.getHTTPPage({}, function(res){
+			should.exist(res.cookies, "cookies is null");
+			res.server.close();
 			done();
 		});
 	});	
 
-	function getSessionID(currentNumber, maxNumber, done, next){
-		exports.getHTTPPage(function(_server, httpClient, response, cookies){
-			should.exist(cookies["session.id"], "session id should be set in cookies");
-			_server.close();
-			CONFIG.repeat(currentNumber, maxNumber, done, next);
-		});			
-	}
 
-	it('get http session id from cookie ', function(done){
+
+	it('get http session id from cookie', function(done){
 		CONFIG.repeat(0, 0, done, getSessionID);
 	});	
 
@@ -59,58 +55,117 @@ describe('Game', function() {
 	});		
 
 	it('create game', function(done) {
-		exports.setupGame(CONFIG.serverConfiguration.options, function(err, _server, _game){
-			should.exist(_server, "server is null");
-			should.exist(_game, "game is null");
-
-			_game.close();
+		exports.setupGame({}, CONFIG.serverConfiguration.options, function(err, res){
+			res.game.close();
 			done();			
 		});
   });
 
+
+	describe('HTTP Client', function() {
+		checkRoute("/users/login");
+		checkRoute("/");
+	});
+
 });
 
-exports.getHTTPPage = function(callback){
+function getSessionID(currentNumber, maxNumber, done, next){
+	exports.getHTTPPage({}, function(res){
+		should.exist(res.cookies["session.id"], "session id should be set in cookies");
+		res.server.close();
+		CONFIG.repeat(currentNumber, maxNumber, done, next);
+	});			
+}
+
+function checkRoute(_route){
+	it("check " + _route + " route", function(done) {
+		exports.getHTTPPage({}, function(res){
+		 	res.response.on('data', function(chunk) {
+		 		should.equal(chunk.indexOf("Cannot GET " + _route), -1, "Cannot GET " + _route + " !!!");
+		 		res.server.close();
+		 		done();
+		  });				
+		});
+	});
+}
+
+exports.getHTTPPage = function(res, callback){
 	new Server(CONFIG.serverConfiguration.options, function(err, _server){
-		doHTTPGetRequest(CONFIG.http.sessionUrl, CONFIG.http.options, function(httpClient, response, cookies){
+		res.server = _server;
+		exports.doHTTPGETRequest(res, CONFIG.http.sessionUrl, CONFIG.http.options, function(res){
 			//console.log("headers", response.headers);
-			callback(_server, httpClient, response, cookies);
+			callback(res);
 		});
 	});	
 }
 
-exports.getHTTPPageFromGame = function(callback){
-	exports.setupGame(CONFIG.serverConfiguration.options, function(err, _server, _game){
+exports.getHTTPPageFromGame = function(res, callback){
+	exports.setupGame(res, CONFIG.serverConfiguration.options, function(err, res){
 		//console.log("game setup");
-		doHTTPGetRequest(CONFIG.http.sessionUrl, CONFIG.http.options, function(httpClient, response, cookies){
+		exports.doHTTPGETRequest(res, CONFIG.http.sessionUrl, CONFIG.http.options, function(res){
 			//console.log("get request");
-			callback(_server, _game, httpClient, response, cookies);
+			callback(res);
 		});
 	});	
 }
 
-exports.setupGame = function(options, callback){
+exports.setupGame = function(res, options, callback){
   new Server(options, function(err, _server){
   	CONFIG.checkErr(err);
   	should.exist(_server, 'server is null');  	
-    new Game(_server, function(err, _game){
+    res.server = _server;
+    new Game(res.server, function(err, _game){
     	CONFIG.checkErr(err);
     	should.exist(_game, 'game is null');
-      callback(err, _server, _game);
+    	res.game = _game;
+      callback(err, res);
     });
   });
 }
 
-function doHTTPGetRequest(_url, _options, callback){
-	var httpClient = http.createClient(CONFIG.serverConfiguration.options.port, CONFIG.serverConfiguration.host); 
-	var request = httpClient.request('GET', _url, _options);
+exports.doHTTPPOSTRequest = function(res, _url, _headers, _body, callback){
+	res.httpClient = http.createClient(CONFIG.serverConfiguration.options.port, CONFIG.serverConfiguration.host); 
+	//console.log("url:" + _url);
+	var bodyData = JSON.stringify(_body);
+	//console.log(bodyData);
+	_headers['Content-Type'] = 'application/json';
+	_headers['Content-Length'] =  Buffer.byteLength(bodyData,'utf8');
+	res.request = res.httpClient.request('POST', _url, _headers);	
+	//console.log(request);
+
+	
+	res.request.on('response', function (response) {
+		//console.log(response);
+		//console.log('flash', response.flash());
+	 	res.response = response;
+	 	// res.response.on('data', function(chunk) {
+	 	// 	console.log(chunk, res.response.headers, response.warn);
+	  //   // do what you do
+	  // });		
+		// response.on('end', function() {
+		// });
+		res.cookies = getCookies(res.response.headers);
+		res.response.setEncoding('utf8');
+		callback(res);
+	});
+	res.request.write(bodyData);
+//	request.close();
+	res.request.end();
+	//done();
+
+}
+
+exports.doHTTPGETRequest = function(res, _url, _headers, callback){
+	res.httpClient = http.createClient(CONFIG.serverConfiguration.options.port, CONFIG.serverConfiguration.host); 
+	var request = res.httpClient.request('GET', _url, _headers);
 	request.on('response', function (response) {
+		res.response = response;
 		response.on('end', function() {
-				console.log("http response end");
+				//console.log("http response end");
 		});
-		var cookies = getCookies(response.headers);
-		response.setEncoding('utf8');
-		callback(httpClient, response, cookies);
+		res.cookies = getCookies(res.response.headers);
+		res.response.setEncoding('utf8');
+		callback(res);
 	});
 	request.end();
 }

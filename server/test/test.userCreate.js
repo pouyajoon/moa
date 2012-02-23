@@ -4,6 +4,10 @@ var moaSchema = require('../db/moaSchema');
 var should = require('should');
 var CONFIG = require('./utils/config');
 
+
+
+
+
 describe('User', function() {
 
 	beforeEach(function(){
@@ -34,72 +38,102 @@ describe('User', function() {
 	  });
 
 	  it('subscribe user over socket', function(done){
-	 	  require('./test-socketIO').getSecureSocketFromGame(function(_server, _game, _socketClient){		
-	 	  	should.exist(_game, "game is null");
-
-	 	  	_socketClient.on('connect', function(){
-	 	  		console.log('socket client connected');
-	 	  	});
-
-	 	  	_socketClient.emit('user-subscribe', {'email': CONFIG.userInfo.email, "password" : CONFIG.userInfo.password}, function(err, u){
-	 	  		CONFIG.checkErr(err);
-	 	  		should.exist(u, "user is null");
-					_socketClient.disconnect();
-	 	  	});
-
-	 	  	_socketClient.on('disconnect', function(){
-	 	  		console.log('socket client disconnected');
-					_server.close();
-					done();	 	  		
-	 	  	});
-			}); 
+			subscribeUserTest.repeat(0, done);
 	  });
 
+
+	  function subscribeUserAndAuthenticateUsingUser(user, done, callback){
+		  require('./test-socketIO').getSecureSocketFromGame({}, function(res){		
+		  	subscribeUserEmitMessage(res, function(err, res){			  	
+					require('./test.game').doHTTPPOSTRequest(res, CONFIG.http.authenticateURL, CONFIG.http.options, user, function(res){
+						res.response.on('data', function(body){
+							res.body = body;
+							callback(res);
+						});
+					});					
+		  	});
+		  }, function(res){
+				res.game.close();
+				done();
+		  });	  	
+	  }
+
+	  it('subscribe user and authenticate with good credentials', function(done){
+ 			subscribeUserAndAuthenticateUsingUser(CONFIG.userInfo, done, function(res){
+				assert.notEqual(res.body.indexOf("Moved Temporarily"), -1, "Moved Temporarily is missing");
+				assert.notEqual(res.body.indexOf( CONFIG.serverConfiguration.host  + "/"), -1, "should redirect to /users/login if fails");
+				res.socketClient.disconnect();
+ 			});
+	  });
+
+	  it('subscribe user and fail authenticate by providing wrong user name and password', function(done){
+ 			var user = {"email" : "bad@email.com", "password" : "wrong password"};
+ 			subscribeUserAndAuthenticateUsingUser(user, done, function(res){
+				assert.notEqual(res.body.indexOf("Moved Temporarily"), -1, "Moved Temporarily is missing");
+				assert.notEqual(res.body.indexOf("/users/login"), -1, "should redirect to /users/login if fails");
+				res.socketClient.disconnect();
+ 			});
+	  });
+
+
+
 		it('cant subscribe user, already exists' , function(done){			
-	 	  require('./test-socketIO').getSecureSocketFromGame(function(_server, _game, _socketClient){		
-	 	  	should.exist(_server, "server is null");
-	 	  	should.exist(_game, "game is null");
-
-	 	  	_socketClient.on('connect', function(){
-	 	  		console.log('socket client connected');
-	 	  	});
-
-	 	  	_socketClient.emit('user-subscribe', {'email': CONFIG.userInfo.email, "password" : CONFIG.userInfo.password}, function(err, u){
-	 	  		CONFIG.checkErr(err);
-	 	  		should.exist(u, "user is null");
-					_socketClient.disconnect();
-	 	  	});
-
-	 	  	_socketClient.on('disconnect', function(){
-	 	  		console.log('socket client disconnect');
-					_server.close();
-					done();	 	  		
-	 	  	});
-			}); 
+			createUser(function(err, u){
+				CONFIG.checkErr(err);
+			  require('./test-socketIO').getSecureSocketFromGame({}, function(res){		
+					subscribeUserEmitMessage(res, function(err, res){
+			  		should.exist(err, "err should not be null as user should already exists");
+			  		should.equal(err.code, "11000", "err code is not 11000");
+						res.socketClient.disconnect();						
+					});
+			  }, function(res){
+					res.game.close();
+					done();
+			  }); 
+			});
 	  });  
-
-
-
 	});
+
+
 	describe("Inventory", function(){
-	  it('exists after ant creation', function(done){
+	  it('exists after user creation', function(done){
 	  	createUser(function(err, u){
-	  		assert.notEqual(u.inventory, null);
+	  		should.exist(u.inventory, "inventory is null");
 				done();
 			});
 	  });
 	  
 	  it('has one ant after creation', function(done){
 	  	createUser(function(err, u){
-		  	assert.notEqual(u.inventory, null);
 		  	var antNum = u.inventory.ants.length;
-		  	assert.equal(antNum, 1, "inventory should have only one ant but has " + antNum);
+		  	should.equal(antNum, 1, "inventory should have only one ant but has " + antNum);
 				done();
 			});
 	  });
 	});
-
 });
+
+
+function subscribeUserEmitMessage(res, callback){
+  	res.socketClient.emit('user-subscribe', {'email': CONFIG.userInfo.email, "password" : CONFIG.userInfo.password}, function(err, u){
+  		res.user = u;
+  		callback(err, res);
+  	});
+}
+
+function subscribeUserTest(currentNumber, maxNumber, done, next){
+  require('./test-socketIO').getSecureSocketFromGame({}, function(res){		
+  	subscribeUserEmitMessage(res, function(err, res){
+  		CONFIG.checkErr(err);
+  		should.exist(res.user, "user is null");
+  		should.equal(res.user.data.email, CONFIG.userInfo.email, "email of the new user do not equal the config user");
+			res.socketClient.disconnect();  		
+  	});
+  }, function(res){
+		res.game.close();
+		CONFIG.repeat(currentNumber++, maxNumber, done, next);
+  }); 	
+}
 
 function createUser(callback){
   	new User(CONFIG.userInfo.email, CONFIG.userInfo.password, function(err, u){

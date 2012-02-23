@@ -16,18 +16,7 @@ var io_createQueen = {"name" : "createQueen", "doAction" : function(_creationInf
   }
 };  
 
-var io_getzone = {"name" : "getzone", "doAction" : function(zoneID){
-  //console.log('get zone : ', zoneID); 
-    global.moaGame.worldZones.getZone(zoneID, function(err, zone){          
-      this.zone = zone;
-      this.interval  = setInterval(function () { 
-        console.log('emit zone : ', this.zone.data.id);       
-        this.emit('zone', this.zone); 
-      }.bind(this), 200);
-    }.bind(this));      
-    console.log("send zone : ", zoneID);
-  }
-};
+
 
 var io_stopzone = {"name" : "stopzone", "doAction" : function(zone_id){
     this.get('sendingZones', function (err, z) {
@@ -52,5 +41,24 @@ var io_error = {"name" : "error", "doAction" : function (reason) {
   }
 };
 
+var User = require('./user');
 
-exports.ioActions = [io_error, io_ssetaction, io_createQueen, io_getzone, io_stopzone, io_disconnect];
+var io_subscribeUser = {"name" : "user-subscribe", "doAction" : function (_user, callback) {
+    try {
+      new User(_user.email, _user.password, callback);
+    } catch (e){
+      console.log(e);
+    }
+}};
+
+var io_userExists = {"name" : "user-exists", "doAction" : function (_email, callback) {
+    console.log('get user exists ', _email);    
+    var u = new User(_email);
+    u.exists(function(err, e){
+      if (err) {throw err;}
+      callback(null, e)
+    });
+}};
+
+
+exports.ioActions = [io_error, io_ssetaction, io_createQueen, io_stopzone, io_disconnect, io_subscribeUser, io_userExists];

@@ -17,11 +17,15 @@ var GameCanvas = function(_worldMap, _tileCoordinate, callback){
   //initActionNodes();
 
   this.ants = [];
-  this.worldMap.socketManager.emit("getzone", this.tileCoordinate.x + "_" + this.tileCoordinate.y);
+  this.worldMap.socketManager.emit("getZone", this.tileCoordinate.x + "_" + this.tileCoordinate.y);
   this.worldMap.socketManager.on('zone', function (dataZone) {
     console.log('ants', dataZone.ants);
     this.ants = dataZone.ants;
   }.bind(this));
+  this.worldMap.socketManager.on('inventory', function (dataInventory) {
+    console.log('inventory', dataInventory);
+    //this.ants = dataZone.ants;
+  }.bind(this));  
 
   this.canvasID = "mainScreen";
   this.canvas = document.getElementById(this.canvasID);

@@ -21,7 +21,6 @@ var pageMap = {"path" : "/map", "view" : "game/home.jade", "renderOptions" : {"d
 var pageHome = {"path" : "/", "view" : "game/home.jade", "login" : libAuth.requireLogin, "renderOptions" : {"drawMode" : 'map'}};
 
 
-
 var mongoose = require("mongoose");
 mongoose.connect('mongodb://localhost/moa');  
 

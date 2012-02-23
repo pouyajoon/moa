@@ -22,34 +22,43 @@ function playActionNodes(currentZone){
 
 var Game = function(_server, callback){
 
-
 	//console.log('creating game');
 	this.server = _server;
-	this.sockets = {};
+
 
 	this.server.io.sockets.on('connection', function (socket) {
-		var sID = socket.store.id;
-		//console.log("connected : " + sID);
-		this.sockets[sID] = socket;
+		//console.log('client connected');
+
 		_.each(this.server.ioActions, function(io_action){
 		  socket.on(io_action.name, io_action.doAction.bind(socket));
 		}.bind(this));
-	  socket.on('disconnect', function () {
-	  	//console.log("disconnected : " + sID);
-	    delete this.sockets[sID];
-	    //console.log(this.sockets);
-	  }.bind(this));
+		this.setupSocketActions(socket);
 
 	}.bind(this));
-
-
 
 	this.worldZones = new WorldZones(function(err){
 		//if (err) throw "error:" + err;
 		return callback(null, this);
 	}.bind(this));
+
 }
 
+
+Game.prototype.setupSocketActions = function(socket) {
+	socket.on("getZone", function(zoneID){
+    //console.log('get zone : ', zoneID); 
+    this.worldZones.getZone(zoneID, function(err, zone){          
+      socket.zone = zone;
+      socket.interval  = setInterval(function () { 
+        //console.log('emit zone : ', socket.zone.data.id);           
+        socket.emit('zone', socket.zone);
+        //console.log(this.server);
+        //this.emit('inventory', this.)
+      }.bind(this), 200);
+    }.bind(this));      
+    //console.log("send zone : ", zoneID);
+  }.bind(this));
+};
 
 exports.setupGame = function(options, callback){
   new Server(options, function(err, _server){
@@ -60,10 +69,6 @@ exports.setupGame = function(options, callback){
 }
 
 Game.prototype.close = function() {
-	for(var sID in this.sockets){
-		var socket = this.sockets[sID];
-		this.server.io.sockets.emit('disconnect');
-	}
 	this.server.close();
 };
 

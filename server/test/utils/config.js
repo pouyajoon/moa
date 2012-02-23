@@ -13,7 +13,8 @@ exports.zoneTaine = {
 
 exports.http = {
 	"sessionUrl" : '/users/login',
-	"options" : {'host': exports.serverConfiguration.options.host}
+	"authenticateURL" : "/users/authenticate",
+	"options" : {'host': exports.serverConfiguration.host}
 }
 
 exports.userInfo = {
@@ -49,4 +50,9 @@ exports.repeat = function(currentNumber, maxNumber, onFinish, f){
 	} else {
 		return f(currentNumber + 1, maxNumber, onFinish, f);
 	}
+}
+
+
+Function.prototype.repeat = function(number, done){
+	exports.repeat(0, number, done, this);
 }
