@@ -9,14 +9,7 @@ var CONFIG = require('./utils/config');
 
 describe('Game', function() {
 
-	beforeEach(function(){		
-		this.db = require('./utils/db').loadDB();
-		require('./utils/db').clearDB();
-	});
-
-	afterEach(function(){
-		require('./utils/db').closeDB(this.db);
-	});
+	CONFIG.setupDatabase();
 
 	it('start server', function(done){
 		var res = {};
@@ -29,7 +22,8 @@ describe('Game', function() {
 	});
 
 	it('get http page', function(done){
-		exports.getHTTPPage({}, function(res){
+		exports.getHTTPPage({}, function(err, res){
+			CONFIG.checkErr(err);
 			res.server.close();
 			done();
 		});
@@ -37,7 +31,8 @@ describe('Game', function() {
 
 
 	it('get http page cookies mandatory', function(done){
-		exports.getHTTPPage({}, function(res){
+		exports.getHTTPPage({}, function(err, res){
+			CONFIG.checkErr(err);
 			should.exist(res.cookies, "cookies is null");
 			res.server.close();
 			done();
@@ -70,7 +65,8 @@ describe('Game', function() {
 });
 
 function getSessionID(currentNumber, maxNumber, done, next){
-	exports.getHTTPPage({}, function(res){
+	exports.getHTTPPage({}, function(err, res){
+		CONFIG.checkErr(err);
 		should.exist(res.cookies["session.id"], "session id should be set in cookies");
 		res.server.close();
 		CONFIG.repeat(currentNumber, maxNumber, done, next);
@@ -79,7 +75,8 @@ function getSessionID(currentNumber, maxNumber, done, next){
 
 function checkRoute(_route){
 	it("check " + _route + " route", function(done) {
-		exports.getHTTPPage({}, function(res){
+		exports.getHTTPPage({}, function(err, res){
+			CONFIG.checkErr(err);
 		 	res.response.on('data', function(chunk) {
 		 		should.equal(chunk.indexOf("Cannot GET " + _route), -1, "Cannot GET " + _route + " !!!");
 		 		res.server.close();
@@ -92,19 +89,20 @@ function checkRoute(_route){
 exports.getHTTPPage = function(res, callback){
 	new Server(CONFIG.serverConfiguration.options, function(err, _server){
 		res.server = _server;
-		exports.doHTTPGETRequest(res, CONFIG.http.sessionUrl, CONFIG.http.options, function(res){
+		exports.doHTTPGETRequest(res, CONFIG.http.sessionUrl, CONFIG.http.options, function(err, res){
 			//console.log("headers", response.headers);
-			callback(res);
+			callback(err, res);
 		});
 	});	
 }
 
 exports.getHTTPPageFromGame = function(res, callback){
 	exports.setupGame(res, CONFIG.serverConfiguration.options, function(err, res){
+		CONFIG.checkErr(err);
 		//console.log("game setup");
-		exports.doHTTPGETRequest(res, CONFIG.http.sessionUrl, CONFIG.http.options, function(res){
+		exports.doHTTPGETRequest(res, CONFIG.http.sessionUrl, CONFIG.http.options, function(err, res){
 			//console.log("get request");
-			callback(res);
+			return callback(err, res);
 		});
 	});	
 }
@@ -118,7 +116,7 @@ exports.setupGame = function(res, options, callback){
     	CONFIG.checkErr(err);
     	should.exist(_game, 'game is null');
     	res.game = _game;
-      callback(err, res);
+      return callback(err, res);
     });
   });
 }
@@ -146,7 +144,7 @@ exports.doHTTPPOSTRequest = function(res, _url, _headers, _body, callback){
 		// });
 		res.cookies = getCookies(res.response.headers);
 		res.response.setEncoding('utf8');
-		callback(res);
+		return callback(null, res);
 	});
 	res.request.write(bodyData);
 //	request.close();
@@ -165,7 +163,7 @@ exports.doHTTPGETRequest = function(res, _url, _headers, callback){
 		});
 		res.cookies = getCookies(res.response.headers);
 		res.response.setEncoding('utf8');
-		callback(res);
+		callback(null, res);
 	});
 	request.end();
 }

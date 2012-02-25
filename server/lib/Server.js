@@ -3,10 +3,10 @@
 var _ = require('underscore');
 
 
-  process.on('uncaughtException', function (err) {
-    console.log('Caught exception: ', err);  
-    return callback(err, null); 
-  });
+  // process.on('uncaughtException', function (err) {
+  //   console.log('uncaughtException : ', err);  
+  //   return callback(err, null); 
+  // });
 
 var Server = function(options, callback){
 
@@ -52,6 +52,7 @@ var Server = function(options, callback){
     this.ioActions = require('./../classes/game-sockets.js').ioActions;
     require ('./../classes/autenticationControls')(this);
     this.setRoutes();
+    //console.log('server initialized');
     return callback(null, this);
   }.bind(this));
 };

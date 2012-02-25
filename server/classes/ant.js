@@ -18,7 +18,7 @@ var Ant = function(_position, _size, callback){
   this.colony = null;
 
   this.saveToDB(function(err, _ant){
-  	if (err) throw err;
+  	if (err) callback(err, null);
   	return callback(null, _ant);
   }.bind(this));
 }

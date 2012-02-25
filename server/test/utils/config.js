@@ -44,6 +44,30 @@ exports.setIntervalX = function(delay, repetitions, callback) {
     }, delay);
 }
 
+exports.setupDatabase = function(test){
+	var db;
+
+	// before(function(){
+	// });
+
+	// after(function(){
+	// });
+
+
+	beforeEach(function(){		
+		// console.log('start');
+		db = require('./db').loadDB();
+		require('./db').clearDB();
+	});
+
+	afterEach(function(){
+		// console.log('end');
+		//require('./db').closeDB(db);
+
+	});
+
+}
+
 exports.repeat = function(currentNumber, maxNumber, onFinish, f){
 	if (currentNumber > maxNumber){
 		return onFinish();

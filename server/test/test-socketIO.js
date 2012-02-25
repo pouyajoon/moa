@@ -7,21 +7,13 @@ var should = require('should');
 var io = require("socket.io-client");
 var CONFIG = require('./utils/config');
 
-
 function getSocketServerURL(){
 	return "http://" + CONFIG.serverConfiguration.host + ":" + CONFIG.serverConfiguration.options.port + "/";
 }
 
 describe('Socket.io', function() {
 
-	beforeEach(function(){
-		this.db = require('./utils/db').loadDB();
-		require('./utils/db').clearDB();
-	});
-
-	afterEach(function(){
-		require('./utils/db').closeDB(this.db);
-	});
+	CONFIG.setupDatabase();
 
 	it('get secure socket client from server', function(done){
 		CONFIG.repeat(0, 0, done, getSecureSocketFromServerTest);
@@ -39,45 +31,63 @@ describe('Socket.io', function() {
 		CONFIG.repeat(0, 100, done, getSecureSocketFromGameTest);
 	});
 
-	it('get zone', function(done){
-		exports.getSecureSocketFromGame({}, function(res){
+	function getZoneTest(done){
+		exports.getSecureSocketFromGame({}, function(err, res){
+			CONFIG.checkErr(err);
+			//console.log('secure socket set');
 			res.socketClient.emit('getZone', CONFIG.zoneTaine.id);
 			res.socketClient.on('zone', function(zone){
 				should.exist(zone, "zone should exist");
-				assert.equal(zone.data.id, CONFIG.zoneTaine.id);
+				console.log("get zone", zone);
+				assert.equal(zone.id, CONFIG.zoneTaine.id, 'wrong zone id');
 				//console.log(zone);
 				res.socketClient.disconnect();
 			});
-		}, function(res){
+		}, function(err, res){
+			CONFIG.checkErr(err);
 			res.server.close();
 			done();
 		});	
+	}
+
+	it('socket get zone', function(done){
+		getZoneTest(done);
 	});	
 
-
+	it('get zone with zone already existing in base', function(done){
+		require('./test-worldZones').createZoneRueTaine({}, function(err, res){
+			CONFIG.checkErr(err);
+			getZoneTest(done);
+		});
+	});		
 });
 
 
-	function getSecureSocketFromServerTest(currentNumber, maxNumber, done, next){
-		require('./test.game').getHTTPPage({}, function(res){			
-			getSecureSocketFromHTTPConnection(res, function(res){
-				res.server.close();
-				CONFIG.repeat(currentNumber++, maxNumber, done, getSecureSocketFromServerTest);
-			}, currentNumber, maxNumber, done, next);			
-		});
-	}
+function getSecureSocketFromServerTest(currentNumber, maxNumber, done, next){
+	require('./test.game').getHTTPPage({}, function(err, res){
+		CONFIG.checkErr(err);			
+		getSecureSocketFromHTTPConnection(res, function(err, res){
+			CONFIG.checkErr(err);
+			res.server.close();
+			CONFIG.repeat(currentNumber++, maxNumber, done, getSecureSocketFromServerTest);
+		}, currentNumber, maxNumber, done, next);			
+	});
+}
 
 function getSecureSocketFromGameTest(currentNumber, maxNumber, done, next){
-	exports.getSecureSocketFromGame({}, function(res){
+	exports.getSecureSocketFromGame({}, function(err, res){
+		CONFIG.checkErr(err);
 		res.socketClient.disconnect();
-	}, function(res){
+	}, function(err, res){
+		CONFIG.checkErr(err);
 		res.server.close();
 		CONFIG.repeat(currentNumber++, maxNumber, done, next);
 	});		
 }
 
 exports.getSecureSocketFromGame = function(res, callbackOnConnect, callbackOnDisconnect){
-	require('./test.game').getHTTPPageFromGame(res, function(res){			
+	require('./test.game').getHTTPPageFromGame(res, function(err, res){			
+		CONFIG.checkErr(err);
 		return getSecureSocketFromHTTPConnection(res, callbackOnConnect, callbackOnDisconnect);
 	});
 }
@@ -87,10 +97,10 @@ function getSecureSocketFromHTTPConnection(res, callbackOnConnect, callbackOnDis
 	res.socketClient = io.connect(sio_server, CONFIG.socketIO.options);
 	should.exist(res.socketClient, "socket client is null");
 	res.socketClient.on('connect', function(data){
-		callbackOnConnect(res);
+		callbackOnConnect(null, res);
 	});
 
 	res.socketClient.on('disconnect', function(){
-		callbackOnDisconnect(res);				
+		callbackOnDisconnect(null, res);				
 	});		
 }

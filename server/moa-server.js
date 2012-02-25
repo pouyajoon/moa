@@ -31,6 +31,7 @@ var serverOptions = {
 
 new Server(serverOptions, function(err, _server){
   new Game(_server, function(err, _game){
+  	if (err) throw err;
     console.log("game initialized, error : ", err);
   });
 });

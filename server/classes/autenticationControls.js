@@ -20,7 +20,7 @@ module.exports = function(server){
   function checkSession(data, server, sID, callback){
     //console.log("check session", sID, typeof sID);
     server.sessionStore.get(sID, function (err, session) {
-      if (err) throw err;
+      if (err) callback(err, false);
       if (err || !session) {
         //console.log("err:", err, "session: ", session, " : sID : ", sID);
         // if we cannot grab a session, turn down the connection

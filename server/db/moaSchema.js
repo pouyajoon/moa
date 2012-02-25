@@ -52,6 +52,9 @@ exports.AntSchema = new mongoose.Schema({
 });
 exports.AntModel = mongoose.model('AntModel', exports.AntSchema);
 
+
+
+
 // exports.PhysicElementSchema = new mongoose.Schema({
 // 	"position" : {
 // 		"x" : {"type": Number, "default" : 0}

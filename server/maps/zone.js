@@ -1,19 +1,34 @@
 var moaSchema = require('../db/moaSchema.js');
 
-var Zone = function(_zoneIdOrZoneData) {
+var Zone = function(_zoneId, callback) {
   require('./../classes/heritate').heritate(this, Zone, require("../db/DataBaseItem"), moaSchema.ZoneModel);
 
-  if (typeof _zoneIdOrZoneData === "string"){
-    this.data.id = _zoneIdOrZoneData;
-    //console.log("zone created : ", this.data.id);
-  }
-  if (typeof _zoneIdOrZoneData === "object"){
-    this.data = _zoneIdOrZoneData;
-    //console.log("zone loaded from db : ", this.data.id);
-  }
-  
+
+  this.data.id = _zoneId;
+
   this.ants = new Array();
-  this.actionNodes = new Array();
+  this.actionNodes = new Array();  
+
+  this.hasOne({"id" : _zoneId}, function(err, exists, zone){
+    //console.log("zone has one :", err, exists, zone);
+    
+
+    if (err) return callback(err);
+    if (exists){
+      this.data = zone[0];
+      return callback(null, this);
+    }
+    else {
+
+      this.saveToDB(function(err){
+        //console.log("zone save :", err);
+        if (err) return callback(err, null);
+        return callback(null, this);
+      }.bind(this));
+    }
+  }.bind(this));
+
+
   
 }
 

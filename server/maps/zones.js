@@ -13,24 +13,29 @@ var ZoneModel = require('../db/moaSchema').ZoneModel;
 
 var WorldZones = function(callback){
 	this.allZones = {};
-	this.loadFromDB(function(err){		
-		return callback(err, this);
-	}.bind(this));
+	//console.log("loading zones");
+	return callback(null, this);
+	// this.loadFromDB(function(err){		
+	// 	return callback(err, this);
+	// }.bind(this));
 };
 
 
 WorldZones.prototype.createZone = function(zoneID, callback){
-	this.allZones[zoneID] = new Zone(zoneID);
-	this.allZones[zoneID].saveToDB(function(err){
-		if (err) return callback(err, null);
+	new Zone(zoneID, function(err, zone){		
+		if (err) callback(err);
+		this.allZones[zoneID]  = zone;
+		console.log("zone saved", this.allZones);
 		return callback(null, this.allZones[zoneID]);
 	}.bind(this));
 }
 
 WorldZones.prototype.getZone = function(zoneID, callback) {
-	//console.log("allZones", this.allZones);
+	
 	var z = this.allZones[zoneID];
+	 console.log("allZones", this.allZones, z);
 	if (_.isUndefined(z)) {
+		// console.log("create zone");
 		return this.createZone(zoneID, callback);
 	}
 	else{
@@ -72,6 +77,7 @@ WorldZones.prototype.loadFromDB = function(callback) {
 //			console.log('no item');
 			return callback(null);				
 		}
+		//.bind(this)
 	});
 };
 

@@ -55,7 +55,7 @@ var io_userExists = {"name" : "user-exists", "doAction" : function (_email, call
     console.log('get user exists ', _email);    
     var u = new User(_email);
     u.exists(function(err, e){
-      if (err) {throw err;}
+      if (err) callback(err, null);
       callback(null, e)
     });
 }};
