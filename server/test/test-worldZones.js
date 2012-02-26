@@ -1,5 +1,6 @@
 
 var WorldZones = require('../maps/zones');
+var Zone = require('../maps/zone');
 var assert = require('assert');
 var should = require('should'); 
 
@@ -15,7 +16,6 @@ describe('WorldZones', function() {
 			done();
 		});
   });
-
 
 	it('create zone', function(done) {	
 		exports.createZoneRueTaine({}, function(err, res){
@@ -35,6 +35,24 @@ describe('WorldZones', function() {
 		});		
   });
 
+	it('get zone local from game with zone already existing', function(done) {	
+		Zone.createZone(CONFIG.zoneTaine.id, function(err, zone){
+			CONFIG.checkErr(err);
+
+			require('./test.game').setupGame({}, CONFIG.serverConfiguration.options, function(err, res){
+				console.log("WORLD ZONES : ", res.game.worldZones);
+				CONFIG.checkErr(err);
+				// res.game.worldZones.getZone(CONFIG.zoneTaine.id, function(err, gamezone){
+				// 	console.log(gamezone);
+				// 	CONFIG.checkErr(err);
+				// 	assert.notEqual(gamezone._id, zone._id, "zone id is wrong :"+ gamezone._id + ", " + zone._id);
+				res.game.close();
+				done();
+				// });
+			});
+		});	
+  });  
+
 });
 
 
@@ -46,7 +64,7 @@ exports.createZoneRueTaine = function(res, callback){
 		res.worldZone = _worldZone;
 		_worldZone.createZone(CONFIG.zoneTaine.id, function(err, z){
 			CONFIG.checkErr(err);
-			assert.equal(z.id, CONFIG.zoneTaine.id, 'zone id is wrong');
+			assert.equal(z.id, CONFIG.zoneTaine.id, 'zone id is wrong : ' + z);
 			res.zone = z;
 			return callback(err, res);
 		});

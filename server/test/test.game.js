@@ -98,6 +98,7 @@ exports.getHTTPPage = function(res, callback){
 
 exports.getHTTPPageFromGame = function(res, callback){
 	exports.setupGame(res, CONFIG.serverConfiguration.options, function(err, res){
+		console.log("game setup");
 		CONFIG.checkErr(err);
 		//console.log("game setup");
 		exports.doHTTPGETRequest(res, CONFIG.http.sessionUrl, CONFIG.http.options, function(err, res){
@@ -108,11 +109,14 @@ exports.getHTTPPageFromGame = function(res, callback){
 }
 
 exports.setupGame = function(res, options, callback){
+
   new Server(options, function(err, _server){
+  	console.log("server setup");
   	CONFIG.checkErr(err);
   	should.exist(_server, 'server is null');  	
     res.server = _server;
     new Game(res.server, function(err, _game){
+    	console.log("game setup");
     	CONFIG.checkErr(err);
     	should.exist(_game, 'game is null');
     	res.game = _game;

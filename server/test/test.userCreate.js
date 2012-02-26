@@ -99,8 +99,10 @@ describe('User', function() {
 	describe("Inventory", function(){
 	  it('inventory exists after user creation', function(done){
 	  	createUser(function(err, u){
+
 	  		//console.log(u);
 	  		CONFIG.checkErr(err);
+				  		
 	  		u.getInventory(function(err, inventory){
 	  			console.log(inventory);
 	  			assert.notEqual(inventory, null, "invenotry is null");

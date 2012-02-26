@@ -7,12 +7,11 @@ var Ant = require('./../classes/ant');
 
 var ZoneModel = moaSchema.ZoneModel;
 
-
 require('./../classes/heritate').implements(ZoneModel, require("../db/DataBaseItem"), ZoneModel);
 
 exports.createZone = function(_zoneId, callback){
   var z = new ZoneModel({"id" : _zoneId});
-  z.saveToDB(callback);
+  return z.saveToDB(callback);
 }
 
 
@@ -85,22 +84,22 @@ ZoneModel.prototype.addAnt = function(ant, callback){
 //   }  
 // };
 
-// when it's ants time
-ZoneModel.prototype.playAnts = function() {
-  //console.log("play ants");
-  var deleteAnts = Array();
-  for (var i = 0; i < this.ants.length; ++i){
-    var ant = this.ants[i];
-    //if (ant == null) continue;
-    ant.play(this);
-    if (ant.shouldBeDeleted()){
-      deleteAnts.push(i);
-    }   
-  } 
-  for (var i = 0; i < deleteAnts.length; ++i){
-    this.removeAnt(antIndex);
-  }
-}
+// // when it's ants time
+// ZoneModel.prototype.playAnts = function() {
+//   //console.log("play ants");
+//   var deleteAnts = Array();
+//   for (var i = 0; i < this.ants.length; ++i){
+//     var ant = this.ants[i];
+//     //if (ant == null) continue;
+//     ant.play(this);
+//     if (ant.shouldBeDeleted()){
+//       deleteAnts.push(i);
+//     }   
+//   } 
+//   for (var i = 0; i < deleteAnts.length; ++i){
+//     this.removeAnt(antIndex);
+//   }
+// }
 
 // Zone.prototype.removeAnt = function(_antIndex) {
 //   this.removeExternalItem("ants", _antIndex);

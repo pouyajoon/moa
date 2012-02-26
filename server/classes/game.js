@@ -21,6 +21,7 @@ function playActionNodes(currentZone){
 }
 
 var Game = function(_server, callback){
+	console.log("game created:");
 	this.server = _server;
 
 	this.server.io.sockets.on('connection', function (socket) {
@@ -34,6 +35,7 @@ var Game = function(_server, callback){
 	}.bind(this));
 
 	new WorldZones(function(err, _worldZones){
+		console.log("worldZones created");
 		if (err) callback(err, null);
 		this.worldZones = _worldZones;
 		return callback(err, this);

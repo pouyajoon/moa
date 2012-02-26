@@ -4,6 +4,7 @@ var Inventory = require ('./Inventory');
 var _ = require('underscore');
 
 var UserModel = moaSchema.UserModel;
+var InventoryModel = moaSchema.InventoryModel;
 
 require('./heritate').implements(UserModel, require("../db/DataBaseItem"));
 
@@ -17,11 +18,10 @@ exports.createUser = function(_email, _password, callback){
 
 
 UserModel.prototype.getInventory = function(callback){
-  //console.log('user : ', this);
-  moaSchema.InventoryModel.findOne({"_id" : this.inventory}).populate('_user').run(function(err, i){
+  InventoryModel.findOne({"_id" : this.inventory}, function(err, inventory){
     if (err) return callback(err);
-    return callback(err, i);
-    //console.log(i);
+//    console.log(inventory);
+    return callback(err, inventory);
   });
 }
 

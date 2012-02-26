@@ -55,9 +55,10 @@ describe('Socket.io', function() {
 
 
 exports.getZoneTest = function(done, res, callback){
+	console.log('getZoneTest');
 	exports.getSecureSocketFromGame(res, function(err, res){
-		CONFIG.checkErr(err);
-		console.log('secure socket set');
+		console.log('getSecureSocketFromGame');
+		CONFIG.checkErr(err);		
 		res.socketClient.emit('getZone', CONFIG.zoneTaine.id);
 		res.socketClient.on('zone', function(zone){
 			res.zoneTaine = zone;
@@ -98,6 +99,7 @@ function getSecureSocketFromGameTest(currentNumber, maxNumber, done, next){
 
 exports.getSecureSocketFromGame = function(res, callbackOnConnect, callbackOnDisconnect){
 	require('./test.game').getHTTPPageFromGame(res, function(err, res){			
+		console.log('getHTTPPageFromGame');
 		CONFIG.checkErr(err);
 		return getSecureSocketFromHTTPConnection(res, callbackOnConnect, callbackOnDisconnect);
 	});
@@ -105,7 +107,6 @@ exports.getSecureSocketFromGame = function(res, callbackOnConnect, callbackOnDis
 
 function getSecureSocketFromHTTPConnection(res, callbackOnConnect, callbackOnDisconnect){
 	var sio_server = getSocketServerURL() + "?session.id=" + encodeURIComponent(res.cookies["session.id"]);
-	
 	try{
 		res.socketClient = io.connect(sio_server, CONFIG.socketIO.options);	
 	}
@@ -115,6 +116,7 @@ function getSecureSocketFromHTTPConnection(res, callbackOnConnect, callbackOnDis
 	}
 	should.exist(res.socketClient, "socket client is null");
 	res.socketClient.on('connect', function(data){
+		console.log('getSecureSocketFromHTTPConnection Connect');
 		callbackOnConnect(null, res);
 	});
 
