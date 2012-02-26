@@ -6,8 +6,6 @@ var CONFIG = require('./utils/config');
 
 
 
-
-
 describe('User', function() {
 
 	CONFIG.setupDatabase();
@@ -15,6 +13,7 @@ describe('User', function() {
 	describe("Creation", function(){
 	  it('create user', function(done) {
 	  	createUser(function(err, u){
+	  		//console.log(u);
 		    if (err) assert.equal(err, null, "an error exists, this test should not have any error, error is : " + err.err);
 		  	u.hasOne({"email" : CONFIG.userInfo.email, "password" : CONFIG.userInfo.password}, done);  
 		  });	  
@@ -22,8 +21,10 @@ describe('User', function() {
 
 	  it('create user, already exists', function(done){
 	  	createUser(function(err){
+	  		CONFIG.checkErr(err);
 	  		createUser(function(err){
-	  			assert.notEqual(err, null);
+	  			//console.log(err);
+	  			assert.notEqual(err, null, "err is null : " + err);
 			    assert.equal(err.code, "11000");
 			    done();
 		  	});
@@ -96,20 +97,30 @@ describe('User', function() {
 
 
 	describe("Inventory", function(){
-	  it('exists after user creation', function(done){
+	  it('inventory exists after user creation', function(done){
 	  	createUser(function(err, u){
+	  		//console.log(u);
 	  		CONFIG.checkErr(err);
-	  		should.exist(u.inventory, "inventory is null");
-				done();
+	  		u.getInventory(function(err, inventory){
+	  			console.log(inventory);
+	  			assert.notEqual(inventory, null, "invenotry is null");
+	  			assert.notEqual(u.inventory, inventory._id, 'inventory id is not correct: ' + u.inventory + ', ' + inventory._id);
+	  			done();
+	  		});				
 			});
 	  });
 	  
-	  it('has one ant after creation', function(done){
+	  it('inventory has one ant after creation', function(done){
 	  	createUser(function(err, u){
 	  		CONFIG.checkErr(err);
-		  	var antNum = u.inventory.ants.length;
-		  	should.equal(antNum, 1, "inventory should have only one ant but has " + antNum);
-				done();
+	  		console.log(u);
+	  		u.getInventory(function(err, inventory){
+			  	var antNum = inventory.ants.length;
+			  	console.log(inventory);
+			  	should.equal(antNum, 1, "inventory should have only one ant but has " + antNum);
+					done();
+
+	  		});
 			});
 	  });
 	});
@@ -126,11 +137,11 @@ function subscribeUserEmitMessage(res, callback){
 function subscribeUserTest(currentNumber, maxNumber, done, next){
   require('./test-socketIO').getSecureSocketFromGame({}, function(err, res){	
   	CONFIG.checkErr(err);	
-
   	subscribeUserEmitMessage(res, function(err, res){
   		CONFIG.checkErr(err);
   		should.exist(res.user, "user is null");
-  		should.equal(res.user.data.email, CONFIG.userInfo.email, "email of the new user do not equal the config user");
+  		//console.log(res.user);
+  		should.equal(res.user.email, CONFIG.userInfo.email, "email of the new user do not equal the config user");
 			res.socketClient.disconnect();  		
   	});
   }, function(err, res){
@@ -140,8 +151,16 @@ function subscribeUserTest(currentNumber, maxNumber, done, next){
   }); 	
 }
 
-function createUser(callback){
+
+var moaSchema = require('../db/moaSchema');
+var UserModel = moaSchema.UserModel;
+
+function createUserOld(callback){
   	new User(CONFIG.userInfo.email, CONFIG.userInfo.password, function(err, u){
   		callback(err, u);
   	});
+}
+
+function createUser(callback){
+	User.createUser(CONFIG.userInfo.email, CONFIG.userInfo.password, callback);
 }

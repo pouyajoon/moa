@@ -24,17 +24,15 @@ describe('WorldZones', function() {
 		});
   });
 
-	it('world zones get zone', function(done) {	
+	it('get zone local', function(done) {	
 		new WorldZones(function(err, _worldZone){
 			CONFIG.checkErr(err);
 			_worldZone.getZone(CONFIG.zoneTaine.id, function(err, z){
 				console.log(z);
-				assert.equal(z.data.id, CONFIG.zoneTaine.id, 'zone id is wrong');
+				assert.equal(z.id, CONFIG.zoneTaine.id, 'zone id is wrong');
 				done();
 			});			
 		});		
-
-	
   });
 
 });
@@ -48,7 +46,7 @@ exports.createZoneRueTaine = function(res, callback){
 		res.worldZone = _worldZone;
 		_worldZone.createZone(CONFIG.zoneTaine.id, function(err, z){
 			CONFIG.checkErr(err);
-			assert.equal(z.data.id, CONFIG.zoneTaine.id, 'zone id is wrong');
+			assert.equal(z.id, CONFIG.zoneTaine.id, 'zone id is wrong');
 			res.zone = z;
 			return callback(err, res);
 		});

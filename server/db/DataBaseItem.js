@@ -1,17 +1,14 @@
 var DataBaseItem = function(_model){
 	this.model = _model;
-  this.data = new this.model();
+  // this.data = new this.model();
 }
 
 
 DataBaseItem.prototype.saveToDB = function(callback){
-  if (this.data == null) callback(new Error("data should not be null"));
   //console.log("before save data", this.data);
-  this.data.save(function(err){
+  this.save(function(err){
     //console.log("save data", err);
-    if (err) {
-      return callback(err, this);
-    }
+    if (err) return callback(err, this);
     return callback(null, this);
   }.bind(this));
 }

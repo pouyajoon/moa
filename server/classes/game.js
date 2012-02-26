@@ -50,7 +50,8 @@ Game.prototype.setupSocketActions = function(socket) {
       socket.zone = zone;
       socket.interval  = setInterval(function () {
       	var zEmit = {
-      		"id" : socket.zone.data.id,
+      		"id" : socket.zone.id,
+      		"_id" : socket.zone._id,
       		"ants" : socket.zone.ants
       	};
         console.log('emit zone : ', zEmit);           

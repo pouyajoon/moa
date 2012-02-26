@@ -6,6 +6,37 @@ var mongoose = require('mongoose');
 var AntSchema = require('../db/moaSchema.js').AntSchema;
 var AntModel = mongoose.model('AntModel', AntSchema);
 
+
+
+require('./heritate').implements(AntModel, require("../db/DataBaseItem"), AntModel);
+
+exports.createAnt = function(callback){
+	var ant = new AntModel();
+	return ant.setup(callback);
+}
+
+exports.createAntFromInventory = function(inventory, callback){
+	exports.createAnt(function(err, ant){
+		ant.inventory = inventory._id;	
+		ant.saveToDB(callback);
+	});
+};
+
+exports.createAntFromZone = function(zone, callback){
+	exports.createAnt(function(err, ant){
+		ant.zone = zone._id;	
+		ant.saveToDB(callback);
+	});
+};
+
+
+
+AntModel.prototype.setup = function(callback) {	
+	this.saveToDB(callback);
+};
+
+
+
 var Ant = function(_position, _size, callback){
   //require('./heritate').heritate(this, Ant, PhysicElement, _position, _size);
   require('./heritate').heritate(this, Ant, require("../db/DataBaseItem"), AntModel);
@@ -174,4 +205,4 @@ Ant.prototype.moveAccordingDirection = function(_power){
 
 
 
-module.exports = Ant;
+//module.exports = Ant;

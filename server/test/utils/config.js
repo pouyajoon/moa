@@ -26,6 +26,11 @@ exports.socketIO = {
 	"options" : {'force new connection': true}
 }
 
+exports.ant = {
+	"position" : {"x" : 500, "y" : 500}
+	, "size" :  {"x" : 50, "y" : 50}
+}  
+
 var assert = require('assert');
 
 exports.checkErr = function(err){
@@ -46,13 +51,6 @@ exports.setIntervalX = function(delay, repetitions, callback) {
 
 exports.setupDatabase = function(test){
 	var db;
-
-	// before(function(){
-	// });
-
-	// after(function(){
-	// });
-
 
 	beforeEach(function(){		
 		// console.log('start');

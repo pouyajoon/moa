@@ -1,39 +1,89 @@
 var moaSchema = require('../db/moaSchema.js');
-
-var Zone = function(_zoneId, callback) {
-  require('./../classes/heritate').heritate(this, Zone, require("../db/DataBaseItem"), moaSchema.ZoneModel);
+var _ = require('underscore');
 
 
-  this.data.id = _zoneId;
+var AntModel = moaSchema.AntModel;
+var Ant = require('./../classes/ant');
 
-  this.ants = new Array();
-  this.actionNodes = new Array();  
-
-  this.hasOne({"id" : _zoneId}, function(err, exists, zone){
-    //console.log("zone has one :", err, exists, zone);
-    
-
-    if (err) return callback(err);
-    if (exists){
-      this.data = zone[0];
-      return callback(null, this);
-    }
-    else {
-
-      this.saveToDB(function(err){
-        //console.log("zone save :", err);
-        if (err) return callback(err, null);
-        return callback(null, this);
-      }.bind(this));
-    }
-  }.bind(this));
+var ZoneModel = moaSchema.ZoneModel;
 
 
-  
+require('./../classes/heritate').implements(ZoneModel, require("../db/DataBaseItem"), ZoneModel);
+
+exports.createZone = function(_zoneId, callback){
+  var z = new ZoneModel({"id" : _zoneId});
+  z.saveToDB(callback);
 }
 
+
+// var Zone = function(_zoneId, callback, zoneDB) {
+//   require('./../classes/heritate').heritate(this, Zone, require("../db/DataBaseItem"), ZoneModel);
+
+//   this.data.id = _zoneId;
+//   this.ants = new Array();
+//   this.actionNodes = new Array();  
+
+//   this.loadFromDB({"id" : _zoneId}, zoneDB, function(){
+//     console.log("load zone from db", this.data);
+//     _.each(this.data.ants, function(a){
+//       console.log('ant :', a);
+//     });
+//   }, callback);
+
+// }
+
+//var ZoneModel = moaSchema.ZoneModel;
+
+// ZoneModel.prototype.hello = function() {
+//   console.log("hello");
+// };
+
+ZoneModel.prototype.createAnt = function(callback){
+  Ant.createAnt(function(err, ant){
+    ant.zone = this._id;    
+    ant.saveToDB(callback);
+    return this.addAnt(ant, callback);
+  }.bind(this));
+};
+
+ZoneModel.prototype.addAnt = function(ant, callback){
+  this.ants.push(ant); 
+  this.saveToDB(callback);
+};
+
+
+// Zone.prototype.loadFromDB = function(filter, dbItem, loadExternalItems, callback) {
+//   this.data.hello();
+//   if (!_.isUndefined(dbItem)){
+//     this.data = dbItem;
+//     callback(null, this);
+//   } else {
+//     this.hasOne(filter, function(err, exists, item){
+//       //console.log("item has one :", err, exists, item);
+//       if (err) return callback(err);
+//       if (exists){
+//         this.data = item[0];
+//         return loadExternalItems().bind(this);
+
+        
+//         // _.each(this.data.ants, function(a){
+//         //   console.log('ant :', a);
+//         // });
+//         // return callback(null, this);
+//       }
+//       else {
+//         this.saveToDB(function(err){
+//           //console.log("item save :", err);
+//           if (err) return callback(err, null);
+//           return callback(null, this);
+//         }.bind(this));
+//       }
+//     }.bind(this));    
+//   }  
+// };
+
 // when it's ants time
-Zone.prototype.playAnts = function() {
+ZoneModel.prototype.playAnts = function() {
   //console.log("play ants");
   var deleteAnts = Array();
   for (var i = 0; i < this.ants.length; ++i){
@@ -49,17 +99,12 @@ Zone.prototype.playAnts = function() {
   }
 }
 
-Zone.prototype.removeAnt = function(_antIndex) {
-  this.removeExternalItem("ants", _antIndex);
-  // var dbID = this.ants[_antIndex].data._id;
-  // this.ants.splice(_antIndex, 1);
-  // this.data.ants.remove(dbID);
-};
+// Zone.prototype.removeAnt = function(_antIndex) {
+//   this.removeExternalItem("ants", _antIndex);
+// };
 
-Zone.prototype.addAnt = function(ant) {
-  this.addExternalItem("ants", ant);
-  // this.ants.push(ant);
-  // this.data.ants.push(ant.data);
-};
+// Zone.prototype.addAnt = function(ant) {
+//   this.addExternalItem("ants", ant);
+// };
 
-module.exports = Zone;
+//module.exports = Zone;

@@ -1,5 +1,11 @@
 $(function(){
 
+  startup();
+  
+});
+
+
+function startup(){
   var worldMap = new WorldMap(function(_worldMap){
     switch(DRAW_MODE){
       case 'zoom' :
@@ -16,6 +22,5 @@ $(function(){
   $('#map_canvas').height($(window).height());
 
   var _inventory = new Inventory();
-  _inventory.draw();
-  
-});
+  _inventory.draw();  
+}

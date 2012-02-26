@@ -44,11 +44,7 @@ var io_error = {"name" : "error", "doAction" : function (reason) {
 var User = require('./user');
 
 var io_subscribeUser = {"name" : "user-subscribe", "doAction" : function (_user, callback) {
-    try {
-      new User(_user.email, _user.password, callback);
-    } catch (e){
-      console.log(e);
-    }
+    User.createUser(_user.email, _user.password, callback);
 }};
 
 var io_userExists = {"name" : "user-exists", "doAction" : function (_email, callback) {

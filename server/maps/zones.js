@@ -14,26 +14,33 @@ var ZoneModel = require('../db/moaSchema').ZoneModel;
 var WorldZones = function(callback){
 	this.allZones = {};
 	//console.log("loading zones");
-	return callback(null, this);
-	// this.loadFromDB(function(err){		
-	// 	return callback(err, this);
-	// }.bind(this));
+	//return callback(null, this);
+	this.loadFromDB(function(err){		
+		return callback(err, this);
+	}.bind(this));
 };
 
 
-WorldZones.prototype.createZone = function(zoneID, callback){
-	new Zone(zoneID, function(err, zone){		
+WorldZones.prototype.createZone = function(_zoneID, callback){
+
+	Zone.createZone(_zoneID, function(err, zone){
 		if (err) callback(err);
-		this.allZones[zoneID]  = zone;
-		console.log("zone saved", this.allZones);
-		return callback(null, this.allZones[zoneID]);
+		this.allZones[_zoneID]  = zone;
+		return callback(null, this.allZones[_zoneID]);
 	}.bind(this));
+
+	// new Zone(zoneID, function(err, zone){		
+	// 	if (err) callback(err);
+	// 	this.allZones[zoneID]  = zone;
+	// 	//console.log("zone saved", this.allZones);
+	// 	return callback(null, this.allZones[zoneID]);
+	// }.bind(this));
 }
 
 WorldZones.prototype.getZone = function(zoneID, callback) {
 	
 	var z = this.allZones[zoneID];
-	 console.log("allZones", this.allZones, z);
+	console.log("allZones", this.allZones);
 	if (_.isUndefined(z)) {
 		// console.log("create zone");
 		return this.createZone(zoneID, callback);
@@ -52,33 +59,14 @@ WorldZones.prototype.saveToDB = function() {
 };
 
 WorldZones.prototype.loadFromDB = function(callback) {
-	// var mongoose = require('mongoose');
-	// mongoose.connect("mongodb://localhost/moaTest");
-
-	// console.log("load from db ", ZoneModel);
-	// var z = new ZoneModel();
-	// z.id = "a";
-	// z.save(function(err){
-	// 	console.log("save", err);
-	// });
-
-	ZoneModel.count({}, function(err, count){
-		if (err) callback(err);		
-		if (count > 0){
-			ZoneModel.find({}, function(err, zones){		
-//				console.log('find count zones', zones, err);			
-					zones.forEach(function(z){
-						this.allZones[z.id] = new Zone(z);
-					}.bind(this));
-	//				console.log('zones loaded from db');	
-					return callback(null);
-				}.bind(this));			
-		} else {
-//			console.log('no item');
-			return callback(null);				
-		}
-		//.bind(this)
-	});
+  ZoneModel.find({}).populate('ants').run(function(err, zones){
+		if (err) return callback(err);
+  	if (zones.length == 0) return callback(null);
+  	_.each(zones, function(zone){
+			this.allZones[zone.id] = zone;
+  	}.bind(this));  	
+  	return callback(null);
+  }.bind(this));
 };
 
 
