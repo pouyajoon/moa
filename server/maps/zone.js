@@ -49,8 +49,9 @@ ZoneModel.prototype.createAnt = function(callback){
 };
 
 ZoneModel.prototype.addAnt = function(ant, callback){
-  return callback(null);
-  // this.ants.push(ant); 
+  
+   this.ants.push(ant); 
+   return callback(null);
   // this.saveToDB(callback);
 };
 
