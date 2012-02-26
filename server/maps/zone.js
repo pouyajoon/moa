@@ -41,14 +41,17 @@ exports.createZone = function(_zoneId, callback){
 ZoneModel.prototype.createAnt = function(callback){
   Ant.createAnt(function(err, ant){
     ant.zone = this._id;    
-    ant.saveToDB(callback);
-    return this.addAnt(ant, callback);
+    ant.saveToDB(function(err){
+      if (err) return callback(err);
+      return this.addAnt(ant, callback);  
+    }.bind(this));    
   }.bind(this));
 };
 
 ZoneModel.prototype.addAnt = function(ant, callback){
-  this.ants.push(ant); 
-  this.saveToDB(callback);
+  return callback(null);
+  // this.ants.push(ant); 
+  // this.saveToDB(callback);
 };
 
 

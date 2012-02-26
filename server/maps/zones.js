@@ -52,11 +52,11 @@ WorldZones.prototype.getZone = function(zoneID, callback) {
 }
 
 
-WorldZones.prototype.saveToDB = function() {
-	for (zID in this.allZones){
-		this.allZones[zID].saveToDB();
-	}
-};
+// WorldZones.prototype.saveToDB = function() {
+// 	for (zID in this.allZones){
+// 		this.allZones[zID].saveToDB();
+// 	}
+// };
 
 WorldZones.prototype.loadFromDB = function(callback) {
   ZoneModel.find({}).populate('ants').run(function(err, zones){

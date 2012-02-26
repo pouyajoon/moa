@@ -9,7 +9,7 @@ exports.ZoneModel = mongoose.model('ZoneModel', exports.ZoneSchema);
 
 exports.InventorySchema = new mongoose.Schema({
 	"ants" : [{"type" : mongoose.Schema.ObjectId, "ref" : exports.AntSchema}]
-	,_user : { type: mongoose.Schema.ObjectId, ref: 'UserModel' }
+	,_user : { type: mongoose.Schema.ObjectId, ref: exports.UserSchema }
 });
 
 exports.InventoryModel = mongoose.model('InventoryModel', exports.InventorySchema);
@@ -50,7 +50,7 @@ exports.AntSchema = new mongoose.Schema({
 		"w" : {"type": Number, "default" : 0}
 		,"h" : {"type": Number, "default" : 0}
 	}
-	,_zone : { type: mongoose.Schema.ObjectId, ref: 'ZoneModel' }
+	,_zone : { type: mongoose.Schema.ObjectId, ref: exports.ZoneModel }
 });
 exports.AntModel = mongoose.model('AntModel', exports.AntSchema);
 

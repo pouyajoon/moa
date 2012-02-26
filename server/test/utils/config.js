@@ -60,7 +60,7 @@ exports.setupDatabase = function(test){
 
 	afterEach(function(){
 		// console.log('end');
-		//require('./db').closeDB(db);
+		// require('./db').closeDB(db);
 
 	});
 

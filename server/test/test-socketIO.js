@@ -45,7 +45,7 @@ describe('Socket.io', function() {
 			//console.log("res1", res);
 			exports.getZoneTest(done, res, function(err, res){
 				//console.log("res2", res);
-				assert.equal(res.zoneTaine._id, res.zone.data._id, "zone id should be the same");
+				assert.equal(res.zoneTaine._id, res.zone._id, "zone id should be the same");
 				res.socketClient.disconnect();
 			});
 		});
@@ -57,7 +57,7 @@ describe('Socket.io', function() {
 exports.getZoneTest = function(done, res, callback){
 	exports.getSecureSocketFromGame(res, function(err, res){
 		CONFIG.checkErr(err);
-		//console.log('secure socket set');
+		console.log('secure socket set');
 		res.socketClient.emit('getZone', CONFIG.zoneTaine.id);
 		res.socketClient.on('zone', function(zone){
 			res.zoneTaine = zone;
@@ -105,7 +105,14 @@ exports.getSecureSocketFromGame = function(res, callbackOnConnect, callbackOnDis
 
 function getSecureSocketFromHTTPConnection(res, callbackOnConnect, callbackOnDisconnect){
 	var sio_server = getSocketServerURL() + "?session.id=" + encodeURIComponent(res.cookies["session.id"]);
-	res.socketClient = io.connect(sio_server, CONFIG.socketIO.options);
+	
+	try{
+		res.socketClient = io.connect(sio_server, CONFIG.socketIO.options);	
+	}
+	catch (err){
+		console.log('ERR', err);
+		if (err) return callbackOnConnect(err);
+	}
 	should.exist(res.socketClient, "socket client is null");
 	res.socketClient.on('connect', function(data){
 		callbackOnConnect(null, res);
