@@ -11,25 +11,25 @@ describe('User', function() {
 	CONFIG.setupDatabase();
 
 	describe("Creation", function(){
-	  it('create user', function(done) {
-	  	createUser(function(err, u){
-	  		//console.log(u);
-		    if (err) assert.equal(err, null, "an error exists, this test should not have any error, error is : " + err.err);
-		  	u.hasOne({"email" : CONFIG.userInfo.email, "password" : CONFIG.userInfo.password}, done);  
-		  });	  
-	  });
+	  // it('create user', function(done) {
+	  // 	createUser(function(err, u){
+	  // 		//console.log(u);
+		 //    if (err) assert.equal(err, null, "an error exists, this test should not have any error, error is : " + err.err);
+		 //  	u.hasOne({"email" : CONFIG.userInfo.email, "password" : CONFIG.userInfo.password}, done);  
+		 //  });	  
+	  // });
 
-	  it('create user, already exists', function(done){
-	  	createUser(function(err){
-	  		CONFIG.checkErr(err);
-	  		createUser(function(err){
-	  			//console.log(err);
-	  			assert.notEqual(err, null, "err is null : " + err);
-			    assert.equal(err.code, "11000");
-			    done();
-		  	});
-		  });	  
-	  });
+	  // it('create user, already exists', function(done){
+	  // 	createUser(function(err){
+	  // 		CONFIG.checkErr(err);
+	  // 		createUser(function(err){
+	  // 			//console.log(err);
+	  // 			assert.notEqual(err, null, "err is null : " + err);
+			//     assert.equal(err.code, "11000");
+			//     done();
+		 //  	});
+		 //  });	  
+	  // });
 
 	  it('subscribe user over socket', function(done){
 			subscribeUserTest.repeat(0, done);
@@ -37,7 +37,7 @@ describe('User', function() {
 
 
 	  function subscribeUserAndAuthenticateUsingUser(user, done, callback){
-		  require('./test-socketIO').getSecureSocketFromGame({}, function(err, res){		
+		  require('./test.socketIO').getSecureSocketFromGame({}, function(err, res){		
 		  	CONFIG.checkErr(err);
 		  	subscribeUserEmitMessage(res, function(err, res){			  	
 		  		CONFIG.checkErr(err);
@@ -80,7 +80,7 @@ describe('User', function() {
 		it('cant subscribe user, already exists' , function(done){			
 			createUser(function(err, u){
 				CONFIG.checkErr(err);
-			  require('./test-socketIO').getSecureSocketFromGame({}, function(err, res){		
+			  require('./test.socketIO').getSecureSocketFromGame({}, function(err, res){		
 			  	CONFIG.checkErr(err);
 					subscribeUserEmitMessage(res, function(err, res){
 			  		should.exist(err, "err should not be null as user should already exists");
@@ -137,7 +137,7 @@ function subscribeUserEmitMessage(res, callback){
 }
 
 function subscribeUserTest(currentNumber, maxNumber, done, next){
-  require('./test-socketIO').getSecureSocketFromGame({}, function(err, res){	
+  require('./test.socketIO').getSecureSocketFromGame({}, function(err, res){	
   	CONFIG.checkErr(err);	
   	subscribeUserEmitMessage(res, function(err, res){
   		CONFIG.checkErr(err);

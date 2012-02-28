@@ -24,7 +24,7 @@ var WorldZones = function(callback){
 
 
 WorldZones.prototype.createZone = function(_zoneID, callback){
- console.log("create zone");
+ //console.log("create zone");
 	Zone.createZone(_zoneID, function(err, zone){
 		if (err) callback(err);
 		this.allZones[_zoneID]  = zone;
@@ -42,25 +42,25 @@ WorldZones.prototype.createZone = function(_zoneID, callback){
 WorldZones.prototype.getZone = function(zoneID, callback) {
 	
 	var z = this.allZones[zoneID];
-	console.log("allZones", this.allZones, z);
+	//console.log("allZones", this.allZones, z);
 	if (_.isUndefined(z)) {		
 		return this.createZone(zoneID, callback);
 	}
 	else{
-		console.log("addZoneAlreadyExists", z);
+		//console.log("addZoneAlreadyExists", z);
 		return callback(null, z);	
 	}
 }
 
 
 WorldZones.prototype.loadFromDB = function(callback) {
-	console.log(ZoneModel);
+	//console.log(ZoneModel);
 	
 	ZoneModel.find({}, function(err, zones){
-		console.log(zones);
+		//console.log(zones);
 		if (zones.length == 0) return callback(null);
 		_.each(zones, function(zone){
-			console.log("LOAD ZONE", zone);
+			//console.log("LOAD ZONE", zone);
 			this.allZones[zone.id] = zone;	
 		}.bind(this));
 		return callback(null);

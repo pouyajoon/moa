@@ -1,31 +1,25 @@
+var Step = require('common').step;
 
 
-
-
-exports.clearDB = function(){
+exports.clearDB = function(callback){
 	var moaSchema = require('../../db/moaSchema');
-
-	moaSchema.UserModel.remove({}, function(){});	
-	moaSchema.InventoryModel.remove({}, function(){});	
-	
-	moaSchema.AntModel.remove({}, function(){});	
-	moaSchema.QueenModel.remove({}, function(){});	
-	
-	moaSchema.ZoneModel.remove({}, function(){});	
-
+	Step([
+		function(next){ moaSchema.UserModel.remove({}, next) }
+		, function(next){ moaSchema.InventoryModel.remove({}, next) }
+		, function(next){ moaSchema.AntModel.remove({}, next) }
+		, function(next){ moaSchema.QueenModel.remove({}, next) }
+		, function(next){ moaSchema.ZoneModel.remove({}, callback) }
+	], callback);
 }
 
+var mongoose = require('mongoose');
 
-
-exports.loadDB = function(){	
-	var mongoose = require('mongoose');
+exports.loadDB = function(callback){	
 	mongoose.connect("mongodb://localhost/moaTest");
-	return mongoose;
+	callback();
 }
 
-exports.closeDB = function(_mongoose){
-	if (typeof _mongoose !== "undefined"){
-		_mongoose.disconnect();		
-	}
-
+exports.closeDB = function(callback){
+	mongoose.disconnect();		
+	callback();
 }

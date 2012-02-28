@@ -17,14 +17,17 @@ module.exports = function(server){
 
   var parseCookie = require('connect').utils.parseCookie;
 
-  function checkSession(data, server, sID, callback){
-    //console.log("check session", sID, typeof sID);
+
+  function checkSession(data, sID, callback){
+//    console.log("check session", sID, typeof sID);
     server.sessionStore.get(sID, function (err, session) {
-      if (err) callback(err, false);
+      if (err) callback(err)
+      console.log(err, data, session, sID);
       if (err || !session) {
+        
         //console.log("err:", err, "session: ", session, " : sID : ", sID);
         // if we cannot grab a session, turn down the connection
-        return callback('Error : ' + data , false);
+        return callback('Error : >' + data , false);
       } else {
         //console.log("session accepted");
         // save the session data and accept the connection
@@ -34,6 +37,15 @@ module.exports = function(server){
     });
   }
 
+  // function checkSession(data, server, sID, callback){
+  //   server.getSession(sID, function(err, session){
+  //     //console.log(err);
+  //     if (err) return callback(err, false);
+  //     data.session = session;
+  //     return callback(null, true);
+  //   });
+  // }
+
   //console.log("setup authorization");
   server.io.set('authorization', function (data, accept) {
     //return accept(null, true);
@@ -42,12 +54,15 @@ module.exports = function(server){
       //console.log("authorization headers : ", data.headers.cookie);
       data.cookie = parseCookie(data.headers.cookie);
       data.sessionID = data.cookie['session.id'];
-      checkSession(data, server, data.sessionID, accept);
+      return checkSession(data, data.sessionID, accept);
     } else {
-      //console.info("no cookie");
+      console.info("no cookie");
+      
       if (data.query["session.id"] !== "undefined"){
-        //console.error("sessions id defined");
-        return checkSession(data, server, data.query["session.id"], accept);
+        var sID = decodeURIComponent(data.query["session.id"])
+        //console.error("data", data);
+        //return accept(null, true);
+        return checkSession(data, sID, accept);
       } else {
         //console.error("no cookie, n/a");
         return accept('No cookie transmitted.', false);   

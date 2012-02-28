@@ -12,7 +12,7 @@ var Server = function(options, callback){
 
   var express = require('express');
   var RedisStore = require('connect-redis')(express);
-  this.sessionStore = new RedisStore;
+  this.sessionStore = new RedisStore();
   this.ioActions = [];
 
   this.app = express.createServer();
@@ -37,8 +37,9 @@ var Server = function(options, callback){
     this.app.configure('dev', function(){
       this.webServer = "pouya:" + this.options.port;
     }.bind(this));
-    this.io = require("socket.io").listen(this.app, { log: false });
-    this.io.set('log level', 0);
+
+    this.io = require("socket.io").listen(this.app, { log: true });
+    this.io.set('log level', 3);
     this.io.set('transports', ["websocket"]);
     this.app.dynamicHelpers({
       'session' : function(req, res) {
@@ -56,6 +57,16 @@ var Server = function(options, callback){
     return callback(null, this);
   }.bind(this));
 };
+
+
+// Server.prototype.getSession = function(sID, callback) {
+//   this.sessionStore.get(sID, function (err, session) {
+//     if (err) return callback(err, null);
+//     console.log(session, err);
+//     if (_.isUndefined(session)) return callback(new Error("session is null"), null);
+//     return callback(null, session);
+//   });
+// };
 
 
 Server.prototype.close = function() {  

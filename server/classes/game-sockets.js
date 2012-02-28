@@ -16,8 +16,6 @@ var io_createQueen = {"name" : "createQueen", "doAction" : function(_creationInf
   }
 };  
 
-
-
 var io_stopzone = {"name" : "stopzone", "doAction" : function(zone_id){
     this.get('sendingZones', function (err, z) {
       //console.log('stop sending : ', this.interval);

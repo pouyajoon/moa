@@ -21,7 +21,7 @@ function playActionNodes(currentZone){
 }
 
 var Game = function(_server, callback){
-	console.log("game created:");
+	//console.log("game created:");
 	this.server = _server;
 
 	this.server.io.sockets.on('connection', function (socket) {
@@ -35,7 +35,7 @@ var Game = function(_server, callback){
 	}.bind(this));
 
 	new WorldZones(function(err, _worldZones){
-		console.log("worldZones created");
+		//console.log("worldZones created");
 		if (err) callback(err, null);
 		this.worldZones = _worldZones;
 		return callback(err, this);
@@ -48,7 +48,7 @@ Game.prototype.setupSocketActions = function(socket) {
 	socket.on("getZone", function(zoneID){
     // console.log('get zone : ', zoneID); 
     this.worldZones.getZone(zoneID, function(err, zone){     
-      console.log('zone : ', zoneID, err, zone);      
+      //console.log('zone : ', zoneID, err, zone);      
       socket.zone = zone;
       socket.interval  = setInterval(function () {
       	var zEmit = {
@@ -56,10 +56,10 @@ Game.prototype.setupSocketActions = function(socket) {
       		"_id" : socket.zone._id,
       		"ants" : socket.zone.ants
       	};
-        console.log('emit zone : ', zEmit);           
+        //console.log('emit zone : ', zEmit);           
         socket.emit('zone', zEmit);
-        //console.log(this.server);
-        //this.emit('inventory', this.)
+        //console.log(socket.handshake);
+        //this.emit('inventory', this.inventory.ants);
       }.bind(this), 200);
     }.bind(this));      
     //console.log("send zone : ", zoneID);
