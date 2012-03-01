@@ -28,8 +28,12 @@ DataBaseItem.prototype.hasOne = function(_filter, callback){
     if (u == null) return callback(null, false, null);
     if (u.length > 1) return callback( (typeof this) + " exists too many times, should be one.", false, null);
     if (u.length == 0) return callback(null, false, null);    
+    var u = u[0];
+    //console.log("HAS USER", u.__proto__, this.model);
+    require('../classes/heritate').implements(u, this.model);
+    //console.log("GET USER", u.__proto__["getInventory"]);
     return callback(null, true, u);
-  });  
+  }.bind(this));  
 }
 
 DataBaseItem.prototype.getOne = function(_filter, callback){

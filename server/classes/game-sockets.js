@@ -46,12 +46,12 @@ var io_subscribeUser = {"name" : "user-subscribe", "doAction" : function (_user,
 }};
 
 var io_userExists = {"name" : "user-exists", "doAction" : function (_email, callback) {
-    console.log('get user exists ', _email);    
-    var u = new User(_email);
-    u.exists(function(err, e){
-      if (err) callback(err, null);
-      callback(null, e)
-    });
+    // console.log('get user exists ', _email);    
+    // var u = new User(_email);
+    // u.exists(function(err, e){
+    //   if (err) callback(err, null);
+    //   callback(null, e)
+    // });
 }};
 
 

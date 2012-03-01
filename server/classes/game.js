@@ -2,6 +2,11 @@ var libWorldTools = require('./worldTools');
 var WorldZones = require ('./../maps/zones');
 var _ = require('underscore');
 var Server = require('./../lib/Server');
+var moaSchema = require('./../db/moaSchema');
+
+var User = require("./user");
+var UserModel = User.UserModel;
+
 
 //when it's action nodes time
 function playActionNodes(currentZone){
@@ -44,25 +49,71 @@ var Game = function(_server, callback){
 }
 
 
+Game.prototype.getUserFromSessionID = function(sID, callback) {
+  this.server.sessionStore.get(sID, function(err, session){
+//	console.log("session >", session);
+		if (session){
+			try
+			{
+				if (_.isUndefined(session.user)){
+					return callback({"err" : "user is not in session", "code" : "0"})
+				}
+				//var u = session.user;
+	//			console.log('user id', session.user._id);
+				var u = new UserModel();
+				u.model = UserModel;
+				u.hasOne({"_id" : session.user._id}, function(err, exists, user){
+					//console.log('has user', exists, user.__proto__);
+					if (err) return callback(err);					
+					if (exists){
+						return callback(null, user);
+					}  else {
+						return callback({"err" : "session user don't exists", "code" : "0"});
+					}
+				});      									
+			} catch (err){
+				return callback(err);
+			}
+		}
+	});
+};
+
+
+Game.prototype.emitZone = function(socket){
+	//console.log("interval");
+	var zEmit = {
+		"id" : socket.zone.id,
+		"_id" : socket.zone._id,
+		"ants" : socket.zone.ants
+	};
+  socket.emit('zone', zEmit);
+
+  if (!_.isUndefined(socket.user)){
+	  socket.user.getInventory(function(err, i){
+	  	//console.log("inventory", i);
+	  	socket.emit('inventory', i);
+	  });  	
+  }
+
+}
+
 Game.prototype.setupSocketActions = function(socket) {
 	socket.on("getZone", function(zoneID){
-    // console.log('get zone : ', zoneID); 
-    this.worldZones.getZone(zoneID, function(err, zone){     
-      //console.log('zone : ', zoneID, err, zone);      
-      socket.zone = zone;
-      socket.interval  = setInterval(function () {
-      	var zEmit = {
-      		"id" : socket.zone.id,
-      		"_id" : socket.zone._id,
-      		"ants" : socket.zone.ants
-      	};
-        //console.log('emit zone : ', zEmit);           
-        socket.emit('zone', zEmit);
-        //console.log(socket.handshake);
-        //this.emit('inventory', this.inventory.ants);
-      }.bind(this), 200);
-    }.bind(this));      
-    //console.log("send zone : ", zoneID);
+	  var sID = socket.handshake.sessionID;
+		this.getUserFromSessionID(sID, function(err, user){
+				if (err) {
+					if (err.code != "0"){
+						console.log("ERROR>", err);
+					}
+				}
+				socket.user = user;
+		    this.worldZones.getZone(zoneID, function(err, zone){     
+		      socket.zone = zone;
+		      socket.interval  = setInterval(function(){
+		      	this.emitZone(socket);
+		      }.bind(this), 200);
+		    }.bind(this)); 
+		}.bind(this));
   }.bind(this));
 };
 

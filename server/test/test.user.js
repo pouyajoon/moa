@@ -46,7 +46,7 @@ module.exports = testCase({
   ,"subscribe user over socket" :  function(test){
   	Step([
   		function(next) { common.getSecureSocketFromGame({"test" : test}, next)},
-  		function(res, next) { common.users.subscribeUserOverSocket(res, function(err, res){
+  		function(res, next) { common.users.subscribeUserOverSocket(res, CONFIG.userInfo, function(err, res){
 	  		test.ok(err == null);
 	  		test.ok(res.user != null, "user is null");
 	  		test.ok(res.user.email == CONFIG.userInfo.email);
@@ -55,17 +55,17 @@ module.exports = testCase({
   	]);
   }
   ,"subscribe user over socket and authenticate" :  function(test){
-  	Step([
-  		function(next) { common.getSecureSocketFromGame({"test" : test}, next)},
-  		function(res, next) { common.users.subscribeUserOverSocket(res, next)},
-  		function(res, next) { common.users.authenticateUser(res, function(err, res){
-	  		test.ok(err == null);
-	  		test.ok(res.user != null, "user is null");
-	  		test.ok(res.user.email == CONFIG.userInfo.email);
-	  		console.log(res.body, res.cookies);
-	  		res.socket.disconnect();
-  		})}
-  	]);
+    common.users.subscribeUserOverSocketAndAuthenticate({"test" : test}, CONFIG.userInfo, function(err, res){
+      test.ok(err == null);
+      test.ok(res.user != null, "user is null");
+      test.ok(res.user.email == CONFIG.userInfo.email);
+      test.ok(res.user.inventory != null, "user dont have an inventory");
+      // test.ok(res.user.inventory.ants != null, "user dont have ants in his inventory");      
+      // test.ok(res.user.inventory.ants.length = 1, "user should have one ant in his inventory");
+      res.socket.disconnect();
+    });
+
+
   }  
 });
 

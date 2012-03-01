@@ -1,14 +1,16 @@
 var PhysicElement = require ('./physicElement');
 var libWorldTools = require('./worldTools');
+var _ = require("underscore");
+//var mongoose = require('mongoose');
 
-var mongoose = require('mongoose');
-
-var AntSchema = require('../db/moaSchema.js').AntSchema;
-var AntModel = mongoose.model('AntModel', AntSchema);
+var moaSchema = require('../db/moaSchema.js');
+var AntModel = moaSchema.AntModel;
 
 
 
-require('./heritate').implements(AntModel, require("../db/DataBaseItem"), AntModel);
+//var DataBaseItem = require("./../db/DataBaseItem");
+//_.extend(AntModel, DataBaseItem);
+
 
 exports.createAnt = function(callback){
 	var ant = new AntModel();
@@ -28,8 +30,6 @@ exports.createAntFromZone = function(zone, callback){
 		ant.saveToDB(callback);
 	});
 };
-
-
 
 AntModel.prototype.setup = function(callback) {	
 	this.saveToDB(callback);

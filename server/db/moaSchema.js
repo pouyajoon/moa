@@ -1,3 +1,5 @@
+var _ = require("underscore");
+var DataBaseItem = require("./DataBaseItem");
 var mongoose = require('mongoose');
 require('mongoose-types').loadTypes(mongoose);
 
@@ -22,6 +24,9 @@ exports.UserSchema = new mongoose.Schema({
 
 exports.UserModel = mongoose.model('UserModel', exports.UserSchema);
 
+_.extend(exports.UserModel, DataBaseItem);
+
+//require("./../classes/user");
 exports.QueenSchema = new mongoose.Schema({
 	"name" : {"type" : String}
 	, "action" : {"type": String, "default" : "idle", "enum" : ["move", "idle", "dig"]}
@@ -55,8 +60,17 @@ exports.AntSchema = new mongoose.Schema({
 exports.AntModel = mongoose.model('AntModel', exports.AntSchema);
 
 
+require('./../classes/heritate').implements(exports.AntModel, require("./DataBaseItem"));
+require('./../classes/heritate').implements(exports.UserModel, require("./DataBaseItem"));
 
 
+//require('./../classes/heritate').implements(exports.UserModel, require("./../classes/user"));
+
+//require('./../classes/user')
+//console.log(exports.UserModel);
+//_.extend(exports.AntModel, DataBaseItem);
+
+//console.log("ANTMODEL : ", exports.AntModel);
 // exports.PhysicElementSchema = new mongoose.Schema({
 // 	"position" : {
 // 		"x" : {"type": Number, "default" : 0}

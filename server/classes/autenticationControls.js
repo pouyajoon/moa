@@ -3,7 +3,8 @@ var libAuth = require('./autentication');
 var qs = require('querystring');
 var crypto = require('crypto');
 var User = require('./user');
-var moaSchema = require('../db/moaSchema');
+var moaSchema = require('./../db/moaSchema');
+var UserModel = moaSchema.UserModel;
 
 module.exports = function(server){
 
@@ -22,7 +23,7 @@ module.exports = function(server){
 //    console.log("check session", sID, typeof sID);
     server.sessionStore.get(sID, function (err, session) {
       if (err) callback(err)
-      console.log(err, data, session, sID);
+        //console.log(session);
       if (err || !session) {
         
         //console.log("err:", err, "session: ", session, " : sID : ", sID);
@@ -56,12 +57,15 @@ module.exports = function(server){
       data.sessionID = data.cookie['session.id'];
       return checkSession(data, data.sessionID, accept);
     } else {
-      console.info("no cookie");
+      //console.info("no cookie");
       
       if (data.query["session.id"] !== "undefined"){
         var sID = decodeURIComponent(data.query["session.id"])
         //console.error("data", data);
         //return accept(null, true);
+        //console.log(sID);
+        data.sessionID = sID;
+        //console.log("SID ON HANDSHAKE", sID);
         return checkSession(data, sID, accept);
       } else {
         //console.error("no cookie, n/a");
@@ -70,15 +74,17 @@ module.exports = function(server){
     }
   });
 
-
-  var dbItem = require('./../db/DataBaseItem');
-
   server.app.post('/users/authenticate', function(req, res){
-    //console.log(req.body);
-    var users = new dbItem(moaSchema.UserModel);
-    users.hasOne({"email" : req.body.email, "password" : req.body.password}, function(err, exists, user){
+    var u = new UserModel();
+    u.model = UserModel;
+    u.hasOne({"email" : req.body.email, "password" : req.body.password}, function(err, exists, user){
+      //console.log("ERREUR", err);
       if (exists) {
+        //console.log("USER AUTH DONE", user.__proto__);
+        //req.session.bisou = "yes";
         req.session.user = user;
+        //req.session.user.bisou = "yes";
+        //console.log(req.session.user);
         res.redirect('/');
       } else { 
         req.flash('warn', 'Wrong username or password');     

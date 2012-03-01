@@ -30,9 +30,9 @@ exports.createGame = function(res, callback){
 
 exports.getHTTPPage = function(res, callback){
   Step([
-    function(next) { exports.createGame(res, next)},
+    function(next) { exports.createGame(res, next); },
+    function(res, next) { exports.browser.createHTTPServer(res, next); },
     function(res, next) {
-      //console.log(res);
       exports.browser.doHTTPGETRequest(res, CONFIG.http.sessionUrl, CONFIG.http.options, callback);      
     }
   ]);
@@ -41,6 +41,7 @@ exports.getHTTPPage = function(res, callback){
 exports.getHTTPPageFromServer = function(res, callback){
   Step([
     function(next) { exports.createServer(res, next)},
+    function(res, next) { exports.browser.createHTTPServer(res, next); },
     function(res, next) {
       exports.browser.doHTTPGETRequest(res, CONFIG.http.sessionUrl, CONFIG.http.options, callback);      
     }

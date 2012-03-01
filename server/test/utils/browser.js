@@ -3,13 +3,12 @@ var CONFIG = require('./config');
 
 exports.browser = {
 	"doHTTPGETRequest" : function(res, _url, _headers, callback){
-		res.httpClient = http.createClient(CONFIG.serverConfiguration.options.port, CONFIG.serverConfiguration.host); 
+		if (res.httpClient == null) return callback("HTTP Client is missing in res");
+		setCookies(res, _headers);
 		var request = res.httpClient.request('GET', _url, _headers);
 		request.on('response', function (response) {
-			//console.log('response');
 			res.response = response;
 			res.cookies = getCookies(res.response.headers);
-			console.log("GET", res.cookies);
 			res.response.setEncoding('utf8');
 			return callback(null, res);
 		});
@@ -18,15 +17,16 @@ exports.browser = {
 }
 
 exports.browser.doHTTPPOSTRequest = function(res, _url, _headers, _body, callback){
-	res.httpClient = http.createClient(CONFIG.serverConfiguration.options.port, CONFIG.serverConfiguration.host); 
+	if (res.httpClient == null) return callback("HTTP Client is missing in res");
 	var bodyData = JSON.stringify(_body);
 	_headers['Content-Type'] = 'application/json';
 	_headers['Content-Length'] =  Buffer.byteLength(bodyData,'utf8');
+	setCookies(res, _headers);
+
 	res.request = res.httpClient.request('POST', _url, _headers);	
 	res.request.on('response', function (response) {
 	 	res.response = response;
 		res.cookies = getCookies(res.response.headers);
-		console.log("POST", res.cookies);
 		res.response.setEncoding('utf8');
 		return callback(null, res);
 	});
@@ -34,7 +34,16 @@ exports.browser.doHTTPPOSTRequest = function(res, _url, _headers, _body, callbac
 	res.request.end();
 }
 
+exports.browser.createHTTPServer = function(res, callback){
+	res.httpClient = http.createClient(CONFIG.serverConfiguration.options.port, CONFIG.serverConfiguration.host); 
+	callback(null, res);
+}
 
+function setCookies(res, _headers){
+	if (res.cookies && res.cookies["session.id"]){
+		_headers['Cookie'] = 'session.id=' + res.cookies["session.id"];	
+	}
+}
 
 function getCookies(_headers){
   var cookies = {};

@@ -3,10 +3,10 @@
 var _ = require('underscore');
 
 
-  // process.on('uncaughtException', function (err) {
-  //   console.log('uncaughtException : ', err);  
-  //   return callback(err, null); 
-  // });
+  process.on('uncaughtException', function (err) {
+    console.log('uncaughtException : ', err);  
+    return callback(err, null); 
+  });
 
 var Server = function(options, callback){
 
@@ -38,7 +38,7 @@ var Server = function(options, callback){
       this.webServer = "pouya:" + this.options.port;
     }.bind(this));
 
-    this.io = require("socket.io").listen(this.app, { log: true });
+    this.io = require("socket.io").listen(this.app, { log: false });
     this.io.set('log level', 3);
     this.io.set('transports', ["websocket"]);
     this.app.dynamicHelpers({
