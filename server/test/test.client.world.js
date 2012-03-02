@@ -23,20 +23,20 @@ module.exports = testCase({
   ,"tearDown": function(callback) {
   	CONFIG.tearDown(callback);
   }
-  // ,"created zone, add ant, get zone, has one ant" : function(test){
-  //   Step([
-  //     function(next){ Zone.createZone(CONFIG.zoneTaine.id, next)},
-  //     function(zone, next) { zone.createAnt(next)},
-  //     function(ant, next) {common.zones.getZoneFromSocket({"test" : test}, function(err, res){
-  //         test.ok(err == null);
-  //         test.ok(ant != null, "ant is null");
-  //         test.ok(res.zone != null, "zone is null");
-  //         test.ok(res.zone.ants.length == 1, "zone should have one ant");
-  //         test.ok(ant._id == res.zone.ants[0], "ant id is wrong");        
-  //         res.socket.disconnect();
-  //     })}
-  //   ]);
-  // }
+  ,"created zone, add ant, get zone, has one ant" : function(test){
+    Step([
+      function(next){ Zone.createZone(CONFIG.zoneTaine.id, next)},
+      function(zone, next) { zone.createAnt(next)},
+      function(ant, next) {common.zones.getZoneFromSocket({"test" : test}, function(err, res){
+          test.ok(err == null);
+          test.ok(ant != null, "ant is null");
+          test.ok(res.zone != null, "zone is null");
+          test.ok(res.zone.ants.length == 1, "zone should have one ant");
+          test.ok(ant._id == res.zone.ants[0], "ant id is wrong");        
+          res.socket.disconnect();
+      })}
+    ]);
+  }
   ,"subscribe user over socket, authenticate, get zone" :  function(test){
     Step([
       function(next){ common.users.subscribeUserOverSocketAndAuthenticate({"test" : test}, CONFIG.userInfo, next); },
@@ -51,8 +51,6 @@ module.exports = testCase({
           //console.log(inventory);
           res.socket.disconnect();  
         });        
-
-        
       }
     ]);
 

@@ -1,4 +1,5 @@
 var GameCanvas = function(_worldMap, _tileCoordinate, callback){
+  console.log("new game canvas");
   this.worldMap = _worldMap;
   this.tileCoordinate = _tileCoordinate;
   
@@ -19,11 +20,19 @@ var GameCanvas = function(_worldMap, _tileCoordinate, callback){
   this.ants = [];
   this.worldMap.socketManager.emit("getZone", this.tileCoordinate.x + "_" + this.tileCoordinate.y);
   this.worldMap.socketManager.on('zone', function (dataZone) {
-    console.log('ants', dataZone.ants);
+    //console.log('ants', dataZone.ants);
     this.ants = dataZone.ants;
   }.bind(this));
-  this.worldMap.socketManager.on('inventory', function (dataInventory) {
-    console.log('inventory', dataInventory);
+  this.worldMap.socketManager.on('inventory', function (inventory) {
+    console.log('inventory', inventory);
+    _.each(inventory.ants, function(ant){
+      $("#inventory ul.inventory-content").append('<li class="ant"></li>');
+      $('.ant').draggable({
+        stop: function() {
+
+        }
+      });
+    })
     //this.ants = dataZone.ants;
   }.bind(this));  
 

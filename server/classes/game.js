@@ -88,12 +88,7 @@ Game.prototype.emitZone = function(socket){
 	};
   socket.emit('zone', zEmit);
 
-  if (!_.isUndefined(socket.user)){
-	  socket.user.getInventory(function(err, i){
-	  	//console.log("inventory", i);
-	  	socket.emit('inventory', i);
-	  });  	
-  }
+
 
 }
 
@@ -101,12 +96,22 @@ Game.prototype.setupSocketActions = function(socket) {
 	socket.on("getZone", function(zoneID){
 	  var sID = socket.handshake.sessionID;
 		this.getUserFromSessionID(sID, function(err, user){
+
+
 				if (err) {
 					if (err.code != "0"){
 						console.log("ERROR>", err);
 					}
 				}
 				socket.user = user;
+
+				if (!_.isUndefined(socket.user)){
+				  socket.user.getInventory(function(err, i){
+				  	console.log("inventory", i);
+				  	socket.emit('inventory', i);
+				  });  	
+			  }
+
 		    this.worldZones.getZone(zoneID, function(err, zone){     
 		      socket.zone = zone;
 		      socket.interval  = setInterval(function(){

@@ -6,9 +6,9 @@ var SocketManager = function(_serverURL){
   	console.log('connected');
   });
 
-  // this.server.on('disconnect', function(data){
-  // 	console.log('connected');
-  // });
+  this.server.on('disconnect', function(data){
+  	console.log('connected');
+  });
 }
 
 SocketManager.prototype.emit = function(name, data) {

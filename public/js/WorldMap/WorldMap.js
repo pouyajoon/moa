@@ -27,13 +27,7 @@ function WorldMap(callback) {
   new WorldMapGeocoder(this.map);
 
   var init = true;
-  google.maps.event.addListener(this.map, 'idle', function(event){
-    if (init){
-      this.socketManager = new SocketManager(MOA_SERVER);
-      callback(this);
-      init = false;
-    }    
-  }.bind(this));
+
 
   // when map is clicked on zoom 21
   google.maps.event.addListener(this.map, 'click', function(event){
@@ -50,7 +44,14 @@ function WorldMap(callback) {
     //this.map.panTo(latLngMiddle);
     //prepare the moving
     var zoneID = tileCoordinate.x + "_" + tileCoordinate.y;
-    this.gameCanvas[zoneID] = new GameCanvas(this, tileCoordinate, function(){});
+
+
+    if (_.isUndefined(this.gameCanvas[zoneID])){
+      console.log("create on click");
+      this.GameCanvas[zoneID] = new GameCanvas(this, tileCoordinate, function(){});  
+    }
+
+    
     this.gameCanvas[zoneID].camera.initialTranslate.set(event.pixel.x - tileCoordinatePos.x, event.pixel.y - tileCoordinatePos.y);
     this.gameCanvas[zoneID].camera.translate.copy(this.gameCanvas[zoneID].camera.initialTranslate);
     this.gameCanvas[zoneID].show(500);
@@ -58,7 +59,18 @@ function WorldMap(callback) {
     //   this.hide(0);  
     // }.bind(this), 250);        
   }.bind(this));
-	this.TILE_SIZE = 256;
+  this.TILE_SIZE = 256;
+
+    
+  google.maps.event.addListener(this.map, 'idle', function(event){
+    if (init){
+      this.socketManager = new SocketManager(MOA_SERVER);
+      callback(this);
+      init = false;
+    }    
+  }.bind(this));
+
+
 }
 
 
