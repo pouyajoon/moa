@@ -38,16 +38,10 @@ html
 body
   div(id='tiles')
     div(id='navigationTop')
-      text Write your name here : 
-      input(type='text', id='inputName', value='value')
-      button(id='buttonSubscibe') Subscibe !
-      button(id='buttonGo') Go !
-      button(id='buttonResetNavigation') Reset Navigation !
-      button(id='buttonToogleMap') Toggle Map
       text Search in map :  
       input(type='text', id='searchbox', value='')
       button(id='buttonSearchInMap') Search In Map !
-      a(href='/users/logout', id='buttonLogout') Logout
+      button(onclick='javascript:window.location.href="/users/logout";', id='buttonLogout') Logout
     div(id='woaAll')
       div(id='map_canvas', class='mapSize')
       canvas(id='mainScreen', class='mapSize') &nbsp;

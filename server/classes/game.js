@@ -87,17 +87,13 @@ Game.prototype.emitZone = function(socket){
 		"ants" : socket.zone.ants
 	};
   socket.emit('zone', zEmit);
-
-
-
 }
 
 Game.prototype.setupSocketActions = function(socket) {
-	socket.on("getZone", function(zoneID){
-	  var sID = socket.handshake.sessionID;
+
+	socket.on("gameLoaded", function(zoneID){
+		var sID = socket.handshake.sessionID;
 		this.getUserFromSessionID(sID, function(err, user){
-
-
 				if (err) {
 					if (err.code != "0"){
 						console.log("ERROR>", err);
@@ -112,13 +108,17 @@ Game.prototype.setupSocketActions = function(socket) {
 				  });  	
 			  }
 
-		    this.worldZones.getZone(zoneID, function(err, zone){     
-		      socket.zone = zone;
-		      socket.interval  = setInterval(function(){
-		      	this.emitZone(socket);
-		      }.bind(this), 200);
-		    }.bind(this)); 
+
 		}.bind(this));
+	}.bind(this));
+
+	socket.on("getZone", function(zoneID){
+    this.worldZones.getZone(zoneID, function(err, zone){     
+      socket.zone = zone;
+      socket.interval  = setInterval(function(){
+      	this.emitZone(socket);
+      }.bind(this), 200);
+    }.bind(this)); 
   }.bind(this));
 };
 

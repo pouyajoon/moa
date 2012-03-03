@@ -55,7 +55,8 @@ var CanvasCamera = function(canvas, _drawZoneSize){
 		this.mouseMove(e);
 	}.bind(this));	
 	$(this.canvas).bind('mousewheel', function(event, delta) {
-			this.mouseWheel(event, delta);
+		this.mouseWheel(event, delta);
+		return false;
 	}.bind(this));
 }
 
@@ -89,6 +90,10 @@ CanvasCamera.prototype.debug = function() {
 
 CanvasCamera.prototype.close = function() {
   $(this.canvas).unbind('mousewheel');
+  $(this.canvas).unbind('mouseup');
+  $(this.canvas).unbind('mousedown');
+  $(this.canvas).unbind('mousemove');
+  $(this.canvas).unbind('click');
 };
 
 CanvasCamera.prototype.focusOnMouseAfterMouseWheel = function(event) {

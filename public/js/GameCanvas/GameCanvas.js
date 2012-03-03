@@ -1,11 +1,11 @@
-var GameCanvas = function(_worldMap, _tileCoordinate, callback){
+var GameCanvas = function(_game, _tileCoordinate){
   console.log("new game canvas");
-  this.worldMap = _worldMap;
+  this.game = _game;
   this.tileCoordinate = _tileCoordinate;
   
   this.backgroundSize = 512;
 
-  var _imgUrl = this.worldMap.getImageURLFromTileCoordinate(this.tileCoordinate);
+  var _imgUrl = this.game.worldMap.getImageURLFromTileCoordinate(this.tileCoordinate);
   var _mainImgUrl = _imgUrl + '&size=' + this.backgroundSize + 'x' + this.backgroundSize + '&scale=2';
 
   this.backgroundImage = new Image();
@@ -18,23 +18,13 @@ var GameCanvas = function(_worldMap, _tileCoordinate, callback){
   //initActionNodes();
 
   this.ants = [];
-  this.worldMap.socketManager.emit("getZone", this.tileCoordinate.x + "_" + this.tileCoordinate.y);
-  this.worldMap.socketManager.on('zone', function (dataZone) {
+  
+  this.game.bindOnSocket('zone', function (dataZone) {
     //console.log('ants', dataZone.ants);
     this.ants = dataZone.ants;
   }.bind(this));
-  this.worldMap.socketManager.on('inventory', function (inventory) {
-    console.log('inventory', inventory);
-    _.each(inventory.ants, function(ant){
-      $("#inventory ul.inventory-content").append('<li class="ant"></li>');
-      $('.ant').draggable({
-        stop: function() {
 
-        }
-      });
-    })
-    //this.ants = dataZone.ants;
-  }.bind(this));  
+
 
   this.canvasID = "mainScreen";
   this.canvas = document.getElementById(this.canvasID);
@@ -46,21 +36,19 @@ var GameCanvas = function(_worldMap, _tileCoordinate, callback){
   this.drawZoneSize = {"w" : 4096, "h" : 4096};
 
   this.camera = new CanvasCamera(this.canvas, this.drawZoneSize);
-  this.camera.scaleMax = this.drawZoneSize.w / this.worldMap.TILE_SIZE;
+  this.camera.scaleMax = this.drawZoneSize.w / TILE_SIZE;
   this.camera.scale = this.camera.scaleMax;
   this.camera.scaleFactor = 0.25;
   this.camera.scaleNum = 1;
 
-  this.camera.initialTranslate.set(this.canvas.width / 2 - this.worldMap.TILE_SIZE / 2, this.canvas.height / 2 - this.worldMap.TILE_SIZE / 2);
+  this.camera.initialTranslate.set(this.canvas.width / 2 - TILE_SIZE / 2, this.canvas.height / 2 - TILE_SIZE / 2);
   this.camera.translate.copy(this.camera.initialTranslate);
   
   this.camera.scaleIsMoreThanScaleMax = function(_camera){
     if (_camera.translate.equals(_camera.initialTranslate, 10)){
       _camera.translate = _camera.initialTranslate;
-      console.log('close');
-
-      this.worldMap.show(250, this.tileCoordinate);      
-      this.close(250);    
+      //console.log('close');
+      this.game.hideGameCanvas(this)
       return false;  
     } else {
       var diff = _camera.translate.getSubPoint(_camera.initialTranslate);
@@ -69,8 +57,6 @@ var GameCanvas = function(_worldMap, _tileCoordinate, callback){
     }
     return true;
   }.bind(this);  
-  callback(this);
-
   this.tickInterval = setInterval(function(){
     this.tick();  
   }.bind(this), 1000 / 12);  
@@ -83,7 +69,7 @@ GameCanvas.prototype.getZoneID = function() {
 GameCanvas.prototype.close = function(_time) {
   clearInterval(this.tickInterval);
   this.camera.close();
-  this.worldMap.socketManager.emit("stopzone", this.getZoneID());
+  this.game.unbindOnSocket("zone");
   this.hide(_time);
 };
 
