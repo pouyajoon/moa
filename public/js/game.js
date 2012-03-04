@@ -5,9 +5,8 @@
 
 var Game = function(callback){
 	// setup world
-
-	this.socketManager = new SocketManager(MOA_SERVER);
-	this.gameCanvas = {};
+  this.currentGameCanvas = null;
+	this.socketManager = new SocketManager(this, MOA_SERVER);
 
   this.inventory = new Inventory(this);
   this.inventory.draw(); 
@@ -17,17 +16,15 @@ var Game = function(callback){
 		console.log("world map created");
 		this.worldMap = _worldMap;
 		this.worldMap.onClickInMap = this.onClickInMap.bind(this);
-
-
 		return callback(null, this);
 	}.bind(this));
 
 
-	// des zones
+
 }
 
-Game.prototype.emitSocket = function(name, data) {
-	this.socketManager.emit(name, data);
+Game.prototype.emitSocket = function(name, data, callback) {
+	this.socketManager.emit(name, data, callback);
 };
 
 Game.prototype.bindOnSocket = function(event, callback) {
@@ -41,21 +38,21 @@ Game.prototype.unbindOnSocket = function(event) {
 Game.prototype.showGameCanvas = function(event, tileCoordinate, tileCoordinatePos) {
   console.log(this.gameCanvas);
   var zoneID = tileCoordinate.x + "_" + tileCoordinate.y;
-  this.gameCanvas[zoneID] = new GameCanvas(this, tileCoordinate);  
-  this.gameCanvas[zoneID].camera.initialTranslate.set(event.pixel.x - tileCoordinatePos.x, event.pixel.y - tileCoordinatePos.y);
-  this.gameCanvas[zoneID].camera.translate.copy(this.gameCanvas[zoneID].camera.initialTranslate);
-  this.gameCanvas[zoneID].show(500);
+  this.currentGameCanvas = new GameCanvas(this, tileCoordinate);  
+  this.currentGameCanvas.camera.initialTranslate.set(event.pixel.x - tileCoordinatePos.x, event.pixel.y - tileCoordinatePos.y);
+  this.currentGameCanvas.camera.translate.copy(this.currentGameCanvas.camera.initialTranslate);
+  this.currentGameCanvas.show(500);
 	this.socketManager.emit("getZone", tileCoordinate.x + "_" + tileCoordinate.y);  
-	this.inventory.enableAntsDraggable();
+	this.inventory.enableAntsDraggable(this.currentGameCanvas);
 };
 
-Game.prototype.hideGameCanvas = function(_gameCanvas) {
-  this.worldMap.show(250, _gameCanvas.tileCoordinate);      
-  _gameCanvas.close(250);
-  var zoneID = _gameCanvas.getZoneID();
+Game.prototype.hideGameCanvas = function() {
+  this.worldMap.show(250, this.currentGameCanvas.tileCoordinate);      
+  this.currentGameCanvas.close(250);
+  var zoneID = this.currentGameCanvas.getZoneID();
   this.socketManager.emit("stopzone", zoneID);
-  this.gameCanvas[zoneID] = null;      	
   this.inventory.disableAntsDraggable();
+  this.currentGameCanvas = null;
 };
 
 Game.prototype.onClickInMap = function(event, tileCoordinate, tileCoordinatePos) {

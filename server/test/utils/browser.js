@@ -22,7 +22,7 @@ exports.browser.doHTTPPOSTRequest = function(res, _url, _headers, _body, callbac
 	_headers['Content-Type'] = 'application/json';
 	_headers['Content-Length'] =  Buffer.byteLength(bodyData,'utf8');
 	setCookies(res, _headers);
-
+	//console.log("post headers", _headers);
 	res.request = res.httpClient.request('POST', _url, _headers);	
 	res.request.on('response', function (response) {
 	 	res.response = response;
@@ -40,6 +40,7 @@ exports.browser.createHTTPServer = function(res, callback){
 }
 
 function setCookies(res, _headers){
+
 	if (res.cookies && res.cookies["session.id"]){
 		_headers['Cookie'] = 'session.id=' + res.cookies["session.id"];	
 	}

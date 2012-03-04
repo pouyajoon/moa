@@ -31,5 +31,8 @@ exports.users.subscribeUserOverSocketAndAuthenticate = function(res, userInfo, c
     function(next) { common.getSecureSocketFromGame(res, next); },
     function(res, next) { common.users.subscribeUserOverSocket(res, userInfo, next); },
     function(res, next) { common.users.authenticateUser(res, userInfo, callback); }
-  ]);  
+  ], function(err){
+  	console.log(err);
+  	callback(err);
+  });  
 }

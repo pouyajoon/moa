@@ -10,6 +10,16 @@
 	margin:5px;
 }
 
+.ant div.shadow{
+	display: none;
+	left:-20px;
+	top:-20px;
+	background-image:url('/images/ant.png');
+	background-size:100% 100%;
+	width:20px;
+	height:20px;
+}
+
 ul.inventory-content{
 	margin: 0px;
 	padding: 0px;

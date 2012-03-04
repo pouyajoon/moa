@@ -30,7 +30,7 @@ DataBaseItem.prototype.hasOne = function(_filter, callback){
     if (u.length == 0) return callback(null, false, null);    
     var u = u[0];
     //console.log("HAS USER", u.__proto__, this.model);
-    require('../classes/heritate').implements(u, this.model);
+    //require('../classes/heritate').implements(u, this.model);
     //console.log("GET USER", u.__proto__["getInventory"]);
     return callback(null, true, u);
   }.bind(this));  
@@ -42,6 +42,17 @@ DataBaseItem.prototype.getOne = function(_filter, callback){
     return callback(null, element);
   });
 }
+
+
+
+DataBaseItem.prototype.getExternalElements = function(filter, elementsName, externalModel, callback) {
+  externalModel.find(filter).populate(elementsName).run(function(err, elements){
+    if (err) return callback(err);
+    return callback(null, elements);
+  }.bind(this));  
+};
+
+
 
 DataBaseItem.prototype.removeExternalItem = function(listName, itemIndex) {
   var dbID = this[listName][itemIndex].data._id;

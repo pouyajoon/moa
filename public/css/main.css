@@ -30,3 +30,15 @@
 #info{
   background-color: green;
 }
+
+/*#debugger {
+  position: absolute;
+  top:50px;
+  left:0px;
+}*/
+
+.disable{
+  opacity: 0.5;
+  -moz-opacity: 0.5;
+  filter:alpha(opacity = 50);
+}

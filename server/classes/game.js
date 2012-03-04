@@ -4,6 +4,7 @@ var _ = require('underscore');
 var Server = require('./../lib/Server');
 var moaSchema = require('./../db/moaSchema');
 
+var Step = require('common').step;
 var User = require("./user");
 var UserModel = User.UserModel;
 
@@ -49,67 +50,106 @@ var Game = function(_server, callback){
 }
 
 
-Game.prototype.getUserFromSessionID = function(sID, callback) {
+Game.prototype.getUserFromSocket = function(socket, callback) {
+	var sID = socket.handshake.sessionID;
   this.server.sessionStore.get(sID, function(err, session){
-//	console.log("session >", session);
+		//console.log("session >", session);
 		if (session){
 			try
 			{
-				if (_.isUndefined(session.user)){
+				if (_.isUndefined(session.userID)){
+					socket.disconnect();
 					return callback({"err" : "user is not in session", "code" : "0"})
 				}
 				//var u = session.user;
-	//			console.log('user id', session.user._id);
+				//console.log('get user from session', session);
 				var u = new UserModel();
 				u.model = UserModel;
-				u.hasOne({"_id" : session.user._id}, function(err, exists, user){
-					//console.log('has user', exists, user.__proto__);
+				u.hasOne({"_id" : session.userID}, function(err, exists, user){
+					//console.log('has user', exists, user.getAn);
 					if (err) return callback(err);					
 					if (exists){
 						return callback(null, user);
 					}  else {
+						socket.disconnect();
 						return callback({"err" : "session user don't exists", "code" : "0"});
 					}
 				});      									
 			} catch (err){
 				return callback(err);
 			}
+		} else {
+			return callback({'err' : "no session"});
 		}
 	});
 };
 
 
 Game.prototype.emitZone = function(socket){
-	//console.log("interval");
-	var zEmit = {
-		"id" : socket.zone.id,
-		"_id" : socket.zone._id,
-		"ants" : socket.zone.ants
-	};
-  socket.emit('zone', zEmit);
+	socket.zone.getAnts(function(err, ants){
+		var zEmit = {
+			"id" : socket.zone.id,
+			"_id" : socket.zone._id,
+			"ants" : ants
+		};
+	  socket.emit('zone', zEmit);
+	});
 }
 
+
+Game.prototype.emitInventory = function(socket) {
+	var game = this;
+	var inventory = null;
+	Step([
+		function(next) { game.getUserFromSocket(socket, next)},
+		function(_user, next) {
+			socket.user = _user;
+			socket.user.getInventory(next); 
+		},
+		function(_inventory, next) {_inventory.getAnts(next); },
+		function(_ants, next){
+			socket.emit('inventory', {"err" : null, "ants" : _ants});
+		}
+	], function(err){
+		return callback(err);
+	});
+};
+
+
+
+Game.prototype.moveAntFromInventoryToZone = function(socket, input, callback) {
+	var game = this;
+	var zone = null;
+	var inventory = null;
+	Step([
+		function(next){ game.worldZones.getZone(input.zoneID, next) },
+		function(_zone, next) { 
+			zone = _zone;
+			game.getUserFromSocket(socket, next);
+		},
+		function(user, next) { user.getInventory(next) },
+		function(_inventory, next) {
+			inventory = _inventory; 
+			inventory.getAnts(next);
+		},
+		function(ants, next) { inventory.removeAnt(ants, input.antID, next); },
+		function(antRemoved, next) { zone.addAnt(antRemoved, input.position, next);},
+		function(ant, next) {
+			game.emitInventory(socket);
+			return callback(null);
+		}
+	], function(err){
+		return callback(err);
+	});
+};
+
 Game.prototype.setupSocketActions = function(socket) {
+	socket.on('moveAntFromInventoryToZone', function(input, callback){
+		this.moveAntFromInventoryToZone(socket, input, callback);
+	}.bind(this));
 
 	socket.on("gameLoaded", function(zoneID){
-		var sID = socket.handshake.sessionID;
-		this.getUserFromSessionID(sID, function(err, user){
-				if (err) {
-					if (err.code != "0"){
-						console.log("ERROR>", err);
-					}
-				}
-				socket.user = user;
-
-				if (!_.isUndefined(socket.user)){
-				  socket.user.getInventory(function(err, i){
-				  	console.log("inventory", i);
-				  	socket.emit('inventory', i);
-				  });  	
-			  }
-
-
-		}.bind(this));
+		this.emitInventory(socket);		
 	}.bind(this));
 
 	socket.on("getZone", function(zoneID){

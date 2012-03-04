@@ -3,14 +3,17 @@ var Ant = require ('./ant');
 var _ = require('underscore');
 
 var UserModel = moaSchema.UserModel;
-var InventoryModel = moaSchema.InventoryModel;
 var Inventory = require ('./Inventory');
-
+var InventoryModel = moaSchema.InventoryModel;
+var AntModel = moaSchema.AntModel;
 
 UserModel.prototype.getInventory = function(callback){
-  InventoryModel.findOne({"_id" : this.inventory}, function(err, inventory){
+  var i = new InventoryModel();
+  i.model = InventoryModel;
+  i.hasOne({"_id" : this.inventory}, function(err, exists, inventory){    
     if (err) return callback(err);
-    return callback(null, inventory);
+    if (!exists) return callback("Inventory not found");
+    return callback(null, inventory);     
   });
 }
 
@@ -25,10 +28,7 @@ UserModel.prototype.setup = function(_email, _password, callback){
     if (err) return callback(err);
     return this.saveToDB(callback);
   }.bind(this));
-
 }
-
-
 
 exports.createUser = function(_email, _password, callback){
   var u = new UserModel();

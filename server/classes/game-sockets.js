@@ -39,19 +39,20 @@ var io_error = {"name" : "error", "doAction" : function (reason) {
   }
 };
 
+
+
+var moaSchema = require('./../db/moaSchema');
+var UserModel = moaSchema.UserModel;
 var User = require('./user');
 
 var io_subscribeUser = {"name" : "user-subscribe", "doAction" : function (_user, callback) {
-    User.createUser(_user.email, _user.password, callback);
+  User.createUser(_user.email, _user.password, callback);
 }};
 
 var io_userExists = {"name" : "user-exists", "doAction" : function (_email, callback) {
-    // console.log('get user exists ', _email);    
-    // var u = new User(_email);
-    // u.exists(function(err, e){
-    //   if (err) callback(err, null);
-    //   callback(null, e)
-    // });
+  var u = new UserModel();
+  u.model = UserModel;
+  u.hasOne({'email' : _email}, callback);
 }};
 
 

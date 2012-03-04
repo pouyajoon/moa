@@ -12,7 +12,8 @@ module.exports = function(server){
   server.paths.push(pageLogin);
 
   server.app.get('/users/logout', libAuth.requireLogin, function(req, res) {
-  	req.session.user = null;
+  	req.session.userID = null;
+    req.session.sessionID = null;
   	res.redirect('/');	
   });
 
@@ -32,7 +33,7 @@ module.exports = function(server){
       } else {
         //console.log("session accepted");
         // save the session data and accept the connection
-        data.session = session;
+        //data.session = session;
         return callback(null, true);
       }
     });
@@ -49,8 +50,9 @@ module.exports = function(server){
 
   //console.log("setup authorization");
   server.io.set('authorization', function (data, accept) {
+    console.log('socket authorization');
     //return accept(null, true);
-    //console.log("authorization : ", data);
+    //console.log("authorization headers: ", data.headers);
     if (data.headers.cookie) {
       //console.log("authorization headers : ", data.headers.cookie);
       data.cookie = parseCookie(data.headers.cookie);
@@ -65,6 +67,8 @@ module.exports = function(server){
         //return accept(null, true);
         //console.log(sID);
         data.sessionID = sID;
+        //data.cookie = {};
+        //data.cookie['session.id'] = sID;
         //console.log("SID ON HANDSHAKE", sID);
         return checkSession(data, sID, accept);
       } else {
@@ -82,9 +86,11 @@ module.exports = function(server){
       if (exists) {
         //console.log("USER AUTH DONE", user.__proto__);
         //req.session.bisou = "yes";
-        req.session.user = user;
+        //console.log("auth user", user._id, req.cookies['session.id']);
+        req.session.userID = user._id;
+        req.session.sessionID = req.cookies['session.id'];
         //req.session.user.bisou = "yes";
-        //console.log(req.session.user);
+        //console.log("session @ auth", req.session);
         res.redirect('/');
       } else { 
         req.flash('warn', 'Wrong username or password');     

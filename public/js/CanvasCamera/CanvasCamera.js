@@ -55,6 +55,7 @@ var CanvasCamera = function(canvas, _drawZoneSize){
 		this.mouseMove(e);
 	}.bind(this));	
 	$(this.canvas).bind('mousewheel', function(event, delta) {
+		this.mouseMove(event);
 		this.mouseWheel(event, delta);
 		return false;
 	}.bind(this));
@@ -70,7 +71,6 @@ CanvasCamera.prototype.clearContext = function(ctx) {
 };
 
 CanvasCamera.prototype.debug = function() {
-   return;
 	var output = [];
 	output.push("canvassize:", this.canvas.width, ",", this.canvas.height, '<br/>'); 
 	

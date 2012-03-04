@@ -10,7 +10,8 @@
   margin:5px;
 }
 
-#inventory .inventory-content{
+#inventory-content{
   height:100%;
-    background-color:#eee;
+  background-color:#eee;
+  text-align:left;
 }

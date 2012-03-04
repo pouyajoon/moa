@@ -48,7 +48,7 @@ var GameCanvas = function(_game, _tileCoordinate){
     if (_camera.translate.equals(_camera.initialTranslate, 10)){
       _camera.translate = _camera.initialTranslate;
       //console.log('close');
-      this.game.hideGameCanvas(this)
+      this.game.hideGameCanvas()
       return false;  
     } else {
       var diff = _camera.translate.getSubPoint(_camera.initialTranslate);
@@ -82,8 +82,9 @@ GameCanvas.prototype.show = function(_time) {
 
 GameCanvas.prototype.tick = function() {
   //requestAnimFrame(this.tick.bind(this));
+  //console.log('tick')
   this.camera.update();
-    
+  
   this.camera.debug();
   this.camera.clearContext(this.ctx);
 
@@ -105,17 +106,17 @@ GameCanvas.prototype.tick = function() {
 GameCanvas.prototype.drawAnts = function() {
     this.ctx.fillStyle = "rgb(60,60,60)";
   _.each(this.ants, function(ant){
-
+    console.log(ant);
     var image = imgAIdle;
-    if (ant.data.action == "move") { image = imgAMove; }
+    if (ant.action == "move") { image = imgAMove; }
     //if (ant.action == "digg") { image = imgADigg; } 
     // this.ctx.strokeRect(ant.position.x, ant.position.y, ant.size.w, ant.size.h); 
     //this.ctx.drawImage(image, ant.position.x, ant.position.y, ant.size.w, ant.size.h); 
     //if (isInDrawScreen(ant.position, this.camera)){
     this.ctx.save();     
-    this.ctx.translate(ant.data.position.x + (ant.data.size.w / 2), ant.data.position.y + (ant.data.size.h / 2));
-    this.ctx.rotate(ant.data.angle * Math.PI / 180);      
-    this.ctx.drawImage(image, - ant.data.size.w / 2, - ant.data.size.h / 2, ant.data.size.w, ant.data.size.h); 
+    this.ctx.translate(ant.position.x + (ant.size.w / 2), ant.position.y + (ant.size.h / 2));
+    this.ctx.rotate(ant.angle * Math.PI / 180);      
+    this.ctx.drawImage(image, - ant.size.w / 2, - ant.size.h / 2, ant.size.w, ant.size.h); 
     this.ctx.restore();    
     //}
   }.bind(this));

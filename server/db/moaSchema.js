@@ -45,6 +45,8 @@ exports.QueenModel = mongoose.model('QueenModel', exports.QueenSchema);
 
 exports.AntSchema = new mongoose.Schema({
 	"action" : {"type": String, "default" : "idle", "enum" : ["move", "idle", "dig"]}
+	, "_inventory" : {"type" : mongoose.Schema.ObjectId, "ref" : exports.InventorySchema}
+	, "_zone" : {"type" : mongoose.Schema.ObjectId, "ref" : exports.ZoneSchema}
 	, "angle" : {"type" : Number, "default" : 0}
 	, "direction" : {"type" : Number, "default" : 0}
 	, "position" : {
@@ -52,8 +54,8 @@ exports.AntSchema = new mongoose.Schema({
 		,"y" : {"type": Number, "default" : 0}
 	}
 	,	"size" : {
-		"w" : {"type": Number, "default" : 0}
-		,"h" : {"type": Number, "default" : 0}
+		"w" : {"type": Number, "default" : 61}
+		,"h" : {"type": Number, "default" : 50}
 	}
 	,_zone : { type: mongoose.Schema.ObjectId, ref: exports.ZoneModel }
 });
@@ -62,6 +64,8 @@ exports.AntModel = mongoose.model('AntModel', exports.AntSchema);
 
 require('./../classes/heritate').implements(exports.AntModel, require("./DataBaseItem"));
 require('./../classes/heritate').implements(exports.UserModel, require("./DataBaseItem"));
+require('./../classes/heritate').implements(exports.InventoryModel, require("./DataBaseItem"));
+require('./../classes/heritate').implements(exports.ZoneModel, require("./DataBaseItem"));
 
 
 //require('./../classes/heritate').implements(exports.UserModel, require("./../classes/user"));

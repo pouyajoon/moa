@@ -3,10 +3,10 @@
 var _ = require('underscore');
 
 
-  process.on('uncaughtException', function (err) {
-    console.log('uncaughtException : ', err);  
-    return callback(err, null); 
-  });
+  // process.on('uncaughtException', function (err) {
+  //   console.log('uncaughtException : ', err);  
+  //   return callback(err, null); 
+  // });
 
 var Server = function(options, callback){
 

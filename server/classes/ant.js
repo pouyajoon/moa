@@ -19,7 +19,7 @@ exports.createAnt = function(callback){
 
 exports.createAntFromInventory = function(inventory, callback){
 	exports.createAnt(function(err, ant){
-		ant.inventory = inventory._id;	
+		ant._inventory = inventory._id;	
 		ant.saveToDB(callback);
 	});
 };

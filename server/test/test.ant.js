@@ -31,7 +31,7 @@ module.exports = testCase({
   ,"create ant from zone" : function(test){
     Step([
         function(next) {Zone.createZone(CONFIG.zoneTaine.id, next)},
-        function(zone, next){ zone.createAnt(function(err, ant){
+        function(zone, next){ zone.createAnt({"x" : 50, "y" : 50}, function(err, ant){
           test.ok(err == null);
           test.ok(ant != null, "ant is null");         
           test.done();
