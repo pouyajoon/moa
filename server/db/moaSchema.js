@@ -47,6 +47,7 @@ exports.AntSchema = new mongoose.Schema({
 	"action" : {"type": String, "default" : "idle", "enum" : ["move", "idle", "dig"]}
 	, "_inventory" : {"type" : mongoose.Schema.ObjectId, "ref" : exports.InventorySchema}
 	, "_zone" : {"type" : mongoose.Schema.ObjectId, "ref" : exports.ZoneSchema}
+	, "_user" : {"type" : mongoose.Schema.ObjectId, "ref" : exports.UserSchema}
 	, "angle" : {"type" : Number, "default" : 0}
 	, "direction" : {"type" : Number, "default" : 0}
 	, "position" : {

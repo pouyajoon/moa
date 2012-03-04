@@ -20,6 +20,10 @@ exports.loadDB = function(callback){
 }
 
 exports.closeDB = function(callback){
-	mongoose.disconnect();		
-	callback();
+	//exports.clearDB(function(){
+		mongoose.disconnect();	
+		callback();
+	//});
+	
+	
 }

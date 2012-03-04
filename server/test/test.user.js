@@ -60,14 +60,7 @@ module.exports = testCase({
       test.ok(res.user != null, "user is null");
       test.ok(res.user.email == CONFIG.userInfo.email);
       test.ok(res.user.inventory != null, "user dont have an inventory");
-      // test.ok(res.user.inventory.ants != null, "user dont have ants in his inventory");      
-      // test.ok(res.user.inventory.ants.length = 1, "user should have one ant in his inventory");
       res.socket.disconnect();
     });
-
-
   }  
 });
-
-// function(err, res){
-//   		})

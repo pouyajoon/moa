@@ -34,6 +34,7 @@ module.exports = function(server){
         //console.log("session accepted");
         // save the session data and accept the connection
         //data.session = session;
+        data.session = session;
         return callback(null, true);
       }
     });
@@ -50,7 +51,7 @@ module.exports = function(server){
 
   //console.log("setup authorization");
   server.io.set('authorization', function (data, accept) {
-    console.log('socket authorization');
+    //console.log('socket authorization');
     //return accept(null, true);
     //console.log("authorization headers: ", data.headers);
     if (data.headers.cookie) {
@@ -67,6 +68,7 @@ module.exports = function(server){
         //return accept(null, true);
         //console.log(sID);
         data.sessionID = sID;
+        //console.log("HANDSHAKE", data.sessionID);
         //data.cookie = {};
         //data.cookie['session.id'] = sID;
         //console.log("SID ON HANDSHAKE", sID);

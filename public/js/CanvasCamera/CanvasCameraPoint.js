@@ -67,3 +67,11 @@ Point.prototype.equals = function(p, distance) {
 	if (Math.abs(p.y - this.y) > distance) return false;
 	return true;
 };
+
+Point.prototype.isInside = function(topLeft, widthHeight) {
+  if (this.x <= topLeft.x) return false;
+	if (this.y <= topLeft.y) return false;
+	if (this.x >= topLeft.x + widthHeight.w) return false;
+	if (this.y >= topLeft.y + widthHeight.h) return false;
+	return true;
+};

@@ -71,6 +71,8 @@ User.prototype.subscribe = function(socket) {
   }.bind(this));
 };
 
+
+
 User.prototype.exists = function(socket, callback){
   socket.emit('user-exists', this.email, function(err, exists){
     console.log('get answer', err, exists);

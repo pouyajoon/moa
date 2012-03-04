@@ -21,25 +21,28 @@ InventoryModel.prototype.getAnts = function(callback) {
 };
 
 // Finds an index of an item using a testing function.
-function findIndex(array, fn) {
-  for (i = 0, l = array.length; i < l; i++) { if (fn(array[i])) return i; }
-  return -1;
-};
+// function findIndex(array, fn) {
+//   for (i = 0, l = array.length; i < l; i++) { if (fn(array[i])) return i; }
+//   return -1;
+// };
 
 
-InventoryModel.prototype.removeAnt = function(ants, antID, callback) {
-	var antIndex = findIndex(this.ants, function(ant){
-		return ant == antID;
-	});
-	var antFound = ants[antIndex];
-	if (antIndex == -1 || _.isUndefined(antFound)){
-		return callback("Unable to find the ant in the user's inventory");
-	}
-	antFound._inventory = null;
-	this.ants.splice(antIndex, 1);
-	return this.saveToDB(function(err, i){
-		return antFound.saveToDB(callback);
-	})
+InventoryModel.prototype.removeAnt = function(antID, callback) {
+	this.removeExternalItem(this.getAnts.bind(this), "_inventory", "ants", antID, callback);
+
+
+	// var antIndex = findIndex(this.ants, function(ant){
+	// 	return ant == antID;
+	// });
+	// var antFound = ants[antIndex];
+	// if (antIndex == -1 || _.isUndefined(antFound)){
+	// 	return callback("Unable to find the ant in the user's inventory");
+	// }
+	// antFound._inventory = null;
+	// this.ants.splice(antIndex, 1);
+	// return this.saveToDB(function(err, i){
+	// 	return antFound.saveToDB(callback);
+	// })
 };
 
 

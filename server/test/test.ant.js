@@ -22,16 +22,26 @@ module.exports = testCase({
   	CONFIG.tearDown(callback);
   }
   ,"create ant" : function(test){
-    Ant.createAnt(function(err, ant){
+    common.users.createUser(function(err, user){
       test.ok(err == null);
-      test.ok(ant != null, "ant is null");         
-      test.done();
-    });    
+
+      Ant.createAnt(user._id, function(err, ant){
+        test.ok(err == null);
+        test.ok(ant != null, "ant is null");
+        console.log(ant, user);
+        test.ok(ant._user == user._id, "ant should belongs to the user created");
+        test.done();
+      });    
+    });
+
   }
   ,"create ant from zone" : function(test){
     Step([
-        function(next) {Zone.createZone(CONFIG.zoneTaine.id, next)},
-        function(zone, next){ zone.createAnt({"x" : 50, "y" : 50}, function(err, ant){
+        function(next) {common.users.createUser(next);},
+        function(_user, next) {
+          test.user = _user;
+          Zone.createZone(CONFIG.zoneTaine.id, next)},
+        function(zone, next){ Ant.createAntFromZone(zone, test.user._id, {"x" : 50, "y" : 50}, function(err, ant){
           test.ok(err == null);
           test.ok(ant != null, "ant is null");         
           test.done();

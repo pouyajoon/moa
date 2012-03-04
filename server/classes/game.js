@@ -6,7 +6,8 @@ var moaSchema = require('./../db/moaSchema');
 
 var Step = require('common').step;
 var User = require("./user");
-var UserModel = User.UserModel;
+var UserModel = moaSchema.UserModel;
+var AntModel = moaSchema.AntModel;
 
 
 //when it's action nodes time
@@ -27,12 +28,9 @@ function playActionNodes(currentZone){
 }
 
 var Game = function(_server, callback){
-	//console.log("game created:");
 	this.server = _server;
 
 	this.server.io.sockets.on('connection', function (socket) {
-		//console.log('client connected');
-
 		_.each(this.server.ioActions, function(io_action){
 		  socket.on(io_action.name, io_action.doAction.bind(socket));
 		}.bind(this));
@@ -41,7 +39,6 @@ var Game = function(_server, callback){
 	}.bind(this));
 
 	new WorldZones(function(err, _worldZones){
-		//console.log("worldZones created");
 		if (err) callback(err, null);
 		this.worldZones = _worldZones;
 		return callback(err, this);
@@ -84,7 +81,6 @@ Game.prototype.getUserFromSocket = function(socket, callback) {
 	});
 };
 
-
 Game.prototype.emitZone = function(socket){
 	socket.zone.getAnts(function(err, ants){
 		var zEmit = {
@@ -95,7 +91,6 @@ Game.prototype.emitZone = function(socket){
 	  socket.emit('zone', zEmit);
 	});
 }
-
 
 Game.prototype.emitInventory = function(socket) {
 	var game = this;
@@ -111,11 +106,49 @@ Game.prototype.emitInventory = function(socket) {
 			socket.emit('inventory', {"err" : null, "ants" : _ants});
 		}
 	], function(err){
-		return callback(err);
+		socket.emit('inventory', {"err" : err});
 	});
 };
 
-
+Game.prototype.moveAntFromZoneToInventory = function(socket, antID, callback) {
+	var game = this;
+	var user = null;
+	var ant = null;
+	var zone = null;
+	Step([
+		function(next) {game.getUserFromSocket(socket, next) },
+		function(_user, next) {
+			user = _user;
+			var a = new AntModel();
+			a.model = AntModel;
+			a.hasOne({'_user' : user._id, '_id' : antID}, function(err, exists, ant){
+				console.log(err, exists, ant);	
+				if (exists){
+					next(null, ant, next);			
+				}
+			});				
+		},
+		function(_ant, next) { 
+			ant = _ant;
+			console.log('get zone');
+			game.worldZones.getZone(ant._zone, next);
+		},
+		function(_zone, next) {	
+			zone = _zone;
+			console.log("zone", zone);
+			zone.removeAnt(ant._id, next); 
+		},
+		function(_ant, next) { inventory.addAnt(ant._id, next); },
+		function(_ant, next) {
+			//console.log('inventory sent');
+			game.emitInventory(socket);
+			callback(null);
+		}
+	], function(err){
+		//console.log('err', err);
+		callback(err);
+	});
+};
 
 Game.prototype.moveAntFromInventoryToZone = function(socket, input, callback) {
 	var game = this;
@@ -128,19 +161,42 @@ Game.prototype.moveAntFromInventoryToZone = function(socket, input, callback) {
 			game.getUserFromSocket(socket, next);
 		},
 		function(user, next) { user.getInventory(next) },
-		function(_inventory, next) {
-			inventory = _inventory; 
-			inventory.getAnts(next);
-		},
-		function(ants, next) { inventory.removeAnt(ants, input.antID, next); },
-		function(antRemoved, next) { zone.addAnt(antRemoved, input.position, next);},
+		function(inventory, next) { inventory.removeAnt(input.antID, next); },
+		function(antRemoved, next) { 
+			antRemoved.position = input.position;
+			zone.addAnt(antRemoved, next);},
 		function(ant, next) {
 			game.emitInventory(socket);
 			return callback(null);
 		}
 	], function(err){
+		//console.log("ERROR", err);
 		return callback(err);
 	});
+};
+
+Game.prototype.emitAnt = function(socket, antID) {
+	var a = new AntModel();
+	a.model = AntModel;
+	a.hasOne({"_id" : antID}, function(err, exists, ant){
+		if (err) return socket.emit("ant", {"err" : err});
+		if (!exists) return socket.emit("ant", {"err" : "Ant do not exists"});		
+		ant.getUser(function(err, user){
+			if (err) return socket.emit("ant", {"err" : err});
+			var antMessage = {'err': null, 'ant' : ant, 'user' : user};
+			antMessage.actions = [];
+
+			this.getUserFromSocket(socket, function(err, sessionUser){
+				//console.log(socket.handshake.session.sessionID);
+				//console.log('EMIT ANT USER ==', user._id, sessionUser._id);
+				if (_.isEqual(user._id, sessionUser._id)){
+					antMessage.actions.push('sendToInventory');
+				}
+				//console.log('emit ant message', antMessage);
+				socket.emit('ant', antMessage);	
+			});
+		}.bind(this))
+	}.bind(this));
 };
 
 Game.prototype.setupSocketActions = function(socket) {
@@ -148,8 +204,16 @@ Game.prototype.setupSocketActions = function(socket) {
 		this.moveAntFromInventoryToZone(socket, input, callback);
 	}.bind(this));
 
+	socket.on('sendToInventory', function(antID){
+		moveAntFromZoneToInventory(antID);
+	}.bind(this));
+
 	socket.on("gameLoaded", function(zoneID){
 		this.emitInventory(socket);		
+	}.bind(this));
+
+	socket.on("getAnt", function(antID){
+		this.emitAnt(socket, antID);		
 	}.bind(this));
 
 	socket.on("getZone", function(zoneID){
@@ -179,7 +243,7 @@ Game.prototype.close = function() {
 Game.prototype.launch = function() {
 	this.gameInterval = setInterval(function(){
 		this.tick();
-	}.bind(this), global.gameTime);			
+	}.bind(this), 200);			
 };
 
 Game.prototype.tick = function() {
@@ -189,6 +253,7 @@ Game.prototype.tick = function() {
 	var startTime = (new Date()).getTime();//new Date(milliseconds);
 	for (var zID in this.worldZones.allZones){
 		var z = this.worldZones.allZones[zID];
+		//console.log(z);
 		//playActionNodes(z);
 		z.playAnts();
 	}		

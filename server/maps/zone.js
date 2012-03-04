@@ -14,26 +14,32 @@ exports.createZone = function(_zoneId, callback){
   return z.saveToDB(callback);
 }
 
-ZoneModel.prototype.createAnt = function(position, callback){
-  Ant.createAnt(function(err, ant){
-    return this.addAnt(ant, position, callback);   
-  }.bind(this));
+ZoneModel.prototype.addAnt = function(ant, callback){
+  this.addExternalItem("_zone", "ants", ant, callback);
+  // ant._zone = this._id;
+  // this.ants.push(ant._id); 
+  // return this.saveToDB(function(err, zone){
+  //   if (err) return callback(err);
+  //   return ant.saveToDB(callback);
+  // });
 };
 
-ZoneModel.prototype.addAnt = function(ant, position, callback){
-  ant._zone = this._id;
-  ant.position = position;
-  console.log("ANT",ant);
-  this.ants.push(ant._id); 
-  //return callback(null);
-  return this.saveToDB(function(err, zone){
-    //console.log(err);
-    if (err) return callback(err);
-    //console.log("ant", err);
-    return ant.saveToDB(callback);
-  });
+ZoneModel.prototype.removeAnt = function(antID, callback){
+  this.removeExternalItem(this.getAnts.bind(this), "_zone", 'ants', antID, callback);
 };
+
 
 ZoneModel.prototype.getAnts = function(callback) {
   return this.getExternalElements({ "_zone" : this._id},  'ants', AntModel, callback);
+};
+
+
+ZoneModel.prototype.playAnts = function(callback) {
+  this.getAnts(function(err, ants){
+    if (err) callback(err);
+    _.each(ants, function(a){
+      a.play();
+    });
+    //return callback();
+  })
 };

@@ -69,15 +69,48 @@ module.exports = testCase({
       }
     ]);
   }
+  ,"create zone, add ant, authenticate, get info box" : function(test){
+    Step([
+      function(next) {common.users.createUser(next)},
+      function(user, next) {
+        test.user = user;
+        Zone.createZone(CONFIG.zoneTaine.id, next)
+      },
+      function(zone, next) {
+        test.zone = zone;
+        Ant.createAntFromZone(test.zone, test.user._id, {"x" : 50, "y" : 50}, next);
+      },
+      function(ant, next) {
+        test.ant = ant;
+         common.getSecureSocketFromGame({"test": test}, next);
+      },
+      function(res, next) {
+        common.users.authenticateUser(res, CONFIG.userInfo, next);
+      },
+      function(res, next){
+        res.socket.on("ant", function(antMessage){
+          //console.log("ANT RECEIVED", antMessage);
+          test.ok(antMessage.err == null, antMessage.err);
+          test.ok(antMessage.actions.length != 0, "at least one action should be associated");
+          res.socket.disconnect();
+        });
+        //console.log("GET ANT", test.ant._id);
+        res.socket.emit("getAnt", test.ant._id);
+      }
+    ], function(err){
+      console.log(err);
+      test.ok(err == null);
+    });
+  }  
  ,"subscribe user, move ant to zone" :  function(test){
     Step([
       function(next){ common.users.subscribeUserOverSocketAndAuthenticate({"test" : test}, CONFIG.userInfo, next); },
       function(res, next) {
+
         res.socket.on('inventory', function(inventoryMessage){
           test.ok(inventoryMessage.err == null, inventoryMessage.err);
           test.ok(inventoryMessage.ants.length == 1, "inventory should have one ant");
           var ant = inventoryMessage.ants[0];
-
           res.socket.removeAllListeners("inventory");
           res.socket.on('inventory', function(inventoryMessage){
             test.ok(inventoryMessage.err == null, inventoryMessage.err);            
@@ -96,12 +129,41 @@ module.exports = testCase({
             "position" : ant.position
           };
           res.socket.emit("moveAntFromInventoryToZone", emitMessage, function(err){
+            //console.log(err, "error");
             test.ok(err == null, err);
           });
         });        
         res.socket.emit("gameLoaded", {});
       }
-    ]);
+    ], function(err){
+       //console.log(err, "error");
+      test.ok(err == null, err);
+    });
+  }
+  ,"subscribe user, move ant to zone then put it back" :  function(test){
+    Step([
+      function(next){ common.users.subscribeUserOverSocketAndAuthenticate({"test" : test}, CONFIG.userInfo, next); },
+      function(res, next) {
+        console.log(res.user);
+        test.ant = inventory.ants[0];
+        var emitMessage = {
+          "zoneID" : CONFIG.zoneTaine.id, 
+          "antID": test.ant, 
+          "position" : {"x" : 50, "y" : 50}
+        };
+        test.res = res;
+        res.socket('moveAntFromInventoryToZone', emitMessage, next);
+      },
+      function(next) { res.socket('moveAntFromZoneToInventory', test.ant._id, next);},
+      function(next){
+        test.res.socket.on('inventory', function(inventoryMessage){
+          test.ok(inventoryMessage.err == null);
+          test.res.socket.disconnect();
+        });
+      }
+    ], function(err){
+      test.ok(err == null);
+    });    
   }
 
 });

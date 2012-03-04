@@ -24,7 +24,15 @@ var GameCanvas = function(_game, _tileCoordinate){
     this.ants = dataZone.ants;
   }.bind(this));
 
+  this.game.bindOnSocket('ant', function (antMessage) {
+    //console.log('ants', dataZone.ants);
+    console.log('antMessage', antMessage);
+    if (antMessage.err) console.log(antMessage.err);
 
+    new AntInfoBox(this.game.socketManager, antMessage);
+    // $('.ant-details').remove();
+    // $("body").append('<div class="ant-details"><ul><li>' + antMessage.ant.action + '</li><li>' + antMessage.user.email + '</li></ul></div>');
+  }.bind(this));  
 
   this.canvasID = "mainScreen";
   this.canvas = document.getElementById(this.canvasID);
@@ -44,6 +52,18 @@ var GameCanvas = function(_game, _tileCoordinate){
   this.camera.initialTranslate.set(this.canvas.width / 2 - TILE_SIZE / 2, this.canvas.height / 2 - TILE_SIZE / 2);
   this.camera.translate.copy(this.camera.initialTranslate);
   
+
+  this.selectedAnt = null;
+  $(this.camera.canvas).click(function(event){
+    this.camera.mouseMove(event);
+    this.selectedAnt = this.clickedOnAnt();
+    if (this.selectedAnt != null){
+      this.game.emitSocket('getAnt', this.selectedAnt._id);
+    } else {
+      $('.antInfoBox').remove();
+    }
+  }.bind(this));
+
   this.camera.scaleIsMoreThanScaleMax = function(_camera){
     if (_camera.translate.equals(_camera.initialTranslate, 10)){
       _camera.translate = _camera.initialTranslate;
@@ -62,6 +82,19 @@ var GameCanvas = function(_game, _tileCoordinate){
   }.bind(this), 1000 / 12);  
 }
 
+
+GameCanvas.prototype.clickedOnAnt = function() {
+  var selectedAnt = null;
+  _.each(this.ants, function(ant){
+    if (this.camera.mouseInDrawZone.isInside(ant.position, ant.size))
+    {
+      selectedAnt = ant;
+      return false;
+    }
+  }.bind(this));
+  return selectedAnt;
+};
+
 GameCanvas.prototype.getZoneID = function() {
   return this.tileCoordinate.x + "_" + this.tileCoordinate.y;
 };
@@ -70,6 +103,7 @@ GameCanvas.prototype.close = function(_time) {
   clearInterval(this.tickInterval);
   this.camera.close();
   this.game.unbindOnSocket("zone");
+  this.game.unbindOnSocket("ant");
   this.hide(_time);
 };
 
@@ -106,7 +140,7 @@ GameCanvas.prototype.tick = function() {
 GameCanvas.prototype.drawAnts = function() {
     this.ctx.fillStyle = "rgb(60,60,60)";
   _.each(this.ants, function(ant){
-    console.log(ant);
+    //console.log(ant);
     var image = imgAIdle;
     if (ant.action == "move") { image = imgAMove; }
     //if (ant.action == "digg") { image = imgADigg; } 
@@ -117,7 +151,18 @@ GameCanvas.prototype.drawAnts = function() {
     this.ctx.translate(ant.position.x + (ant.size.w / 2), ant.position.y + (ant.size.h / 2));
     this.ctx.rotate(ant.angle * Math.PI / 180);      
     this.ctx.drawImage(image, - ant.size.w / 2, - ant.size.h / 2, ant.size.w, ant.size.h); 
+    if (this.selectedAnt != null && this.selectedAnt._id == ant._id){
+      this.ctx.strokeStyle = "rgb(0, 0, 0)";
+      this.ctx.beginPath();
+      this.ctx.arc(0, 0, 50, 0, 2 * Math.PI, false);
+      this.ctx.stroke();
+      this.ctx.closePath();
+//      this.ctx.strokeRect(- ant.size.w / 2, - ant.size.h / 2, ant.size.w, ant.size.h); 
+    }
     this.ctx.restore();    
+    // this.ctx.strokeStyle = "rgb(255, 0, 0)";    
+    // this.ctx.strokeRect(ant.position.x , ant.position.y, ant.size.w, ant.size.h); 
+    
     //}
   }.bind(this));
 };
