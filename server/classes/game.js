@@ -9,7 +9,6 @@ var User = require("./user");
 var UserModel = moaSchema.UserModel;
 var AntModel = moaSchema.AntModel;
 
-
 //when it's action nodes time
 function playActionNodes(currentZone){
 
