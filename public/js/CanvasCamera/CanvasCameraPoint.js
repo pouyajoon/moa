@@ -1,7 +1,7 @@
 var Point = function(){
 	this.x = 0;
 	this.y = 0;
-}
+};
 
 
 Point.prototype.toString = function() {
@@ -37,7 +37,7 @@ Point.prototype.multiply = function(p) {
 
 Point.prototype.set = function(x, y) {
 	this.x = x;
-	this.y = y;	
+	this.y = y;
 };
 
 Point.prototype.add = function(p) {
@@ -58,7 +58,7 @@ Point.prototype.reset = function() {
 Point.prototype.getSubPoint = function(p) {
 	var newP = new Point();
 	newP.set(this.x, this.y);
-	newP.sub(p)
+	newP.sub(p);
 	return newP;
 };
 

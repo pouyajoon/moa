@@ -3,7 +3,7 @@
 // var C_RESET = '\033[0m';
 
 // console.error = function(m){
-//   console.log(C_RED, "ERROR", C_RESET, m);  
+//   console.log(C_RED, "ERROR", C_RESET, m);
 // }
 
 var express = require ('express');
@@ -19,14 +19,14 @@ var Game = require('./classes/game');
 var pageZoom = {"path" : "/zoom", "view" : "game/home.jade", "login" : libAuth.requireLogin, "renderOptions" : {"drawMode" : 'zoom'}};
 var pageMap = {"path" : "/map", "view" : "game/home.jade", "renderOptions" : {"drawMode" : 'map'}};
 var pageHome = {"path" : "/", "view" : "game/home.jade", "login" : libAuth.requireLogin, "renderOptions" : {"drawMode" : 'map'}};
-
+var pageTest = {"path" : "/test", "view" : "test/test.jade", "renderOptions" : {"drawMode" : 'map'}};
 
 var mongoose = require("mongoose");
-mongoose.connect('mongodb://localhost/moa');  
+mongoose.connect('mongodb://localhost/moa');
 
 var serverOptions = {
   port : 8081,
-  paths : [pageZoom, pageMap, pageHome]
+  paths : [pageZoom, pageMap, pageHome, pageTest]
 };
 
 new Server(serverOptions, function(err, _server){

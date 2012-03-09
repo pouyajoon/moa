@@ -1,30 +1,38 @@
+var express = require('express');
+var app = express.createServer();
 
-var CONFIG = require('./test/utils/config');
-var common = require('./test/utils/common');
-var io = require("socket.io-client");
+app.get('/', function(req, res){
+    res.send('Hello World');
+});
 
-common.createServer({}, function(err, res){
-  common.browser.doHTTPGETRequest(res, CONFIG.http.sessionUrl, CONFIG.http.options, function(err, res){
-    var sio_server = CONFIG.getSocketServerURL();// + "?session.id=" + encodeURIComponent(res.cookies["session.id"]);
-    //console.log(CONFIG.socketIO);
-    var s = io.connect(sio_server, CONFIG.socketIO.options);  
-    s.on('connect', function(data){
-      console.log('getSecureSocketFromHTTPConnection Connect');
-      //callbackOnConnect(null, res);
-    });
+app.listen(3000);
 
-    s.on('error', function(data){
-      console.log('getSecureSocketFromHTTPConnection Error');
-      //callbackOnConnect(null, res);
-    });    
+// var CONFIG = require('./test/utils/config');
+// var common = require('./test/utils/common');
+// var io = require("socket.io-client");
 
-    s.on('disconnect', function(){
-      console.log('getSecureSocketFromHTTPConnection Disconnect');
-      //test.done();
-      //callbackOnDisconnect(null, res);        
-    });         
-  });    
-})
+// common.createServer({}, function(err, res){
+//   common.browser.doHTTPGETRequest(res, CONFIG.http.sessionUrl, CONFIG.http.options, function(err, res){
+//     var sio_server = CONFIG.getSocketServerURL();// + "?session.id=" + encodeURIComponent(res.cookies["session.id"]);
+//     //console.log(CONFIG.socketIO);
+//     var s = io.connect(sio_server, CONFIG.socketIO.options);  
+//     s.on('connect', function(data){
+//       console.log('getSecureSocketFromHTTPConnection Connect');
+//       //callbackOnConnect(null, res);
+//     });
+
+//     s.on('error', function(data){
+//       console.log('getSecureSocketFromHTTPConnection Error');
+//       //callbackOnConnect(null, res);
+//     });    
+
+//     s.on('disconnect', function(){
+//       console.log('getSecureSocketFromHTTPConnection Disconnect');
+//       //test.done();
+//       //callbackOnDisconnect(null, res);        
+//     });         
+//   });    
+// })
 
 
 

@@ -19,7 +19,8 @@
     "test": "make test"
   }  
   , "devDependencies": {
-    "nodeunit": ">= 0.0.1"
+    "nodeunit": ">= 0.0.1",
+    "grunt" : ">= 0.0.1"
   }
   , "private" : true
 }

@@ -1,5 +1,5 @@
 
-// Queen Marker Options 
+// Queen Marker Options
 // START
 var imageQueen = new google.maps.MarkerImage(
   '/images/marker-colony.png',
@@ -24,31 +24,31 @@ var shapeQueen = {
 
 // get a queen marker
 function getMarkerQueen(){
-	var markerQueen = new google.maps.Marker({
-		draggable: false,
-		raiseOnDrag: false,
-		icon: imageQueen,
-		shadow: imageQueenShadow,
-		shape: shapeQueen,
-		map: map,
-		position: ruetaine
-	});
-	
-	// when clicked on the queen
-	google.maps.event.addListener(markerQueen, 'click', function () {
-		var bounds = new google.maps.LatLngBounds();
-		bounds.extend(this.getPosition());
-		zoomIn(21, this.getPosition());
-		map.panToBounds(bounds);      
-		var localMarker = this;
-		//	toogleMaps();
-		//	this.setAnimation(google.maps.Animation.BOUNCE);
-		//	setTimeout(function(){		
-		//		localMarker.setAnimation(null);
-		//	}, 1000)
-	
-	});	
-	return markerQueen;
+  var markerQueen = new google.maps.Marker({
+    draggable: false,
+    raiseOnDrag: false,
+    icon: imageQueen,
+    shadow: imageQueenShadow,
+    shape: shapeQueen,
+    map: map,
+    position: ruetaine
+  });
+
+  // when clicked on the queen
+  google.maps.event.addListener(markerQueen, 'click', function () {
+    var bounds = new google.maps.LatLngBounds();
+    bounds.extend(this.getPosition());
+    zoomIn(21, this.getPosition());
+    map.panToBounds(bounds);
+    var localMarker = this;
+    //  toogleMaps();
+    //  this.setAnimation(google.maps.Animation.BOUNCE);
+    //  setTimeout(function(){
+    //    localMarker.setAnimation(null);
+    //  }, 1000)
+
+  });
+  return markerQueen;
 }
 
 

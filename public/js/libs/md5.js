@@ -68,15 +68,14 @@ function rstr_hmac_md5(key, data)
  */
 function rstr2hex(input)
 {
-  try { hexcase } catch(e) { hexcase=0; }
+  try { _.isUndefined(hexcase); } catch(e) { hexcase=0; }
   var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
   var output = "";
   var x;
   for(var i = 0; i < input.length; i++)
   {
     x = input.charCodeAt(i);
-    output += hex_tab.charAt((x >>> 4) & 0x0F)
-           +  hex_tab.charAt( x        & 0x0F);
+    output += hex_tab.charAt((x >>> 4) & 0x0F) + hex_tab.charAt(x & 0x0F);
   }
   return output;
 }
@@ -86,7 +85,7 @@ function rstr2hex(input)
  */
 function rstr2b64(input)
 {
-  try { b64pad } catch(e) { b64pad=''; }
+  try { _.isUndefined(hexcase); } catch(e) { b64pad=''; }
   var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   var output = "";
   var len = input.length;
@@ -130,7 +129,7 @@ function rstr2any(input, encoding)
   var remainders = Array(full_length);
   for(j = 0; j < full_length; j++)
   {
-    quotient = Array();
+    quotient = [];
     x = 0;
     for(i = 0; i < dividend.length; i++)
     {
@@ -222,8 +221,8 @@ function rstr2binl(input)
   var output = Array(input.length >> 2);
   for(var i = 0; i < output.length; i++)
     output[i] = 0;
-  for(var i = 0; i < input.length * 8; i += 8)
-    output[i>>5] |= (input.charCodeAt(i / 8) & 0xFF) << (i%32);
+  for(var j = 0; j < input.length * 8; j += 8)
+    output[j>>5] |= (input.charCodeAt(j / 8) & 0xFF) << (j%32);
   return output;
 }
 

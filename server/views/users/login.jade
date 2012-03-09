@@ -7,10 +7,10 @@ html
       var MOA_SERVER = '#{server}';
     script(type='text/javascript', src='/js/libs/jquery.min.js')
     script(type='text/javascript', src='/js/libs/underscore.js')
-    script(type='text/javascript', src='/socket.io/socket.io.js')    
+    script(type='text/javascript', src='/socket.io/socket.io.js')
     script(type='text/javascript', src='/js/user/user.js')
     script(type='text/javascript', src='/js/Forms/FormValidation.js')
-    script(type='text/javascript', src='/js/user/md5.js')
+    script(type='text/javascript', src='/js/lib/md5.js')
     title= title
   body
     #main
@@ -25,23 +25,23 @@ html
           h2 Login
           form(action='/users/authenticate', method='POST', id='user-login')
             p
-              label(for='email') Email : 
+              label(for='email') Email :
               input(type='email', name='email', id='email', required="required")
             p
-              label(for='password') Password : 
-              input(type='password', name='password', id='password', required="required")    
-            p 
-              input(type='submit', value='Login') 
+              label(for='password') Password :
+              input(type='password', name='password', id='password', required="required")
+            p
+              input(type='submit', value='Login')
           h2 Subscribe
           form(id='user-subscribe', novalidate="novalidate")
             p
-              label(for='nemail') Email : 
-              input(type='email', class='ninput', name='nemail', id='nemail', required="required") 
+              label(for='nemail') Email :
+              input(type='email', class='ninput', name='nemail', id='nemail', required="required")
             p
-              label(for='npassword') Password : 
-              input(type='password', name='npassword', id='npassword', required="required")  
+              label(for='npassword') Password :
+              input(type='password', name='npassword', id='npassword', required="required")
             p
-              label(for='ncpassword') Confirm Password : 
-              input(type='password', name='ncpassword', id='ncpassword', required="required", equalto='#npassword')      
+              label(for='ncpassword') Confirm Password :
+              input(type='password', name='ncpassword', id='ncpassword', required="required", equalto='#npassword')
             p
               input(type='submit', value='Subscribe')

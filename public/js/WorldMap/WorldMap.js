@@ -2,7 +2,7 @@
 var TILE_SIZE = 256;
 
 var ruetaine = new google.maps.LatLng(48.837890444364774, 2.392113855719572);
-var rueTaineTile = {"x" : 1062511, "y" : 721645};  
+var rueTaineTile = {"x" : 1062511, "y" : 721645};
 
 
 function WorldMap(callback) {
@@ -13,11 +13,11 @@ function WorldMap(callback) {
 
   var _zonesMap = new ZonesMapType(new google.maps.Size(256, 256));
   this.map.overlayMapTypes.insertAt(0, _zonesMap);
-  
+
   MyOverlay.prototype = new google.maps.OverlayView();
-  MyOverlay.prototype.onAdd = function() { }
-  MyOverlay.prototype.onRemove = function() { }
-  MyOverlay.prototype.draw = function() { }
+  MyOverlay.prototype.onAdd = function() { };
+  MyOverlay.prototype.onRemove = function() { };
+  MyOverlay.prototype.draw = function() { };
   function MyOverlay(map) { this.setMap(this.map); }
 
   var overlay = new MyOverlay(this.map);
@@ -45,17 +45,17 @@ function WorldMap(callback) {
     this.onClickInMap(event, tileCoordinate, tileCoordinatePos);
 
     // setTimeout(function(){
-    //   this.hide(0);  
-    // }.bind(this), 250);        
+    //   this.hide(0);
+    // }.bind(this), 250);
   }.bind(this));
-  
 
-    
+
+
   google.maps.event.addListener(this.map, 'idle', function(event){
-    if (init){     
+    if (init){
       init = false;
-      return callback(this);      
-    }    
+      return callback(this);
+    }
   }.bind(this));
 
 
@@ -63,7 +63,7 @@ function WorldMap(callback) {
 
 WorldMap.prototype.onClickInMap = function(event, tileCoordinate, tileCoordinatePos){
 
-}
+};
 
 
 
@@ -94,11 +94,11 @@ WorldMap.prototype.tileCoordinateToLatLng = function(tileCoordinate){
       tileCoordinate.y * TILE_SIZE);
   var pt0 = new google.maps.Point(
       px0.x / numTiles,
-      px0.y / numTiles);      
+      px0.y / numTiles);
   var p = this.map.getProjection();
   var latlng0 = p.fromPointToLatLng(pt0);
 	return latlng0;
-} 
+};
 
 WorldMap.prototype.mouseClickToCoordinateInTile = function(point){
 
@@ -112,7 +112,7 @@ WorldMap.prototype.mouseClickToCoordinateInTile = function(point){
       Math.floor(pixelCoordinate.x % TILE_SIZE),
       Math.floor(pixelCoordinate.y % TILE_SIZE));
   return tileCoordinatePos;
-}
+};
 
 // return the tile coordinate of the mouse click
 WorldMap.prototype.mouseClickToTileCoordinate = function(point){
@@ -122,22 +122,22 @@ WorldMap.prototype.mouseClickToTileCoordinate = function(point){
   var pixelCoordinate = new google.maps.Point(
       worldCoordinate.x * numTiles,
       worldCoordinate.y * numTiles);
-     
+
   var tileCoordinate = new google.maps.Point(
       Math.floor(pixelCoordinate.x / TILE_SIZE),
       Math.floor(pixelCoordinate.y / TILE_SIZE));
 
   return tileCoordinate;
-}
+};
 
 // get the middle lat lng using tile coordinates
 WorldMap.prototype.tileCoordinateToMiddleLatLng = function(tileCoordinate){
 	var	latlng0 = this.tileCoordinateToLatLng(tileCoordinate);
-	var	latlng1 = this.tileCoordinateToLatLng({'x' : tileCoordinate.x + 1, 'y' : tileCoordinate.y + 1});	
+	var	latlng1 = this.tileCoordinateToLatLng({'x' : tileCoordinate.x + 1, 'y' : tileCoordinate.y + 1});
 	var latlngmiddle = new google.maps.LatLng(
-		latlng0.lat() + (latlng1.lat() - latlng0.lat()) / 2, 
+		latlng0.lat() + (latlng1.lat() - latlng0.lat()) / 2,
 		latlng0.lng() + (latlng1.lng() - latlng0.lng()) / 2);
 	return latlngmiddle;
-}
+};
 
 

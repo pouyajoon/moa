@@ -1,11 +1,11 @@
 var WorldMapGeocoder = function(_map){
 
   this.map = _map;
-  var geocoder = new google.maps.Geocoder(); 
+  var geocoder = new google.maps.Geocoder();
 
-  $("#searchbox").autocomplete({    
+  $("#searchbox").autocomplete({
     source: function(request, response) {
-      if (geocoder == null){
+      if (geocoder === null){
        geocoder = new google.maps.Geocoder();
       }
       geocoder.geocode( {'address': request.term }, function(results, status) {
@@ -24,7 +24,7 @@ var WorldMapGeocoder = function(_map){
                     label  : loc.formatted_address,
                     value  : loc.formatted_address,
                     bounds   : loc.geometry.bounds
-                  }
+                  };
                 }));
                 }
               }
@@ -41,4 +41,4 @@ var WorldMapGeocoder = function(_map){
       }
     }.bind(this)
   });
-}
+};

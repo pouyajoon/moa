@@ -11,6 +11,9 @@ var AntInfoBox = function(socketManager, antMessage){
 				case "sendToInventory" :
 					this.pushAction(o, "Send To Inventory", action);
 				break;
+				case "move" :
+				break;
+				default:
 			}
 		}.bind(this));
 	o.push('</ul></div>');
@@ -24,9 +27,12 @@ var AntInfoBox = function(socketManager, antMessage){
 					socket.emit("sendToInventory", this.antMessage.ant._id);
 				}.bind(this));
 			break;
+			case "move" :
+			break;
+			default:
 		}
 	}.bind(this));
-}
+};
 
 AntInfoBox.prototype.getActionID = function(action) {
 	return this.antMessage.ant._id + '-' + action;

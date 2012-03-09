@@ -9,7 +9,23 @@ var UserModel = moaSchema.UserModel;
 module.exports = function(server){
 
   var pageLogin = {"path" : "/users/login", "view" : "users/login.jade", "renderOptions" : {"drawMode" : 'map'}};
-  server.paths.push(pageLogin);
+  // server.paths.push(pageLogin);
+
+  server.app.get('/users/login', function(req, res) {
+
+
+    //pageLogin["drawMode"] = "map";
+    var renderOptions = {
+      "layout" : false,
+      "server" : 'http://' + server.webServer + '/',
+      "title" : "Login"
+    }    
+    res.render("users/login.jade", renderOptions);
+    req.cookie = {};
+    req.session = {};
+
+
+  });
 
   server.app.get('/users/logout', libAuth.requireLogin, function(req, res) {
   	req.session.userID = null;

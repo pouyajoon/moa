@@ -1,14 +1,14 @@
 var FormValidation = function(formSelector){
   this.form = $(formSelector);
-  this.rules = {};  
-}
+  this.rules = {};
+};
 
 FormValidation.prototype.addRule = function(_rule) {
   //console.log('add rule ', _rule);
-  var id = _rule.id;  
+  var id = _rule.id;
   if (typeof (this.rules[id]) === "undefined"){
     this.rules[id] = [];
-  } 
+  }
   this.rules[id].push(_rule);
 };
 
@@ -22,11 +22,11 @@ FormValidation.prototype.isValid = function(callback) {
   var vhtml5 = this.isHTML5Valid();
   console.log('validate html5 ', vhtml5);
   invalid = !vhtml5 || invalid;
-  
+
   this.isRulesValid(function(_rulesValid){
     console.log('validate rules ', _rulesValid);
-    invalid = !_rulesValid || invalid;  
-    return callback(!invalid);  
+    invalid = !_rulesValid || invalid;
+    return callback(!invalid);
   });
 };
 
@@ -42,14 +42,14 @@ FormValidation.prototype.isRulesValid = function(callback) {
 
   var rc = _rulesToCheck.length;
   if (rc > 0){
-    var r = _rulesToCheck[0]; 
+    var r = _rulesToCheck[0];
     return r.doCheck(this, _rulesToCheck, 0, false, callback);
   }
-  return callback(!invalid)
+  return callback(!invalid);
 };
 
 FormValidation.prototype.isHTML5InputValid = function(input) {
-  var v = input.checkValidity();  
+  var v = input.checkValidity();
   if (!v){
    this.addError(input, input.validationMessage);
    return false;
@@ -71,9 +71,8 @@ FormValidation.prototype.setOnSubmit = function(callback) {
 var FormRule = function(_id, _check){
   this.id = _id;
   this.check = _check;
-  this.input = document.getElementById(this.id);  
-
-}
+  this.input = document.getElementById(this.id);
+};
 
 FormRule.prototype.doCheck = function(formValidator, allRules, currentRulePos, currentInvalid, callback) {
   var rc = allRules.length;
@@ -89,6 +88,6 @@ FormRule.prototype.doCheck = function(formValidator, allRules, currentRulePos, c
     } else {
       return callback(!currentInvalid);
     }
-  }.bind(this));      
+  }.bind(this));
 };
 

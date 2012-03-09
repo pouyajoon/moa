@@ -15,15 +15,15 @@ $(function(){
       if (exists){
         message = "The email already exists, please choose a new email.";
       }
-      return callback(err, !exists, message);  
+      return callback(err, !exists, message);
     });
   });
 
   var ruleCheckPassword = new FormRule('ncpassword', function(value, callback){
     if ($('#npassword').val() === $('#ncpassword').val()){
-      return callback(null, true, "No Error.");  
+      return callback(null, true, "No Error.");
     }
-    return callback(null, false, "Password and confirmation password don't match.");   
+    return callback(null, false, "Password and confirmation password don't match.");
   });
 
   formValidator.addRule(ruleCheckPassword);
@@ -53,7 +53,7 @@ $(function(){
 var User = function(email, password){
   this.email = email;
   this.password = password;
-}
+};
 
 
 User.prototype.subscribe = function(socket) {
@@ -79,9 +79,9 @@ User.prototype.exists = function(socket, callback){
     if (err) {callback(err, false);}
     if (exists){
       //$('#nemail').after('<span class="error"> The email already exists</span>');
-      callback(null, true)
+      callback(null, true);
     } else {
       callback(null, false);
     }
-  }.bind(this));     
-}
+  }.bind(this));
+};

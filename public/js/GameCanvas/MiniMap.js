@@ -1,7 +1,7 @@
 var MiniMap = function(parentID){
   this.parent = $('#' + parentID);
   this.create();
-}
+};
 
 MiniMap.prototype.create = function() {
   var output = [];
