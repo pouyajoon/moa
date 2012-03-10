@@ -2,8 +2,8 @@ var Step = require('common').step;
 
 exports.serverConfiguration = {
 	"options" : {
-	    "port" : 3000,
-	    "paths" : []
+			"port" : 3000,
+			"paths" : []
 	},
 	"host" : "pouya"
 };
@@ -20,7 +20,7 @@ exports.http = {
 }
 
 exports.userInfo = {
-	"email" : "pouyajoon@gmail.com", 
+	"email" : "pouyajoon@gmail.com",
 	"password" : "test"
 }
 
@@ -31,7 +31,7 @@ exports.socketIO = {
 exports.ant = {
 	"position" : {"x" : 500, "y" : 500}
 	, "size" :  {"x" : 50, "y" : 50}
-}  
+}
 
 //var assert = require('assert');
 
@@ -44,14 +44,14 @@ exports.getSocketServerURL = function(){
 }
 
 exports.setIntervalX = function(delay, repetitions, callback) {
-    var x = 0;
-    var intervalID = window.setInterval(function () {
-       callback();
-       if (++x === repetitions) {
-       		delay /= 2;
-          window.clearInterval(intervalID);
-       }
-    }, delay);
+		var x = 0;
+		var intervalID = window.setInterval(function () {
+			 callback();
+			 if (++x === repetitions) {
+					delay /= 2;
+					window.clearInterval(intervalID);
+			 }
+		}, delay);
 }
 
 
@@ -59,7 +59,7 @@ exports.setUp = function(callback) {
 	Step([
 		function(next) {require('./db').loadDB(next)}
 		, function(next) {require('./db').clearDB(callback)}
-	], callback);		
+	], callback);
 },
 
 exports.tearDown = function(callback) {

@@ -4,8 +4,8 @@ var _ = require('underscore');
 
 
   process.on('uncaughtException', function (err) {
-    console.log('uncaughtException : ', err);  
-    return callback(err, null); 
+    console.log('uncaughtException : ', err);
+    return callback(err, null);
   });
 
 var Server = function(options, callback){
@@ -16,13 +16,13 @@ var Server = function(options, callback){
   this.ioActions = [];
 
   this.app = express.createServer();
-  
+
   this.options = options;
   this.paths = this.options.paths;
-  
+
   this.app.configure(function(callback){
     this.app.set('view engine', 'jade');
-    this.app.set('views', __dirname + '/../views');      
+    this.app.set('views', __dirname + '/../views');
     this.app.use(express.methodOverride());
     this.app.use(express.bodyParser());
     this.app.use(express.cookieParser());
@@ -69,13 +69,13 @@ var Server = function(options, callback){
 // };
 
 
-Server.prototype.close = function() {  
+Server.prototype.close = function() {
   this.app.close();
 };
 
 Server.prototype.setRoutes = function (){
   _.each(this.paths, function(p){
-    
+
     var renderOptions = {
       "layout" : false,
       "server" : 'http://' + this.webServer + '/',
@@ -84,16 +84,16 @@ Server.prototype.setRoutes = function (){
     if (typeof p.renderOptions !== "undefined"){
       for (var option in p.renderOptions){
           renderOptions[option] = p.renderOptions[option];
-      };      
+      };
     }
     if (typeof p.login !== "undefined"){
       this.app.get(p.path, p.login, function(req, res){
         res.render(p.view, renderOptions);
-      });      
+      });
     } else {
       this.app.get(p.path, function(req, res){
         res.render(p.view, renderOptions);
-      });      
+      });
     }
   }.bind(this));
 }

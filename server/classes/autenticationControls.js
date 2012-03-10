@@ -19,7 +19,7 @@ module.exports = function(server){
       "layout" : false,
       "server" : 'http://' + server.webServer + '/',
       "title" : "Login"
-    }    
+    };
     res.render("users/login.jade", renderOptions);
     req.cookie = {};
     req.session = {};
@@ -28,9 +28,9 @@ module.exports = function(server){
   });
 
   server.app.get('/users/logout', libAuth.requireLogin, function(req, res) {
-  	req.session.userID = null;
+    req.session.userID = null;
     req.session.sessionID = null;
-  	res.redirect('/');	
+    res.redirect('/');
   });
 
   var parseCookie = require('connect').utils.parseCookie;
@@ -39,10 +39,10 @@ module.exports = function(server){
   function checkSession(data, sID, callback){
 //    console.log("check session", sID, typeof sID);
     server.sessionStore.get(sID, function (err, session) {
-      if (err) callback(err)
+      if (err) callback(err);
         //console.log(session);
       if (err || !session) {
-        
+
         //console.log("err:", err, "session: ", session, " : sID : ", sID);
         // if we cannot grab a session, turn down the connection
         return callback('Error : >' + data , false);
@@ -77,9 +77,9 @@ module.exports = function(server){
       return checkSession(data, data.sessionID, accept);
     } else {
       //console.info("no cookie");
-      
+
       if (data.query["session.id"] !== "undefined"){
-        var sID = decodeURIComponent(data.query["session.id"])
+        var sID = decodeURIComponent(data.query["session.id"]);
         //console.error("data", data);
         //return accept(null, true);
         //console.log(sID);
@@ -91,8 +91,8 @@ module.exports = function(server){
         return checkSession(data, sID, accept);
       } else {
         //console.error("no cookie, n/a");
-        return accept('No cookie transmitted.', false);   
-      }       
+        return accept('No cookie transmitted.', false);
+      }
     }
   });
 
@@ -110,11 +110,11 @@ module.exports = function(server){
         //req.session.user.bisou = "yes";
         //console.log("session @ auth", req.session);
         res.redirect('/');
-      } else { 
-        req.flash('warn', 'Wrong username or password');     
+      } else {
+        req.flash('warn', 'Wrong username or password');
         res.redirect('/users/login');
-      }    
-    })
+      }
+    });
   });
 
 };

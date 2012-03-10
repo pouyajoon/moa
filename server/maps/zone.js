@@ -12,12 +12,12 @@ var ZoneModel = moaSchema.ZoneModel;
 exports.createZone = function(_zoneId, callback){
   var z = new ZoneModel({"id" : _zoneId});
   return z.saveToDB(callback);
-}
+};
 
 ZoneModel.prototype.addAnt = function(ant, callback){
   this.addExternalItem("_zone", "ants", ant, callback);
   // ant._zone = this._id;
-  // this.ants.push(ant._id); 
+  // this.ants.push(ant._id);
   // return this.saveToDB(function(err, zone){
   //   if (err) return callback(err);
   //   return ant.saveToDB(callback);
@@ -41,5 +41,5 @@ ZoneModel.prototype.playAnts = function(callback) {
       a.play();
     });
     //return callback();
-  })
+  });
 };

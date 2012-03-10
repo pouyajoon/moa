@@ -4,7 +4,7 @@ var io_ssetaction = {"name" : "ssetaction", "doAction" : function(req){
     var p = {'x' : parseFloat(req.x), 'y' : parseFloat(req.y)};
     var newPos = libWorldTools.transformToRealPosition(p, floatCamera);
     console.log(req.zoneid);
-    z.actionNodes.push(new lib_actionNode.ActionNode(req.action, newPos))
+    z.actionNodes.push(new lib_actionNode.ActionNode(req.action, newPos));
   }
 };
 
@@ -14,7 +14,7 @@ var io_createQueen = {"name" : "createQueen", "doAction" : function(_creationInf
     var q = new lib_queen.Queen("first-Queen", new Position(2000, 2000));
     z.ants.push(q);
   }
-};  
+};
 
 var io_stopzone = {"name" : "stopzone", "doAction" : function(zone_id){
     this.get('sendingZones', function (err, z) {
@@ -22,7 +22,7 @@ var io_stopzone = {"name" : "stopzone", "doAction" : function(zone_id){
       clearInterval(this.interval);
     }.bind(this));
   }
-};  
+};
 
 var io_disconnect = {"name" : "disconnect", "doAction" : function () {
     try {

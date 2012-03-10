@@ -10,39 +10,39 @@ var AntModel = moaSchema.AntModel;
 UserModel.prototype.getInventory = function(callback){
   var i = new InventoryModel();
   i.model = InventoryModel;
-  i.hasOne({"_id" : this.inventory}, function(err, exists, inventory){    
+  i.hasOne({"_id" : this.inventory}, function(err, exists, inventory){
     if (err) return callback(err);
     if (!exists) return callback("Inventory not found");
-    return callback(null, inventory);     
+    return callback(null, inventory);
   });
-}
+};
 
 
 UserModel.prototype.setup = function(_email, _password, callback){
   this.model = UserModel;
-  this.email = _email;  
+  this.email = _email;
   if (!_.isUndefined(_password)){
     this.password = _password;
-  } 
+  }
   Inventory.createInventory(this, function(err, inventory){
     if (err) return callback(err);
     return this.saveToDB(callback);
   }.bind(this));
-}
+};
 
 exports.createUser = function(_email, _password, callback){
   var u = new UserModel();
   u.setup(_email, _password, function(err, _u){
     callback(err, u);
   });
-}
+};
 
 exports.UserModel = UserModel;
 
 // var User = function(_email, password, callback){
 
 //   require('./heritate').heritate(this, User, require("../db/DataBaseItem"), UserModel);
-//   this.data.email = _email;  
+//   this.data.email = _email;
 //   if (typeof password !== "undefined"){
 //     this.data.password = password;
 //   }

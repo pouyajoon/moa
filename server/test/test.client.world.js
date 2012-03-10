@@ -3,7 +3,7 @@
 var Step = require('common').step;
 
 var assert = require('assert');
-var should = require('should'); 
+var should = require('should');
 var Zone = require('../maps/zone');
 var Ant = require('../classes/ant');
 var common = require('./utils/common');
@@ -16,12 +16,12 @@ var testCase = require('nodeunit').testCase;
 module.exports = testCase({
 
   "setUp": function(callback) {
-  	Step([
-  		function(next){CONFIG.setUp(callback)}  		
-  	], callback);
+    Step([
+      function(next){CONFIG.setUp(callback)}
+    ], callback);
   }
   ,"tearDown": function(callback) {
-  	CONFIG.tearDown(callback);
+    CONFIG.tearDown(callback);
   }
   ,"created zone, add ant, get zone, has one ant" : function(test){
     Step([
@@ -32,7 +32,7 @@ module.exports = testCase({
           test.ok(ant != null, "ant is null");
           test.ok(res.zone != null, "zone is null");
           test.ok(res.zone.ants.length == 1, "zone should have one ant");
-          test.ok(ant._id == res.zone.ants[0], "ant id is wrong");        
+          test.ok(ant._id == res.zone.ants[0], "ant id is wrong");
           res.socket.disconnect();
       })}
     ]);
@@ -48,8 +48,8 @@ module.exports = testCase({
         res.socket.on('inventory', function(inventory){
           test.ok(inventory.err == null);
           test.ok(inventory.ants.length == 1, "inventory should have one ant");
-          res.socket.disconnect();  
-        });        
+          res.socket.disconnect();
+        });
         res.socket.emit("gameLoaded", {});
       }
     ]);
@@ -63,8 +63,8 @@ module.exports = testCase({
         res.socket.on('inventory', function(inventory){
           test.ok(inventory.err == null);
           test.ok(inventory.ants.length == 1, "inventory should have one ant");
-          res.socket.disconnect();  
-        });        
+          res.socket.disconnect();
+        });
         res.socket.emit("gameLoaded", {});
       }
     ]);
@@ -101,7 +101,7 @@ module.exports = testCase({
       console.log(err);
       test.ok(err == null);
     });
-  }  
+  }
  ,"subscribe user, move ant to zone" :  function(test){
     Step([
       function(next){ common.users.subscribeUserOverSocketAndAuthenticate({"test" : test}, CONFIG.userInfo, next); },
@@ -113,9 +113,9 @@ module.exports = testCase({
           var ant = inventoryMessage.ants[0];
           res.socket.removeAllListeners("inventory");
           res.socket.on('inventory', function(inventoryMessage){
-            test.ok(inventoryMessage.err == null, inventoryMessage.err);            
+            test.ok(inventoryMessage.err == null, inventoryMessage.err);
             res.socket.on('zone', function(zone){
-              test.ok(zone != null, "zone is null");              
+              test.ok(zone != null, "zone is null");
               test.ok(zone.ants != null, "zone ants is null");
               test.ok(zone.ants.length == 1, "zone ants is not equal to 1");
               test.ok(zone.ants[0]._id == ant._id, "zone ants and inventory ants are not the same");
@@ -124,15 +124,15 @@ module.exports = testCase({
             res.socket.emit('getZone', CONFIG.zoneTaine.id);
           });
           var emitMessage = {
-            "zoneID" : CONFIG.zoneTaine.id, 
-            "antID": ant._id, 
+            "zoneID" : CONFIG.zoneTaine.id,
+            "antID": ant._id,
             "position" : ant.position
           };
           res.socket.emit("moveAntFromInventoryToZone", emitMessage, function(err){
             //console.log(err, "error");
             test.ok(err == null, err);
           });
-        });        
+        });
         res.socket.emit("gameLoaded", {});
       }
     ], function(err){
@@ -148,8 +148,8 @@ module.exports = testCase({
     //     console.log(res.user);
     //     test.ant = inventory.ants[0];
     //     var emitMessage = {
-    //       "zoneID" : CONFIG.zoneTaine.id, 
-    //       "antID": test.ant, 
+    //       "zoneID" : CONFIG.zoneTaine.id,
+    //       "antID": test.ant,
     //       "position" : {"x" : 50, "y" : 50}
     //     };
     //     test.res = res;
@@ -164,7 +164,7 @@ module.exports = testCase({
     //   }
     // ], function(err){
     //   test.ok(err == null);
-    // });    
+    // });
   }
 
 });
